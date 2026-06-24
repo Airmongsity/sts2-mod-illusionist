@@ -2,7 +2,7 @@
   "title": "Illusionist / 幻术师",
   "description": "A mirror-and-illusion character for Slay the Spire 2.\n\n\"Copy\" summons mirror images that replay the first card you play each turn and shatter when you take unblocked damage — a fragile, fast-snowballing engine. Includes ~30 themed cards, custom relics and potions, a starter relic, and Orobas (Ancient) relic/card upgrades.\n\nFully localized in English and 简体中文 (Simplified Chinese).\n\nReskins the Necrobinder slot.",
   "visibility": "public",
-  "changeNote": "v0.1.1 — Balance: starting Defend 5->4; Disrupt now applies Weak instead of Frail. Fix: Necrobinder potions (Bone Brew, etc.) no longer appear in rewards; the Illusionist's own potions now can.",
+  "changeNote": "v0.1.2 — Fix: the Darv (Hoarder) Act-2 ancient event no longer freezes the game. New Darv ancient card: Phantasm Storm. Reworked Sabotage: deal 16 damage, apply 2 Weak, First Move puts it back on top of your draw pile (upgraded 22/3). Also includes earlier balance (starter Defend 5->4, Disrupt applies Weak) and the fix removing base Necrobinder potions from reward pools.",
   "tags": ["Characters"],
   "dependencies": []
 }

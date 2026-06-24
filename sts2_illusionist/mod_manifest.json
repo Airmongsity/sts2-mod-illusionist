@@ -3,7 +3,7 @@
   "name": "Illusionist (幻术师)",
   "author": "airmongsity",
   "description": "A mirror-and-illusion character. \"Copy\" summons mirror images that replay the first card you play each turn and shatter when you take unblocked damage. ~30 themed cards plus custom relics, potions, and Orobas (Ancient) content. English & 简体中文.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "has_pck": true,
   "has_dll": true,
   "affects_gameplay": true
