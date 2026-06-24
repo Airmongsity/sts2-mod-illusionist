@@ -103,3 +103,27 @@ public static class ArchaicToothTranscendencePatch
         __result[ModelDb.Card<Riposte>().Id] = ModelDb.Card<Sabotage>();
     }
 }
+
+/// <summary>
+/// Base-game Darv ("the Hoarder") offers the Ancient relic DustyTome, whose SetupForPlayer assumes a
+/// vanilla card pool. Against the Illusionist's filtered Necrobinder pool it throws a
+/// NullReferenceException, which escapes Darv.GenerateInitialOptions and HANGS the ancient event
+/// (the player is stuck on a non-functional screen). The sibling ancient relics handle "can't set up
+/// for this player" by returning false (not offered); DustyTome NREs instead. This Harmony Finalizer
+/// swallows the exception so the call returns false — Darv then generates its other options normally
+/// and simply doesn't offer DustyTome.
+/// </summary>
+[HarmonyPatch(typeof(DustyTome), "SetupForPlayer")]
+public static class DustyTomeSetupGuard
+{
+    private static System.Exception? Finalizer(System.Exception? __exception)
+    {
+        if (__exception != null)
+        {
+            MegaCrit.Sts2.Core.Logging.Log.Warn(
+                "[illusionist] Suppressed DustyTome.SetupForPlayer exception so the Darv ancient event does not hang: " + __exception.Message);
+        }
+
+        return null;
+    }
+}

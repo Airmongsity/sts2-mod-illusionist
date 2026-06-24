@@ -66,6 +66,9 @@ public static class Entry
             ModHelper.AddModelToPool<NecrobinderCardPool, PhaseShift>();
             ModHelper.AddModelToPool<NecrobinderCardPool, Aging>();
             ModHelper.AddModelToPool<NecrobinderCardPool, Crescendo>();
+            // Ancient-rarity (excluded from normal rewards). Registered so Darv's DustyTome can find
+            // a valid Ancient card for the Illusionist; without one its picker NRE'd and hung Darv.
+            ModHelper.AddModelToPool<NecrobinderCardPool, PhantasmStorm>();
             // RelicModel.Pool is non-virtual and throws if the relic is in no pool, so the
             // Hallucinatory Lamp MUST be registered into a relic pool or the character-select
             // screen crashes when rendering its description (which made embark fall back to Ironclad).

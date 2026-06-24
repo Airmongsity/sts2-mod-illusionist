@@ -68,8 +68,10 @@
   "SIEGE.description": "Deal {Damage:diff()} damage to ALL enemies for each [gold]mirror image[/gold] you have.",
   "CRESCENDO.title": "Crescendo",
   "CRESCENDO.description": "Lose 4 [gold]Strength[/gold].\nAt the start of each turn, gain 1 [gold]Strength[/gold].",
+  "PHANTASM_STORM.title": "Phantasm Storm",
+  "PHANTASM_STORM.description": "Deal {Damage:diff()} damage to ALL enemies.\n[gold]Copy[/gold] 2.",
   "SABOTAGE.title": "Sabotage",
-  "SABOTAGE.description": "Deal {Damage:diff()} damage.\nIf the enemy intends to attack, deal {Bonus:diff()} extra damage and apply {WeakPower:diff()} [gold]Weak[/gold].",
+  "SABOTAGE.description": "Deal {Damage:diff()} damage.\nApply {WeakPower:diff()} [gold]Weak[/gold].\n[gold]First Move[/gold]: put this card on top of your draw pile.",
   "AGING.title": "Catalyze",
   "AGING.description": "Enemy loses {HpLoss:diff()} HP.\nIf its intent this turn is only Attack and/or Defend, advance it to next turn's intent, discarding the current one."
 }
