@@ -1,0 +1,6 @@
+{
+  "ILLUSION_POTION.title": "幻象药水",
+  "ILLUSION_POTION.description": "[gold]复制[/gold]1。",
+  "FORESIGHT_DRAUGHT.title": "预见药剂",
+  "FORESIGHT_DRAUGHT.description": "抽 {Cards} 张牌。\n本回合[gold]保留[/gold]你的手牌。"
+}

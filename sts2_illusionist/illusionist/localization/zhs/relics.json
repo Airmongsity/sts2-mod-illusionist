@@ -1,0 +1,14 @@
+{
+  "HALLUCINATORY_LAMP.title": "迷幻灯",
+  "HALLUCINATORY_LAMP.description": "每场战斗开始时，[gold]复制[/gold]1。",
+  "PRISM_SHARD.title": "棱镜碎片",
+  "PRISM_SHARD.description": "每当你创建一个[gold]镜像[/gold]时，获得 1 点[gold]格挡[/gold]。",
+  "HEAD_START.title": "抢先",
+  "HEAD_START.description": "你每回合打出的第一张牌花费降低 1 点。",
+  "UNBREAKABLE_MIRROR.title": "不碎之镜",
+  "UNBREAKABLE_MIRROR.description": "每场战斗中，你第一次将要受到未格挡的伤害时，你的[gold]镜像[/gold]不会被摧毁。",
+  "PRISTINE_MIRROR.title": "明镜",
+  "PRISTINE_MIRROR.description": "你的回合结束时，如果你本回合没有受到未格挡的伤害，[gold]复制[/gold]1。",
+  "ANCIENT_LAMP.title": "先古迷幻灯",
+  "ANCIENT_LAMP.description": "每场战斗开始时，[gold]复制[/gold]3。回合开始时，如果你没有[gold]镜像[/gold]，[gold]复制[/gold]1。"
+}

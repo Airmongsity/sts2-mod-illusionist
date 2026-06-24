@@ -1,0 +1,14 @@
+{
+  "MIRROR_IMAGE_POWER.title": "镜像",
+  "MIRROR_IMAGE_POWER.description": "你每回合打出的第一张牌会被[gold]重放[/gold]。当你受到未格挡的伤害时，移除所有镜像。",
+  "MEMORY_POWER.title": "记忆",
+  "MEMORY_POWER.description": "每当你的一个[gold]镜像[/gold]被摧毁时，抽 2 张牌并获得 1 点能量。",
+  "KALEIDOSCOPE_POWER.title": "万花筒",
+  "KALEIDOSCOPE_POWER.description": "你每打出 5 张牌，便创建一个镜像并对所有敌人造成 6 点伤害。",
+  "PHASE_SHIFT_POWER.title": "虚实转换",
+  "PHASE_SHIFT_POWER.description": "你下一次受到未格挡的伤害时，你的镜像不会被摧毁。",
+  "DAZZLE_POWER.title": "炫目",
+  "DAZZLE_POWER.description": "回合开始时，获得等同于你当前镜像数量的格挡。",
+  "CRESCENDO_POWER.title": "渐强",
+  "CRESCENDO_POWER.description": "回合开始时，获得等同于其层数的力量。"
+}

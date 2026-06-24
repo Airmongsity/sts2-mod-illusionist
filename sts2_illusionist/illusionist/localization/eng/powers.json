@@ -1,0 +1,14 @@
+{
+  "MIRROR_IMAGE_POWER.title": "Mirror Image",
+  "MIRROR_IMAGE_POWER.description": "The first card you play each turn is [gold]replayed[/gold]. Taking unblocked damage removes all stacks.",
+  "MEMORY_POWER.title": "Memory",
+  "MEMORY_POWER.description": "Whenever one of your [gold]mirror images[/gold] is destroyed, draw 2 cards and gain 1 energy.",
+  "KALEIDOSCOPE_POWER.title": "Kaleidoscope",
+  "KALEIDOSCOPE_POWER.description": "Every 5 cards you play, create a mirror image and deal 6 damage to all enemies.",
+  "PHASE_SHIFT_POWER.title": "Phase Shift",
+  "PHASE_SHIFT_POWER.description": "The next time you take unblocked damage, your mirror images are not destroyed.",
+  "DAZZLE_POWER.title": "Dazzle",
+  "DAZZLE_POWER.description": "At the start of each turn, gain Block equal to your current number of mirror images.",
+  "CRESCENDO_POWER.title": "Crescendo",
+  "CRESCENDO_POWER.description": "At the start of each turn, gain Strength equal to its stacks."
+}

@@ -1,0 +1,10 @@
+; Engine configuration file.
+; Illusionist (幻术师) STS2 mod.
+
+config_version=5
+
+[application]
+
+config/name="Illusionist"
+config/features=PackedStringArray("4.5", "Forward Plus")
+config/icon="res://icon.svg"

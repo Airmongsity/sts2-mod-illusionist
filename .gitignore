@@ -1,0 +1,31 @@
+# --- Cloned repos (separate projects with their own git history) — do NOT include ---
+/sts2-mod-uploader/
+/Slay-the-Spire-2-mod-dev-skills/
+
+# --- Decompiled game code (MegaCrit IP) — never publish ---
+/.re/
+
+# --- Godot editor binaries (huge, not source) ---
+/Godot_v4.5.1-stable_win64.exe
+/Godot_v4.5.1-stable_win64_console.exe
+
+# --- Assistant memory index (not part of the mod) ---
+/MEMORY.md
+
+# --- Logs ---
+/logs/
+
+# --- Godot / .NET build caches & outputs ---
+.godot/
+.build_output/
+bin/
+obj/
+/sts2_illusionist/build/
+
+# --- Steam Workshop upload artifacts (built binaries + item id) ---
+/illusionist-workshop/content/
+/illusionist-workshop/mod_id.txt
+
+# --- OS / editor cruft ---
+.DS_Store
+Thumbs.db
