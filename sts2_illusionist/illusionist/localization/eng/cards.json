@@ -18,7 +18,7 @@
   "RIPOSTE.title": "Riposte",
   "RIPOSTE.description": "Deal {Damage:diff()} damage.\nIf the enemy intends to attack, deal {Bonus:diff()} extra damage.",
   "DISRUPT.title": "Disrupt",
-  "DISRUPT.description": "Gain {Block:diff()} [gold]Block[/gold].\nApply {FrailPower:diff()} [gold]Frail[/gold].",
+  "DISRUPT.description": "Gain {Block:diff()} [gold]Block[/gold].\nApply {WeakPower:diff()} [gold]Weak[/gold].",
   "OBSCURE.title": "Obscure",
   "OBSCURE.description": "Gain {Block:diff()} [gold]Block[/gold].\nIf no enemy intends to attack, draw 2 cards.",
   "DETONATE.title": "Detonate",

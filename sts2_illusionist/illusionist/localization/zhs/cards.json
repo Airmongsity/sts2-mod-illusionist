@@ -18,7 +18,7 @@
   "RIPOSTE.title": "反击",
   "RIPOSTE.description": "造成 {Damage:diff()} 点伤害。\n如果敌人意图攻击，则额外造成 {Bonus:diff()} 点伤害。",
   "DISRUPT.title": "干扰",
-  "DISRUPT.description": "获得 {Block:diff()} 点[gold]格挡[/gold]。\n给予 {FrailPower:diff()} 层[gold]脆弱[/gold]。",
+  "DISRUPT.description": "获得 {Block:diff()} 点[gold]格挡[/gold]。\n给予 {WeakPower:diff()} 层[gold]虚弱[/gold]。",
   "OBSCURE.title": "遮蔽",
   "OBSCURE.description": "获得 {Block:diff()} 点[gold]格挡[/gold]。\n如果没有敌人意图攻击，则抽 2 张牌。",
   "DETONATE.title": "引爆",

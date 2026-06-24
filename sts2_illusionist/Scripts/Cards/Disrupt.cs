@@ -16,8 +16,8 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 干扰 (Disrupt) — 1 cost Skill, Basic (starter). Targets an enemy.
-/// Gain 6 Block and apply 1 Frail (脆弱: the enemy gains 25% less Block).
-/// Upgraded: 8 Block / 2 Frail.
+/// Gain 6 Block and apply 1 Weak (虚弱: the enemy deals 25% less attack damage).
+/// Upgraded: 8 Block / 2 Weak.
 /// </summary>
 public sealed class Disrupt : CardModel
 {
@@ -25,13 +25,13 @@ public sealed class Disrupt : CardModel
 
     public override bool GainsBlock => true;
 
-    // Block tip comes from GainsBlock; the Frail power needs its tip added explicitly (base-game Bash pattern).
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { HoverTipFactory.FromPower<FrailPower>() };
+    // Block tip comes from GainsBlock; the Weak power needs its tip added explicitly (base-game Bash pattern).
+    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { HoverTipFactory.FromPower<WeakPower>() };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
         new BlockVar(6m, ValueProp.Move),
-        new PowerVar<FrailPower>(1m),
+        new PowerVar<WeakPower>(1m),
     };
 
     public Disrupt()
@@ -44,12 +44,12 @@ public sealed class Disrupt : CardModel
         ArgumentNullException.ThrowIfNull(cardPlay.Target, "cardPlay.Target");
 
         await CreatureCmd.GainBlock(base.Owner.Creature, base.DynamicVars.Block, cardPlay);
-        await PowerCmd.Apply<FrailPower>(choiceContext, cardPlay.Target, base.DynamicVars["FrailPower"].BaseValue, base.Owner.Creature, this);
+        await PowerCmd.Apply<WeakPower>(choiceContext, cardPlay.Target, base.DynamicVars.Weak.BaseValue, base.Owner.Creature, this);
     }
 
     protected override void OnUpgrade()
     {
         base.DynamicVars.Block.UpgradeValueBy(2m);
-        base.DynamicVars["FrailPower"].UpgradeValueBy(1m);
+        base.DynamicVars.Weak.UpgradeValueBy(1m);
     }
 }

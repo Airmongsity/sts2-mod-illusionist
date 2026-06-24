@@ -57,6 +57,24 @@ public static class NecrobinderPotionPoolPatch
 }
 
 /// <summary>
+/// NecrobinderPotionPool.GetUnlockedPotions returns GenerateAllPotions() DIRECTLY (the 3 base
+/// Necrobinder potions), bypassing the AllPotions getter — so the filter above never ran for the
+/// combat-reward path (Bone Brew etc. still appeared) and our modded potions never showed up there.
+/// Force it to return only this mod's potions. We deliberately ignore the Necrobinder4Epoch unlock
+/// gate too, since our potions aren't tied to that epoch.
+/// </summary>
+[HarmonyPatch(typeof(NecrobinderPotionPool), nameof(NecrobinderPotionPool.GetUnlockedPotions))]
+public static class NecrobinderPotionPoolUnlockedPatch
+{
+    private static readonly Assembly ModAssembly = typeof(Entry).Assembly;
+
+    private static void Postfix(NecrobinderPotionPool __instance, ref IEnumerable<PotionModel> __result)
+    {
+        __result = __instance.AllPotions.Where(p => p.GetType().Assembly == ModAssembly).ToArray();
+    }
+}
+
+/// <summary>
 /// Teach Touch of Orobas (the Ancient relic that upgrades your starter relic) about the
 /// Illusionist's starter: map HallucinatoryLamp -> AncientLamp. Without this, the base
 /// RefinementUpgrades map has no entry for the Lamp, so taking Touch of Orobas would replace it
