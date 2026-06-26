@@ -16,7 +16,7 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 幻化 (Transmute) — 1 cost Skill, Uncommon, Exhaust (upgraded: pick from 5 instead of 3).
-/// Look at 3 random cards from your discard pile, choose one, then 幻化 a card in your hand into a
+/// Look at 3 random cards from your exhaust pile, choose one, then 幻化 a card in your hand into a
 /// copy of it (carrying that card's upgrades/enchantments). Upgraded: pick from 5. Exhausts itself.
 /// </summary>
 public sealed class Transmute : CardModel
@@ -42,7 +42,7 @@ public sealed class Transmute : CardModel
     {
         Player owner = base.Owner;
 
-        List<CardModel> pool = PileType.Discard.GetPile(owner).Cards.ToList();
+        List<CardModel> pool = PileType.Exhaust.GetPile(owner).Cards.ToList();
         if (pool.Count == 0)
         {
             return;
