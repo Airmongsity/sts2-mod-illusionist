@@ -15,13 +15,15 @@ using Illusionist.Scripts;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 幻化 (Transmute) — 1 cost Skill, Uncommon, Exhaust (upgraded: 0 cost).
-/// Choose a card from your exhaust pile, then 幻化 a card in your hand into a copy of it (carrying
-/// that card's upgrades/enchantments). Pairs with the exhaust-revert mechanic: exhausted cards
-/// become a menu you can pull copies back from. Exhausts itself (feeding future Transmutes).
+/// 幻化 (Transmute) — 1 cost Skill, Uncommon, Exhaust (upgraded: pick from 5 instead of 3).
+/// Look at 3 random cards from your discard pile, choose one, then 幻化 a card in your hand into a
+/// copy of it (carrying that card's upgrades/enchantments). Upgraded: pick from 5. Exhausts itself.
 /// </summary>
 public sealed class Transmute : CardModel
 {
+    private const int BaseChoices = 3;
+    private const int UpgradedChoices = 5;
+
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
@@ -40,27 +42,25 @@ public sealed class Transmute : CardModel
     {
         Player owner = base.Owner;
 
-        CardPile exhaustPile = PileType.Exhaust.GetPile(owner);
-        if (!exhaustPile.Cards.Any())
+        List<CardModel> pool = PileType.Discard.GetPile(owner).Cards.ToList();
+        if (pool.Count == 0)
         {
             return;
         }
 
-        // 1) Choose a card from the exhaust pile.
-        CardModel? chosen = (await CardSelectCmd.FromCombatPile(
-            choiceContext, exhaustPile, owner,
+        // 1) Offer N random cards from the discard pile (seeded shuffle), and pick one.
+        owner.RunState.Rng.CombatCardSelection.Shuffle(pool);
+        List<CardModel> choices = pool.Take(IsUpgraded ? UpgradedChoices : BaseChoices).ToList();
+
+        CardModel? chosen = (await CardSelectCmd.FromSimpleGrid(
+            choiceContext, choices, owner,
             new CardSelectorPrefs(new LocString("cards", "TRANSMUTE.selectionScreenPrompt"), 1))).FirstOrDefault();
         if (chosen == null)
         {
             return;
         }
 
-        // 2) Choose a hand card and 幻化 it into a copy of the chosen exhausted card.
+        // 2) Choose a hand card and 幻化 it into a copy of the chosen discard-pile card.
         await Transmutation.TransmuteOneFromHand(this, choiceContext, _ => chosen.CreateClone());
-    }
-
-    protected override void OnUpgrade()
-    {
-        base.EnergyCost.UpgradeBy(-1);
     }
 }

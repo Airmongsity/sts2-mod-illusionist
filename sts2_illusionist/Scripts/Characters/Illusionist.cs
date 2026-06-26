@@ -48,14 +48,14 @@ public sealed class Illusionist : CharacterModel
 
     public override IEnumerable<CardModel> StartingDeck => new CardModel[]
     {
-        ModelDb.Card<StrikeNecrobinder>(),
-        ModelDb.Card<StrikeNecrobinder>(),
-        ModelDb.Card<StrikeNecrobinder>(),
-        ModelDb.Card<StrikeNecrobinder>(),
-        ModelDb.Card<DefendNecrobinder>(),
-        ModelDb.Card<DefendNecrobinder>(),
-        ModelDb.Card<DefendNecrobinder>(),
-        ModelDb.Card<DefendNecrobinder>(),
+        ModelDb.Card<IllusionistStrike>(),
+        ModelDb.Card<IllusionistStrike>(),
+        ModelDb.Card<IllusionistStrike>(),
+        ModelDb.Card<IllusionistStrike>(),
+        ModelDb.Card<IllusionistDefend>(),
+        ModelDb.Card<IllusionistDefend>(),
+        ModelDb.Card<IllusionistDefend>(),
+        ModelDb.Card<IllusionistDefend>(),
         ModelDb.Card<Riposte>(),
         ModelDb.Card<Disrupt>(),
     };

@@ -16,8 +16,8 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 重斩击 (Heavy Slash) — 3 cost Attack, Uncommon.
-/// Deal 18 damage and gain 1 Frail (on yourself). 先机 (First Move): if this is the first card you
-/// play this turn, gain 1 energy. Upgraded: 26 damage (still gains the Frail).
+/// Deal 22 damage and gain 1 Frail (on yourself). 先机 (First Move): if this is the first card you
+/// play this turn, gain 1 energy. Upgraded: 30 damage (still gains the Frail).
 /// </summary>
 public sealed class HeavySlash : CardModel
 {
@@ -31,7 +31,7 @@ public sealed class HeavySlash : CardModel
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(18m, ValueProp.Move),
+        new DamageVar(22m, ValueProp.Move),
     };
 
     public HeavySlash()

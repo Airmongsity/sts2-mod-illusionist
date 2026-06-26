@@ -1,6 +1,6 @@
 using Godot;
 using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Models.Cards;
+using Illusionist.Scripts.Cards;
 
 // Namespace is the parent Illusionist.Scripts (not .Pools) so every card in Illusionist.Scripts.Cards
 // resolves IllusionistCardPool via its enclosing namespace — no extra using per card file.
@@ -29,7 +29,7 @@ public sealed class IllusionistCardPool : CardPoolModel
 
     protected override CardModel[] GenerateAllCards() => new CardModel[]
     {
-        ModelDb.Card<StrikeNecrobinder>(),
-        ModelDb.Card<DefendNecrobinder>(),
+        ModelDb.Card<IllusionistStrike>(),
+        ModelDb.Card<IllusionistDefend>(),
     };
 }
