@@ -35,54 +35,63 @@ public static class Entry
 
         try
         {
-            ModHelper.AddModelToPool<NecrobinderCardPool, Riposte>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Disrupt>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Reversal>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Counter>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Blind>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Foresight>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, MirrorImage>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Obscure>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Detonate>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Siphon>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, SilverLining>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Illusion>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Memory>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Ambush>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Echo>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Dim>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Conscript>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, HeavySlash>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, FateLoom>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Reshape>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Flicker>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Daze>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, LastStand>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Disillusion>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Dazzle>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Siege>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Unveil>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Kaleidoscope>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, PhaseShift>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Aging>();
-            ModHelper.AddModelToPool<NecrobinderCardPool, Crescendo>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Riposte>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Disrupt>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Reversal>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Counter>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Blind>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Foresight>();
+            ModHelper.AddModelToPool<IllusionistCardPool, MirrorImage>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Obscure>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Detonate>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Siphon>();
+            ModHelper.AddModelToPool<IllusionistCardPool, SilverLining>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Illusion>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Memory>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Ambush>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Echo>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Dim>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Conscript>();
+            ModHelper.AddModelToPool<IllusionistCardPool, HeavySlash>();
+            ModHelper.AddModelToPool<IllusionistCardPool, FateLoom>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Reshape>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Flicker>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Daze>();
+            ModHelper.AddModelToPool<IllusionistCardPool, LastStand>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Disillusion>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Dazzle>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Siege>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Unveil>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Kaleidoscope>();
+            ModHelper.AddModelToPool<IllusionistCardPool, PhaseShift>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Aging>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Crescendo>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Provoke>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Rekindle>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Encore>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Transmute>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Fluxweave>();
+            ModHelper.AddModelToPool<IllusionistCardPool, ShiftingBlade>();
+            ModHelper.AddModelToPool<IllusionistCardPool, MirrorWard>();
+            ModHelper.AddModelToPool<IllusionistCardPool, PhantomBlast>();
+            ModHelper.AddModelToPool<IllusionistCardPool, MyriadFaces>();
             // Ancient-rarity (excluded from normal rewards). Registered so Darv's DustyTome can find
             // a valid Ancient card for the Illusionist; without one its picker NRE'd and hung Darv.
-            ModHelper.AddModelToPool<NecrobinderCardPool, PhantasmStorm>();
+            ModHelper.AddModelToPool<IllusionistCardPool, PhantasmStorm>();
             // RelicModel.Pool is non-virtual and throws if the relic is in no pool, so the
             // Hallucinatory Lamp MUST be registered into a relic pool or the character-select
             // screen crashes when rendering its description (which made embark fall back to Ironclad).
-            ModHelper.AddModelToPool<NecrobinderPotionPool, IllusionPotion>();
-            ModHelper.AddModelToPool<NecrobinderPotionPool, ForesightDraught>();
-            ModHelper.AddModelToPool<NecrobinderRelicPool, HallucinatoryLamp>();
-            ModHelper.AddModelToPool<NecrobinderRelicPool, PrismShard>();
-            ModHelper.AddModelToPool<NecrobinderRelicPool, HeadStart>();
-            ModHelper.AddModelToPool<NecrobinderRelicPool, UnbreakableMirror>();
-            ModHelper.AddModelToPool<NecrobinderRelicPool, PristineMirror>();
+            ModHelper.AddModelToPool<IllusionistPotionPool, IllusionPotion>();
+            ModHelper.AddModelToPool<IllusionistPotionPool, ForesightDraught>();
+            ModHelper.AddModelToPool<IllusionistRelicPool, HallucinatoryLamp>();
+            ModHelper.AddModelToPool<IllusionistRelicPool, PrismShard>();
+            ModHelper.AddModelToPool<IllusionistRelicPool, HeadStart>();
+            ModHelper.AddModelToPool<IllusionistRelicPool, UnbreakableMirror>();
+            ModHelper.AddModelToPool<IllusionistRelicPool, PristineMirror>();
             // AncientLamp is only obtained via the Touch of Orobas transform, never a reward (Starter
             // rarity is excluded from reward rolls), but it MUST be in a pool or RelicModel.Pool (a
             // non-virtual .First() lookup) throws when its description renders.
-            ModHelper.AddModelToPool<NecrobinderRelicPool, AncientLamp>();
+            ModHelper.AddModelToPool<IllusionistRelicPool, AncientLamp>();
             Log.Info($"[{ModId}] Registered Reversal + Counter (cards) and HallucinatoryLamp (relic) into Necrobinder pools.");
         }
         catch (Exception ex)

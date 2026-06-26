@@ -19,7 +19,7 @@ namespace Illusionist.Scripts.Cards;
 /// </summary>
 public sealed class Reshape : CardModel
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<NecrobinderCardPool>();
+    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
 

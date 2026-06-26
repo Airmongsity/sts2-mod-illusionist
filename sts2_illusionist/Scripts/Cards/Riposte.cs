@@ -21,7 +21,7 @@ namespace Illusionist.Scripts.Cards;
 /// </summary>
 public sealed class Riposte : CardModel
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<NecrobinderCardPool>();
+    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

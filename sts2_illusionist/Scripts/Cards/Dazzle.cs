@@ -17,7 +17,7 @@ namespace Illusionist.Scripts.Cards;
 /// </summary>
 public sealed class Dazzle : CardModel
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<NecrobinderCardPool>();
+    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     // This power grants Block at the start of each turn (not on play), so don't flag GainsBlock —
     // add the Block tip explicitly, plus the mirror-image (复制品) tip it references.

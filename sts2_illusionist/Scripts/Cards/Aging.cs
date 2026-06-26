@@ -28,7 +28,7 @@ namespace Illusionist.Scripts.Cards;
 /// </summary>
 public sealed class Aging : CardModel
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<NecrobinderCardPool>();
+    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     // Retain: advancing/affecting an enemy's intent is situational, so let the player hold it.
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Retain };

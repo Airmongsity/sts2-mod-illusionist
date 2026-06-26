@@ -17,7 +17,7 @@ namespace Illusionist.Scripts.Cards;
 /// </summary>
 public sealed class Kaleidoscope : CardModel
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<NecrobinderCardPool>();
+    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.Copy, IllusionHoverTips.CopyToken };
 

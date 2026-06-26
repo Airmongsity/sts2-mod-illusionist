@@ -12,21 +12,21 @@ using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 抗衡 (Counter) — 1 cost Attack.
-/// Deal damage equal to the target's current attack intent, then end your turn.
-/// Upgraded: does NOT end the current turn.
+/// 抗衡 (Counter) — 2 cost Attack, Rare, Exhaust + Ethereal (upgraded: loses Ethereal).
+/// Deal damage equal to the target's current attack intent. Heavily gated: Exhaust makes it a
+/// one-shot (no Encore loop), and Ethereal means you must play it the turn you draw it or it
+/// vanishes. Upgrading removes Ethereal so you can hold it for the right (inflated) telegraph.
 /// </summary>
 public sealed class Counter : CardModel
 {
-    // Belong to the Necrobinder pool explicitly, so CardModel.Pool never throws even if
-    // pool registration (ModHelper.AddModelToPool) did not run.
-    public override CardPoolModel Pool => ModelDb.CardPool<NecrobinderCardPool>();
+    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    // Retain: this card only pays off when the enemy intends to attack, so let the player hold it.
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Retain };
+    // Exhaust (one-shot, can't be recurred via discard) + Ethereal (use it this turn or lose it).
+    // Upgrade strips Ethereal.
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust, CardKeyword.Ethereal };
 
     public Counter()
-        : base(1, CardType.Attack, CardRarity.Rare, TargetType.AnyEnemy)
+        : base(2, CardType.Attack, CardRarity.Rare, TargetType.AnyEnemy)
     {
     }
 
@@ -61,11 +61,11 @@ public sealed class Counter : CardModel
                     .Execute(choiceContext);
             }
         }
+    }
 
-        // Upgrade removes the "end your turn" drawback.
-        if (!IsUpgraded)
-        {
-            PlayerCmd.EndTurn(base.Owner, canBackOut: false);
-        }
+    protected override void OnUpgrade()
+    {
+        // Lose Ethereal so the upgraded Counter can be held across turns (Exhaust still applies).
+        RemoveKeyword(CardKeyword.Ethereal);
     }
 }

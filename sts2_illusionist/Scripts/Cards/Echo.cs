@@ -17,7 +17,7 @@ namespace Illusionist.Scripts.Cards;
 /// </summary>
 public sealed class Echo : CardModel
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<NecrobinderCardPool>();
+    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
 

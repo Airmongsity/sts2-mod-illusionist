@@ -18,7 +18,7 @@ namespace Illusionist.Scripts.Cards;
 /// </summary>
 public sealed class Crescendo : CardModel
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<NecrobinderCardPool>();
+    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     // References Strength — surface its tip (base-game Bash pattern).
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { HoverTipFactory.FromPower<StrengthPower>() };

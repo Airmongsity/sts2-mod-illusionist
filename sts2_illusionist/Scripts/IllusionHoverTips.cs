@@ -41,4 +41,12 @@ public static class IllusionHoverTips
     public static IHoverTip FirstMove => new HoverTip(
         new LocString("cards", "FIRST_MOVE.title"),
         new LocString("cards", "FIRST_MOVE.description"));
+
+    /// <summary>
+    /// "Transmute" (幻化) — temporarily transform a card until end of turn; if it isn't played it
+    /// reverts to its original form. Loc: TRANSMUTE_TIP.title / TRANSMUTE_TIP.description in cards.json.
+    /// </summary>
+    public static IHoverTip Transmute => new HoverTip(
+        new LocString("cards", "TRANSMUTE_TIP.title"),
+        new LocString("cards", "TRANSMUTE_TIP.description"));
 }

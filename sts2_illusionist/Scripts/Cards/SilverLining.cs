@@ -17,7 +17,7 @@ namespace Illusionist.Scripts.Cards;
 /// </summary>
 public sealed class SilverLining : CardModel
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<NecrobinderCardPool>();
+    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public SilverLining()
         : base(0, CardType.Skill, CardRarity.Common, TargetType.Self)

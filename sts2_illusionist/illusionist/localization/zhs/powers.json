@@ -10,5 +10,13 @@
   "DAZZLE_POWER.title": "炫目",
   "DAZZLE_POWER.description": "回合开始时，获得等同于你当前镜像数量的格挡。",
   "CRESCENDO_POWER.title": "渐强",
-  "CRESCENDO_POWER.description": "回合开始时，获得等同于其层数的力量。"
+  "CRESCENDO_POWER.description": "回合开始时，获得等同于其层数的力量。",
+  "REKINDLE_POWER.title": "重燃",
+  "REKINDLE_POWER.description": "在你的下个回合开始时，每层[gold]复制[/gold]一个镜像，然后消失。",
+  "ENCORE_POWER.title": "返场",
+  "ENCORE_POWER.description": "你的回合结束时，将你弃牌堆中随机一张带[gold]保留[/gold]的牌放入你的手牌。",
+  "TRANSMUTE_POWER.title": "幻化",
+  "TRANSMUTE_POWER.description": "回合结束时，每张被幻化的牌将[gold]变化[/gold]为它前一次[gold]变化[/gold]前的牌。",
+  "FLUXWEAVE_POWER.title": "流变",
+  "FLUXWEAVE_POWER.description": "每当你变化或幻化一张牌时，抽 1 张牌。"
 }

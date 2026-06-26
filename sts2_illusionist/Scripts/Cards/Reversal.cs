@@ -35,7 +35,7 @@ public sealed class Reversal : CardModel
 {
     // Belong to the Necrobinder pool explicitly, so CardModel.Pool never throws even if
     // pool registration (ModHelper.AddModelToPool) did not run.
-    public override CardPoolModel Pool => ModelDb.CardPool<NecrobinderCardPool>();
+    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     // Retain: intent-manipulation is situational, so let the player hold it until it's worthwhile.
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Retain };

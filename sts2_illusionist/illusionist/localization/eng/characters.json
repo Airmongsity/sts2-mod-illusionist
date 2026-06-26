@@ -1,5 +1,13 @@
 {
-  "NECROBINDER.title": "Illusionist",
-  "NECROBINDER.titleObject": "Illusionist",
-  "NECROBINDER.description": "A trickster who bends enemy intent to their will. (Reskins the Necrobinder slot — art is a work in progress.)"
+  "ILLUSIONIST.title": "Illusionist",
+  "ILLUSIONIST.titleObject": "Illusionist",
+  "ILLUSIONIST.description": "A trickster of mirrors and illusions. Copy summons mirror images that replay your first card each turn and shatter when you take unblocked damage; read and reflect enemy intent; and transmute your own cards on the fly.",
+  "ILLUSIONIST.pronounSubject": "she",
+  "ILLUSIONIST.pronounObject": "her",
+  "ILLUSIONIST.pronounPossessive": "hers",
+  "ILLUSIONIST.possessiveAdjective": "her",
+  "ILLUSIONIST.cardsModifierTitle": "Illusionist",
+  "ILLUSIONIST.cardsModifierDescription": "Adds the Illusionist's cards to the pool.",
+  "ILLUSIONIST.eventDeathPrevention": "The Illusionist slips behind a mirror and refuses to fade.",
+  "ILLUSIONIST.unlockText": "Unlocked from the start."
 }

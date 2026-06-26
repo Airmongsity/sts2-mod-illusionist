@@ -1,0 +1,13 @@
+{
+  "ILLUSIONIST.title": "幻术师",
+  "ILLUSIONIST.titleObject": "幻术师",
+  "ILLUSIONIST.description": "操弄镜像与幻象的诡术师。复制可召唤镜像，重放你每回合的第一张牌，并在你受到未格挡的伤害时破碎；解读并反制敌人的意图；随心幻化你自己的牌。",
+  "ILLUSIONIST.pronounSubject": "她",
+  "ILLUSIONIST.pronounObject": "她",
+  "ILLUSIONIST.pronounPossessive": "她的",
+  "ILLUSIONIST.possessiveAdjective": "她的",
+  "ILLUSIONIST.cardsModifierTitle": "幻术师",
+  "ILLUSIONIST.cardsModifierDescription": "将幻术师的牌加入卡池。",
+  "ILLUSIONIST.eventDeathPrevention": "幻术师隐入镜中，拒绝消逝。",
+  "ILLUSIONIST.unlockText": "初始即解锁。"
+}

@@ -11,11 +11,11 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 幻灭 (Disillusion) — 1 cost Skill, Common (upgraded: gains Retain).
-/// Choose up to 2 cards in your hand and Exhaust them.
+/// Choose two cards in your hand and Exhaust them.
 /// </summary>
 public sealed class Disillusion : CardModel
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<NecrobinderCardPool>();
+    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public Disillusion()
         : base(1, CardType.Skill, CardRarity.Common, TargetType.Self)
@@ -24,9 +24,9 @@ public sealed class Disillusion : CardModel
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        // Choose up to 2 (min 0, max 2) cards from hand to exhaust.
+        // Choose two cards from hand to exhaust (auto-selects all if you have fewer than two).
         IEnumerable<CardModel> selected = await CardSelectCmd.FromHand(
-            choiceContext, base.Owner, new CardSelectorPrefs(base.SelectionScreenPrompt, 0, 2), null, this);
+            choiceContext, base.Owner, new CardSelectorPrefs(base.SelectionScreenPrompt, 2), null, this);
         foreach (CardModel card in selected)
         {
             await CardCmd.Exhaust(choiceContext, card);

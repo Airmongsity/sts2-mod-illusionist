@@ -19,7 +19,7 @@ namespace Illusionist.Scripts.Cards;
 /// </summary>
 public sealed class Blind : CardModel
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<NecrobinderCardPool>();
+    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     // Mirrors base-game Bash: a card that applies a power adds that power's hover-tip explicitly.
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { HoverTipFactory.FromPower<WeakPower>() };

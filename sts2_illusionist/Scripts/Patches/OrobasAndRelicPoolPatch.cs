@@ -1,78 +1,11 @@
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Models.PotionPools;
-using MegaCrit.Sts2.Core.Models.RelicPools;
 using MegaCrit.Sts2.Core.Models.Relics;
 using Illusionist.Scripts.Cards;
 using Illusionist.Scripts.Relics;
 
 namespace Illusionist.Scripts.Patches;
-
-/// <summary>
-/// Filter the Necrobinder relic pool down to the Illusionist's relics (parallel to the card-pool
-/// patch). The base Necrobinder relics are Osty/Doom/Soul-themed and mostly dead for us; we keep
-/// only the two that work generically (Bookmark, Ivory Tile) plus everything from this mod's
-/// assembly. AllRelicIds / GetUnlockedRelics both derive from AllRelics, so they are filtered too.
-/// </summary>
-[HarmonyPatch(typeof(RelicPoolModel), nameof(RelicPoolModel.AllRelics), MethodType.Getter)]
-public static class NecrobinderRelicPoolPatch
-{
-    private static readonly Assembly ModAssembly = typeof(Entry).Assembly;
-
-    private static void Postfix(RelicPoolModel __instance, ref IEnumerable<RelicModel> __result)
-    {
-        if (__instance is not NecrobinderRelicPool)
-        {
-            return;
-        }
-
-        __result = __result
-            .Where(r => r.GetType().Assembly == ModAssembly || r is Bookmark || r is IvoryTile)
-            .ToArray();
-    }
-}
-
-/// <summary>
-/// Filter the Necrobinder potion pool down to the Illusionist's potions (parallel to the relic
-/// pool). The base Necrobinder character potions (Bone Brew, Pot of Ghouls, Potion of Doom) are
-/// Summon/Soul/Doom-themed and dead for us; drop them, keep only this mod's potions.
-/// </summary>
-[HarmonyPatch(typeof(PotionPoolModel), nameof(PotionPoolModel.AllPotions), MethodType.Getter)]
-public static class NecrobinderPotionPoolPatch
-{
-    private static readonly Assembly ModAssembly = typeof(Entry).Assembly;
-
-    private static void Postfix(PotionPoolModel __instance, ref IEnumerable<PotionModel> __result)
-    {
-        if (__instance is not NecrobinderPotionPool)
-        {
-            return;
-        }
-
-        __result = __result.Where(p => p.GetType().Assembly == ModAssembly).ToArray();
-    }
-}
-
-/// <summary>
-/// NecrobinderPotionPool.GetUnlockedPotions returns GenerateAllPotions() DIRECTLY (the 3 base
-/// Necrobinder potions), bypassing the AllPotions getter — so the filter above never ran for the
-/// combat-reward path (Bone Brew etc. still appeared) and our modded potions never showed up there.
-/// Force it to return only this mod's potions. We deliberately ignore the Necrobinder4Epoch unlock
-/// gate too, since our potions aren't tied to that epoch.
-/// </summary>
-[HarmonyPatch(typeof(NecrobinderPotionPool), nameof(NecrobinderPotionPool.GetUnlockedPotions))]
-public static class NecrobinderPotionPoolUnlockedPatch
-{
-    private static readonly Assembly ModAssembly = typeof(Entry).Assembly;
-
-    private static void Postfix(NecrobinderPotionPool __instance, ref IEnumerable<PotionModel> __result)
-    {
-        __result = __instance.AllPotions.Where(p => p.GetType().Assembly == ModAssembly).ToArray();
-    }
-}
 
 /// <summary>
 /// Teach Touch of Orobas (the Ancient relic that upgrades your starter relic) about the
@@ -105,13 +38,11 @@ public static class ArchaicToothTranscendencePatch
 }
 
 /// <summary>
-/// Base-game Darv ("the Hoarder") offers the Ancient relic DustyTome, whose SetupForPlayer assumes a
-/// vanilla card pool. Against the Illusionist's filtered Necrobinder pool it throws a
-/// NullReferenceException, which escapes Darv.GenerateInitialOptions and HANGS the ancient event
-/// (the player is stuck on a non-functional screen). The sibling ancient relics handle "can't set up
-/// for this player" by returning false (not offered); DustyTome NREs instead. This Harmony Finalizer
-/// swallows the exception so the call returns false — Darv then generates its other options normally
-/// and simply doesn't offer DustyTome.
+/// Base-game Darv ("the Hoarder") offers the Ancient relic DustyTome, whose SetupForPlayer picks a
+/// random Ancient card from the player's pool. The Illusionist pool provides Ancient cards (Phantasm
+/// Storm, Sabotage), so it should set up fine — but we keep this Finalizer as a safety net: if it
+/// ever throws, swallow the exception so the call returns false and Darv simply doesn't offer
+/// DustyTome instead of HANGING the ancient event.
 /// </summary>
 [HarmonyPatch(typeof(DustyTome), "SetupForPlayer")]
 public static class DustyTomeSetupGuard

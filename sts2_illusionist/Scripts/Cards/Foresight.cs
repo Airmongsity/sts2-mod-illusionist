@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Illusionist.Scripts;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
-using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
@@ -15,35 +13,30 @@ using MegaCrit.Sts2.Core.ValueProps;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 预判 (Foresight) — 3 cost Skill, Uncommon (upgraded: 2 cost). Targets an enemy.
-/// 先机 (First Move): if this is the first card you play this turn, gain Block equal to the
-/// selected enemy's current attack intent damage.
+/// 预见 (Foresight) — 2 cost Skill, Uncommon, Exhaust. Gain Block equal to the selected enemy's
+/// current total attack-intent damage. Upgraded: gains Retain.
+///
+/// The First-Move gate was removed so Foresight slots into the intent-reflect combo: play 挑衅
+/// (Provoke) to inflate an enemy's attack with temporary Strength, then Foresight blocks the
+/// inflated swing while 抗衡 (Counter) reflects it. (Provoke is your first card those turns, which
+/// would have disabled a First-Move version.)
 /// </summary>
 public sealed class Foresight : CardModel
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<NecrobinderCardPool>();
+    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
 
-    // Retain: value depends on the enemy's attack intent, so let the player hold it for the moment.
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Retain };
-
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.FirstMove };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
 
     public Foresight()
-        : base(3, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
+        : base(2, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay.Target, "cardPlay.Target");
-
-        // 先机: only the first card played this turn grants the block.
-        if (!FirstMove.IsActive(base.Owner.Creature))
-        {
-            return;
-        }
 
         int block = GetIncomingAttackDamage(cardPlay.Target);
         if (block > 0)
@@ -54,7 +47,8 @@ public sealed class Foresight : CardModel
 
     protected override void OnUpgrade()
     {
-        base.EnergyCost.UpgradeBy(-1);
+        // Retain so the player can hold it until the enemy reveals (or you inflate) an attack intent.
+        AddKeyword(CardKeyword.Retain);
     }
 
     /// <summary>Total damage this enemy's current attack intent would deal (0 if not attacking).</summary>
