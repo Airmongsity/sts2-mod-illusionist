@@ -21,6 +21,9 @@ public sealed class IllusionistStrike : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
+    // The Strike tag is how the game/relics identify a starter Strike (Leafy Poultice, Hellraiser, …).
+    protected override HashSet<CardTag> CanonicalTags => new HashSet<CardTag> { CardTag.Strike };
+
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
         new DamageVar(6m, ValueProp.Move),

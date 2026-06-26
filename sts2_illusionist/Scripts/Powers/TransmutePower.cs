@@ -6,27 +6,33 @@ using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
+using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Nodes.CommonUi;
 
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
 /// 幻化 (Transmute) revert power — maintains, for each transmuted card, a STACK of its previous
-/// forms, and pops ONE layer at the end of each of your turns. So a single 幻化 reverts at end of
-/// turn (as before), but chained 幻化 on the same card peel back one step per turn:
+/// forms, and pops ONE layer at the START of each of your turns (after the hand is drawn, before you
+/// can play). A transmuted card therefore stays transmuted through the enemy's turn and unwinds one
+/// step when your next turn begins — so a single 幻化 lasts until your next turn, and chained 幻化 on
+/// the same card peel back one step per turn:
 ///
-/// <para>Turn 1: 打击 → Flicker → 防御 (stack under 防御 = [打击, Flicker]). End of turn 1: 防御 → Flicker.
-/// End of turn 2: Flicker → 打击. The card "remembers" every form and unwinds one per turn.</para>
+/// <para>Turn 1: 打击 → Flicker → 防御 (stack under 防御 = [打击, Flicker]). Start of turn 2: 防御 → Flicker.
+/// Start of turn 3: Flicker → 打击. The card "remembers" every form and unwinds one per turn.</para>
 ///
-/// Single-instance, one shared set of chains per combat; only ticks at the end of the player's own
-/// turn. A transmuted card keeps unwinding wherever it lives — hand, draw, discard, AND the EXHAUST
-/// pile (its <see cref="CardModel.Pile"/> is non-null there). Only a card truly removed from combat
-/// (<see cref="CardModel.Pile"/> == null) drops its chain. So transmuting e.g. 彼岸咆哮, then
-/// exhausting the new form, reverts it to 彼岸咆哮 in the exhaust pile at end of turn — and its
-/// "while in exhaust pile" effect fires next turn.
+/// Reverting at turn START (not end) avoids any race between the revert and the enemy acting — most
+/// importantly, Improvise's auto-played card resolves fully and nothing reverts mid-enemy-turn.
+///
+/// Single-instance, one shared set of chains per combat. A transmuted card keeps unwinding wherever
+/// it lives — hand, draw, discard, AND the EXHAUST pile (its <see cref="CardModel.Pile"/> is non-null
+/// there). Only a card truly removed from combat (<see cref="CardModel.Pile"/> == null) drops its
+/// chain. So transmuting e.g. 彼岸咆哮, then exhausting the new form, reverts it to 彼岸咆哮 in the
+/// exhaust pile at the start of your next turn — and its "while in exhaust pile" effect keeps firing.
 /// </summary>
 public sealed class TransmutePower : PowerModel
 {
@@ -79,16 +85,39 @@ public sealed class TransmutePower : PowerModel
         }
     }
 
-    public override async Task AfterSideTurnEnd(PlayerChoiceContext choiceContext, CombatSide side, IEnumerable<Creature> participants)
+    /// <summary>
+    /// The card <paramref name="card"/> will revert into at the end of this turn (the top of its
+    /// chain's predecessor stack), or null if it isn't a transmuted card. Used to show players what a
+    /// transmuted card reverts to.
+    /// </summary>
+    public CardModel? GetRevertTarget(CardModel card)
     {
-        // Only at the end of the player's own turn (the owner is among the side that just ended).
-        if (!participants.Contains(base.Owner))
+        Data data = GetInternalData<Data>();
+        Chain? chain = data.Chains.FirstOrDefault(ch => ch.Current == card);
+        return (chain != null && chain.Predecessors.Count > 0) ? chain.Predecessors[^1] : null;
+    }
+
+    public override async Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
+    {
+        // Revert at the START of the owner's turn — after the hand is drawn, before they can play
+        // (this hook fires immediately after CardPileCmd.Draw in the turn-start sequence). Doing it
+        // here instead of at end-of-turn keeps transmuted cards intact through the enemy's turn, so
+        // there's no race between reverting and the enemy acting — in particular, Improvise's
+        // auto-played card resolves fully on the player's turn and nothing reverts mid-enemy-turn.
+        if (player.Creature != base.Owner)
         {
             return;
         }
 
         Data data = GetInternalData<Data>();
-        int reverted = 0;
+
+        // Collect this turn's one-layer reverts, then transform them in ONE atomic, fully-awaited
+        // batch (the base game's multi-card Transform): all originals are removed and all replacements
+        // added together, with a single combined preview animation. Doing it per-card instead let pile
+        // state drift between the awaited transforms, leaving some reverted cards out of the draw pile
+        // (you'd draw fewer than your draw count next turn).
+        List<CardTransformation> batch = new List<CardTransformation>();
+        List<(Chain chain, CardModel previous)> pending = new List<(Chain, CardModel)>();
 
         foreach (Chain chain in data.Chains.ToList())
         {
@@ -102,37 +131,50 @@ public sealed class TransmutePower : PowerModel
             }
 
             CardModel previous = chain.Predecessors[^1];
-            chain.Predecessors.RemoveAt(chain.Predecessors.Count - 1);
-
-            try
+            if (!chain.Current.IsTransformable || !previous.IsTransformable)
             {
-                if (chain.Current.IsTransformable && previous.IsTransformable)
-                {
-                    await CardCmd.Transform(chain.Current, previous);
-                    chain.Current = previous;
-                    reverted++;
-                }
-                else
-                {
-                    data.Chains.Remove(chain);
-                    continue;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"[illusionist] Transmute: failed to revert one layer: {ex}");
                 data.Chains.Remove(chain);
                 continue;
             }
 
-            // Fully unwound back to the original — chain is done.
-            if (chain.Predecessors.Count == 0)
+            chain.Predecessors.RemoveAt(chain.Predecessors.Count - 1);
+
+            // CRITICAL: revive the predecessor. When this card was first transmuted AWAY,
+            // CardCmd.Transform finished by calling original.RemoveFromState() on it, which set
+            // HasBeenRemovedFromState = true (the card is "gone"). Reverting re-adds that same
+            // instance via Transform's AddInternal, which NEVER clears the flag. A re-added card
+            // with the flag still set is a ghost: CardPileCmd.Add (and therefore Draw) silently
+            // no-ops on it, so if it lands on top of the draw pile, drawing it fails and the whole
+            // draw stalls. Clearing the flag here is exactly how the engine resurrects a card it
+            // previously removed (see RunState.AddCard / ThievingHopper).
+            previous.HasBeenRemovedFromState = false;
+
+            batch.Add(new CardTransformation(chain.Current, previous));
+            pending.Add((chain, previous));
+        }
+
+        if (batch.Count > 0)
+        {
+            try
             {
-                data.Chains.Remove(chain);
+                await CardCmd.Transform(batch, null, CardPreviewStyle.HorizontalLayout);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[illusionist] Transmute: batch revert failed: {ex}");
+            }
+
+            foreach ((Chain chain, CardModel previous) in pending)
+            {
+                chain.Current = previous;
+                if (chain.Predecessors.Count == 0)
+                {
+                    data.Chains.Remove(chain);
+                }
             }
         }
 
-        Log.Info($"[illusionist] Transmute: reverted {reverted} card(s) one layer; {data.Chains.Count} chain(s) remain.");
+        Log.Info($"[illusionist] Transmute: reverted {batch.Count} card(s) one layer; {data.Chains.Count} chain(s) remain.");
 
         // Nothing left to unwind — remove the power so it doesn't linger as an empty status.
         if (data.Chains.Count == 0)

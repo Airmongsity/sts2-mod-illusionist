@@ -16,9 +16,9 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 召唤 (Summon) — 1 cost Skill, Uncommon (upgraded: Innate).
-/// Choose a non-Power card in your draw pile; add a native 呼唤 (Beckon) to your hand, transmuted
-/// into a copy of the chosen card (carrying its upgrades). A temporary copy you play this turn — it
-/// reverts to the Beckon at end of turn (transmute stack), and a held Beckon costs 6 HP. The chosen
+/// Choose a non-Power card in your draw pile; add a native Toxic to your hand, transmuted into a copy
+/// of the chosen card (carrying its upgrades). A temporary copy you play this turn — it reverts to the
+/// Toxic at end of turn (transmute stack), and a held Toxic costs 5 (blockable) HP. The chosen
 /// draw-pile card is left untouched.
 /// </summary>
 public sealed class Summon : CardModel
@@ -28,7 +28,7 @@ public sealed class Summon : CardModel
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.Transmute,
-        HoverTipFactory.FromCard<MegaCrit.Sts2.Core.Models.Cards.Beckon>(),
+        HoverTipFactory.FromCard<MegaCrit.Sts2.Core.Models.Cards.Toxic>(),
     };
 
     public Summon()
@@ -55,9 +55,9 @@ public sealed class Summon : CardModel
             return;
         }
 
-        // 2) Add a native 呼唤 (Beckon) to hand and 幻化 it into a copy of the chosen card.
-        CardModel beckon = base.CardScope!.CreateCard<MegaCrit.Sts2.Core.Models.Cards.Beckon>(owner);
-        CardPileAddResult result = await CardPileCmd.AddGeneratedCardToCombat(beckon, PileType.Hand, owner);
+        // 2) Add a native Toxic to hand and 幻化 it into a copy of the chosen card.
+        CardModel toxic = base.CardScope!.CreateCard<MegaCrit.Sts2.Core.Models.Cards.Toxic>(owner);
+        CardPileAddResult result = await CardPileCmd.AddGeneratedCardToCombat(toxic, PileType.Hand, owner);
         if (result.cardAdded == null)
         {
             return;

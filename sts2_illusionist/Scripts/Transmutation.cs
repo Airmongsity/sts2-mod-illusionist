@@ -70,19 +70,26 @@ public static class Transmutation
             }
 
             revert.RegisterTransmute(original, result.Value.cardAdded);
-            await NotifyTransformed(owner, choiceContext);
+            await NotifyTransformed(owner, choiceContext, result.Value.cardAdded);
         }
     }
 
     /// <summary>
-    /// Call whenever a card is transformed (变化) or transmuted (幻化): if the player has Fluxweave,
-    /// draw. Keeps the "draw on transform" payoff in one place so every transform path triggers it.
+    /// Call whenever a card is transmuted (幻化), passing the resulting (transformed) card. The single
+    /// choke point for transmute payoffs: Fluxweave draws, and Improvise auto-plays the first transmute
+    /// of the turn at a random enemy.
     /// </summary>
-    public static async Task NotifyTransformed(Player player, PlayerChoiceContext choiceContext)
+    public static async Task NotifyTransformed(Player player, PlayerChoiceContext choiceContext, CardModel transformedCard)
     {
         if (player.Creature.GetPower<FluxweavePower>() != null)
         {
             await CardPileCmd.Draw(choiceContext, 1m, player);
+        }
+
+        ImprovisePower? improvise = player.Creature.GetPower<ImprovisePower>();
+        if (improvise != null)
+        {
+            await improvise.OnTransmuted(choiceContext, transformedCard);
         }
     }
 

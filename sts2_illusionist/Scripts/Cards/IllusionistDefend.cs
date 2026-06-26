@@ -21,6 +21,9 @@ public sealed class IllusionistDefend : CardModel
 
     public override bool GainsBlock => true;
 
+    // The Defend tag is how the game/relics identify a starter Defend (Leafy Poultice, …).
+    protected override HashSet<CardTag> CanonicalTags => new HashSet<CardTag> { CardTag.Defend };
+
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
         new BlockVar(5m, ValueProp.Move),

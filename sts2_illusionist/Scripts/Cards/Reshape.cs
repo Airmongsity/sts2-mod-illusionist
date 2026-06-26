@@ -7,15 +7,17 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
-using Illusionist.Scripts;
-using Illusionist.Scripts.Enchantments;
 
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 重塑 (Reshape) — 1 cost Skill, Rare, Exhaust (upgraded: no longer Exhausts).
-/// Give a card in your hand the permanent enchantment "First Move: Replay 1" — that card is
-/// played one extra time whenever it's the first card you play that turn.
+/// 重塑 (Reshape) — 2 cost Skill, Rare, Exhaust (upgraded: no longer Exhausts).
+/// Give a card in your hand permanent <b>Replay</b> (+1 replay count) — it plays one extra time
+/// every time you play it for the rest of combat.
+///
+/// <para>This grants Replay directly via <see cref="CardModel.BaseReplayCount"/> (the same way the
+/// Necrobinder's Transfigure does) rather than applying an enchantment, so it never clobbers an
+/// enchantment the chosen card may already carry.</para>
 /// </summary>
 public sealed class Reshape : CardModel
 {
@@ -23,10 +25,13 @@ public sealed class Reshape : CardModel
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.FirstMove };
+    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    {
+        HoverTipFactory.Static(StaticHoverTip.ReplayStatic),
+    };
 
     public Reshape()
-        : base(1, CardType.Skill, CardRarity.Rare, TargetType.Self)
+        : base(2, CardType.Skill, CardRarity.Rare, TargetType.Self)
     {
     }
 
@@ -36,7 +41,8 @@ public sealed class Reshape : CardModel
             choiceContext, base.Owner, new CardSelectorPrefs(base.SelectionScreenPrompt, 1), null, this);
         foreach (CardModel card in selected)
         {
-            CardCmd.Enchant<FirstMoveReplay>(card, 1m);
+            // Grant Replay without touching any existing enchantment (Transfigure's approach).
+            card.BaseReplayCount++;
         }
     }
 

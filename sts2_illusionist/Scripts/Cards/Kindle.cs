@@ -4,6 +4,7 @@ using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
+using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts;
@@ -26,6 +27,11 @@ public sealed class Kindle : CardModel
         HoverTipFactory.FromCard<DimLamp>(),
     };
 
+    protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
+    {
+        new CardsVar(1),
+    };
+
     public Kindle()
         : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
     {
@@ -33,7 +39,7 @@ public sealed class Kindle : CardModel
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        int count = IsUpgraded ? 2 : 1;
+        int count = base.DynamicVars.Cards.IntValue;
 
         // Add N Dazed to the draw pile, collecting the actual added instances.
         List<CardModel> dazes = new List<CardModel>();
@@ -50,5 +56,10 @@ public sealed class Kindle : CardModel
         // 幻化 each Dazed into a Dim Lamp (reverts back to the Dazed at end of turn via the stack).
         await Transmutation.TransmuteCards(dazes, this, choiceContext,
             original => original.CardScope!.CreateCard<DimLamp>(original.Owner));
+    }
+
+    protected override void OnUpgrade()
+    {
+        base.DynamicVars.Cards.UpgradeValueBy(1m);
     }
 }

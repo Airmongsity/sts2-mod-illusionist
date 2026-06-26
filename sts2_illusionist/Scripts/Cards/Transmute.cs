@@ -8,6 +8,7 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization;
+using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts;
@@ -21,9 +22,6 @@ namespace Illusionist.Scripts.Cards;
 /// </summary>
 public sealed class Transmute : CardModel
 {
-    private const int BaseChoices = 3;
-    private const int UpgradedChoices = 5;
-
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
@@ -31,6 +29,11 @@ public sealed class Transmute : CardModel
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.Transmute,
+    };
+
+    protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
+    {
+        new CardsVar(3),
     };
 
     public Transmute()
@@ -48,9 +51,9 @@ public sealed class Transmute : CardModel
             return;
         }
 
-        // 1) Offer N random cards from the discard pile (seeded shuffle), and pick one.
+        // 1) Offer N random cards from the exhaust pile (seeded shuffle), and pick one.
         owner.RunState.Rng.CombatCardSelection.Shuffle(pool);
-        List<CardModel> choices = pool.Take(IsUpgraded ? UpgradedChoices : BaseChoices).ToList();
+        List<CardModel> choices = pool.Take(base.DynamicVars.Cards.IntValue).ToList();
 
         CardModel? chosen = (await CardSelectCmd.FromSimpleGrid(
             choiceContext, choices, owner,
@@ -60,7 +63,12 @@ public sealed class Transmute : CardModel
             return;
         }
 
-        // 2) Choose a hand card and 幻化 it into a copy of the chosen discard-pile card.
+        // 2) Choose a hand card and 幻化 it into a copy of the chosen exhaust-pile card.
         await Transmutation.TransmuteOneFromHand(this, choiceContext, _ => chosen.CreateClone());
+    }
+
+    protected override void OnUpgrade()
+    {
+        base.DynamicVars.Cards.UpgradeValueBy(2m);
     }
 }

@@ -77,6 +77,7 @@ public static class Entry
             ModHelper.AddModelToPool<IllusionistCardPool, MyriadFaces>();
             ModHelper.AddModelToPool<IllusionistCardPool, Kindle>();
             ModHelper.AddModelToPool<IllusionistCardPool, Summon>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Improvise>();
             // Ancient-rarity (excluded from normal rewards). Registered so Darv's DustyTome can find
             // a valid Ancient card for the Illusionist; without one its picker NRE'd and hung Darv.
             ModHelper.AddModelToPool<IllusionistCardPool, PhantasmStorm>();
