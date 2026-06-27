@@ -31,5 +31,10 @@ public sealed class IllusionistCardPool : CardPoolModel
     {
         ModelDb.Card<IllusionistStrike>(),
         ModelDb.Card<IllusionistDefend>(),
+        // Tokens / Ancient cards that aren't added to the reward pool, but should still appear in the
+        // card compendium (the library shows every card in a pool's AllCards). Their Token/Ancient
+        // rarity keeps them out of all reward rolls.
+        ModelDb.Card<DimLamp>(),
+        ModelDb.Card<Sabotage>(),
     };
 }

@@ -11,13 +11,14 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.ValueProps;
+using Illusionist.Scripts;
 
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 干扰 (Disrupt) — 1 cost Skill, Basic (starter). Targets an enemy.
-/// Gain 6 Block and apply 1 Weak (虚弱: the enemy deals 25% less attack damage).
-/// Upgraded: 8 Block / 2 Weak.
+/// Gain 6 Block and apply 1 Weak (虚弱: the enemy deals 25% less attack damage). If you have no
+/// mirror images, also Copy 2 (so it doubles as your opener for the Mirror system). Upgraded: 8 Block / 2 Weak.
 /// </summary>
 public sealed class Disrupt : CardModel
 {
@@ -25,8 +26,13 @@ public sealed class Disrupt : CardModel
 
     public override bool GainsBlock => true;
 
-    // Block tip comes from GainsBlock; the Weak power needs its tip added explicitly (base-game Bash pattern).
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { HoverTipFactory.FromPower<WeakPower>() };
+    // Block tip comes from GainsBlock; Weak + Copy/the mirror token need their tips added explicitly.
+    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    {
+        HoverTipFactory.FromPower<WeakPower>(),
+        IllusionHoverTips.Copy,
+        IllusionHoverTips.CopyToken,
+    };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
@@ -45,6 +51,12 @@ public sealed class Disrupt : CardModel
 
         await CreatureCmd.GainBlock(base.Owner.Creature, base.DynamicVars.Block, cardPlay);
         await PowerCmd.Apply<WeakPower>(choiceContext, cardPlay.Target, base.DynamicVars.Weak.BaseValue, base.Owner.Creature, this);
+
+        // Kickstart the Mirror system: if you have no mirror images yet, Copy 2.
+        if (Illusionist.Scripts.Monsters.MirrorClone.CountAlive(base.Owner) == 0)
+        {
+            await Illusionist.Scripts.Monsters.MirrorClone.Copy(base.Owner, 2, choiceContext);
+        }
     }
 
     protected override void OnUpgrade()

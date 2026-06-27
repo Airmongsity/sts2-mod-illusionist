@@ -13,15 +13,13 @@ using Illusionist.Scripts.Powers;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 镜像 (Mirror Image) — 1 cost Skill, Uncommon, Exhaust (upgraded: no longer Exhausts).
+/// 镜像 (Mirror Image) — 1 cost Skill, Uncommon (upgraded: 0 cost).
 /// Copy 1 (create a mirror): while a mirror is present, the first card you play each turn is
 /// replayed once. Taking unblocked damage shatters all mirrors. No drawback.
 /// </summary>
 public sealed class MirrorImage : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
-
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
 
     // 复制 (Copy) is our own mechanic, not an engine keyword, so it gets no automatic tooltip —
     // attach them explicitly (like Forge/铸造 has): the Copy action plus the mirror-image entity
@@ -42,6 +40,6 @@ public sealed class MirrorImage : CardModel
 
     protected override void OnUpgrade()
     {
-        RemoveKeyword(CardKeyword.Exhaust);
+        base.EnergyCost.UpgradeBy(-1);
     }
 }

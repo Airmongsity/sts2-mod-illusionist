@@ -13,8 +13,8 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 渐强 (Crescendo) — 1 cost Power, Uncommon (upgraded: 0 cost).
-/// Lose 4 Strength immediately, then gain 1 Strength at the start of each turn (net positive after
-/// 4 turns). Pairs with the Illusionist's other Strength manipulation.
+/// Lose 4 Strength immediately, then gain 2 Strength at the start of each turn (net positive after
+/// 2 turns). Pairs with the Illusionist's other Strength manipulation.
 /// </summary>
 public sealed class Crescendo : CardModel
 {
@@ -32,8 +32,8 @@ public sealed class Crescendo : CardModel
     {
         // Pay 4 Strength up front...
         await PowerCmd.Apply<StrengthPower>(choiceContext, base.Owner.Creature, -4, base.Owner.Creature, this);
-        // ...then regain 1 Strength at the start of each turn (CrescendoPower handles the recurring gain).
-        await PowerCmd.Apply<CrescendoPower>(choiceContext, base.Owner.Creature, 1, base.Owner.Creature, this);
+        // ...then regain 2 Strength at the start of each turn (CrescendoPower handles the recurring gain).
+        await PowerCmd.Apply<CrescendoPower>(choiceContext, base.Owner.Creature, 2, base.Owner.Creature, this);
     }
 
     protected override void OnUpgrade()

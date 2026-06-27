@@ -13,7 +13,7 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 闪烁 (Flicker) — 1 cost Attack, Common.
-/// Deal 8 damage to ALL enemies. Upgraded: 11 damage.
+/// Deal 12 damage to ALL enemies. Upgraded: 16 damage.
 /// </summary>
 public sealed class Flicker : CardModel
 {
@@ -21,7 +21,7 @@ public sealed class Flicker : CardModel
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(8m, ValueProp.Move),
+        new DamageVar(12m, ValueProp.Move),
     };
 
     public Flicker()
@@ -45,6 +45,6 @@ public sealed class Flicker : CardModel
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Damage.UpgradeValueBy(3m);
+        base.DynamicVars.Damage.UpgradeValueBy(4m);
     }
 }

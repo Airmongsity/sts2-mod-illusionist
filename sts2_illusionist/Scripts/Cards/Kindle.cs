@@ -12,10 +12,10 @@ using Illusionist.Scripts;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 点灯 (Kindle) — 1 cost Skill, Uncommon (upgraded: 2 instead of 1).
-/// Add a Dazed to your draw pile, then 幻化 it into a 暗淡油灯 (Dim Lamp). The Lamp reverts to the
+/// 点灯 (Kindle) — 1 cost Skill, Uncommon (upgraded: 3 instead of 2).
+/// Add 2 Dazed to your draw pile, then 幻化 each into a 暗淡油灯 (Dim Lamp). The Lamp reverts to the
 /// Dazed at the end of the turn (transmute stack), so it's a strong but fleeting "draw + energy" you
-/// must dig up and play this turn. Upgraded: add 2.
+/// must dig up and play this turn. Upgraded: add 3.
 /// </summary>
 public sealed class Kindle : CardModel
 {
@@ -29,7 +29,7 @@ public sealed class Kindle : CardModel
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new CardsVar(1),
+        new CardsVar(2),
     };
 
     public Kindle()

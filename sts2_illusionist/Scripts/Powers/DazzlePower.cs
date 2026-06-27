@@ -10,9 +10,9 @@ using Illusionist.Scripts.Monsters;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
-/// 炫目 (Dazzle) power. At the start of each of your turns, gain Block equal to your current
-/// number of mirror clones (复制品). The block is power-sourced (Unpowered), so it is exactly the
-/// clone count, unmodified by Dexterity.
+/// 炫目 (Dazzle) power. At the start of each of your turns, gain Block equal to your current number
+/// of mirror clones (复制品) MULTIPLIED by this power's stacks (one per 炫目 played) — so 4 Dazzles with
+/// 7 mirrors = 28 Block. Power-sourced (Unpowered), unmodified by Dexterity.
 /// </summary>
 public sealed class DazzlePower : PowerModel
 {
@@ -27,7 +27,8 @@ public sealed class DazzlePower : PowerModel
             return;
         }
 
-        int block = MirrorClone.CountAlive(player);
+        // Each Dazzle (this power's stacks) independently grants Block = your mirror count.
+        int block = MirrorClone.CountAlive(player) * base.Amount;
         if (block > 0)
         {
             await CreatureCmd.GainBlock(base.Owner, block, ValueProp.Unpowered, null);

@@ -14,8 +14,8 @@ using Illusionist.Scripts;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 变幻之刃 (Shifting Blade) — 1 cost Attack, Common (upgraded: 8 -> 11 damage).
-/// Deal 8 damage, then 幻化 a card in your hand into a COPY of this Blade until end of turn (carrying
+/// 变幻之刃 (Shifting Blade) — 1 cost Attack, Common (upgraded: 11 -> 15 damage).
+/// Deal 11 damage, then 幻化 a card in your hand into a COPY of this Blade until end of turn (carrying
 /// this card's upgrades/enchantments/temporary effects). The attack backbone of the 幻化 system: turn
 /// a dead card into more damage, and with Fluxweave draw a card for the reshape.
 /// </summary>
@@ -30,7 +30,7 @@ public sealed class ShiftingBlade : CardModel
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(8m, ValueProp.Move),
+        new DamageVar(11m, ValueProp.Move),
     };
 
     public ShiftingBlade()
@@ -51,6 +51,6 @@ public sealed class ShiftingBlade : CardModel
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Damage.UpgradeValueBy(3m);
+        base.DynamicVars.Damage.UpgradeValueBy(4m);
     }
 }

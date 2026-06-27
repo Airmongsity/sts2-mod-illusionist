@@ -16,8 +16,8 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 重斩击 (Heavy Slash) — 3 cost Attack, Uncommon.
-/// Deal 22 damage and gain 1 Frail (on yourself). 先机 (First Move): if this is the first card you
-/// play this turn, gain 1 energy. Upgraded: 30 damage (still gains the Frail).
+/// Deal 22 damage. 先机 (First Move): if this is the first card you play this turn, gain 1 energy.
+/// Upgraded: 30 damage.
 /// </summary>
 public sealed class HeavySlash : CardModel
 {
@@ -26,7 +26,6 @@ public sealed class HeavySlash : CardModel
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.FirstMove,
-        HoverTipFactory.FromPower<FrailPower>(),
     };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
@@ -46,9 +45,6 @@ public sealed class HeavySlash : CardModel
         await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this).Targeting(cardPlay.Target)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
-
-        // Recoil: gain 1 Frail on yourself (block gained -25%), upgraded or not.
-        await PowerCmd.Apply<FrailPower>(choiceContext, base.Owner.Creature, 1, base.Owner.Creature, this);
 
         // 先机: only the first card played this turn refunds 1 energy.
         if (FirstMove.IsActive(base.Owner.Creature))

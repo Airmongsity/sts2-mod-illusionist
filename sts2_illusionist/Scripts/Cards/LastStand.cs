@@ -15,8 +15,8 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 绝境 (Last Stand) — 1 cost Skill, Common.
-/// Gain 7 Block. If you have no mirror clones (复制品), gain 4 extra Block.
-/// Upgraded: gains the Retain keyword.
+/// Gain 7 Block. If you have no mirror clones (复制品), gain 7 extra Block AND Copy 2 (so it doubles
+/// as a Mirror opener). Upgraded: gains the Retain keyword.
 /// </summary>
 public sealed class LastStand : CardModel
 {
@@ -24,15 +24,19 @@ public sealed class LastStand : CardModel
 
     public override bool GainsBlock => true;
 
-    // Block tip comes from GainsBlock; add the mirror-image (复制品) tip this card references.
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
+    // Block tip comes from GainsBlock; add the Copy action + mirror-image (复制品) tips it references.
+    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    {
+        IllusionHoverTips.Copy,
+        IllusionHoverTips.CopyToken,
+    };
 
     // Two BlockVars: the base block ("Block") and the conditional bonus. A second var of the same
     // type MUST be given an explicit name or DynamicVarSet throws on the duplicate "Block" key.
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
         new BlockVar(7m, ValueProp.Move),
-        new BlockVar("ExtraBlock", 4m, ValueProp.Move),
+        new BlockVar("ExtraBlock", 7m, ValueProp.Move),
     };
 
     public LastStand()
@@ -44,10 +48,11 @@ public sealed class LastStand : CardModel
     {
         await CreatureCmd.GainBlock(base.Owner.Creature, base.DynamicVars.Block, cardPlay);
 
-        // If you have no mirror clones, gain the extra Block.
+        // If you have no mirror clones, gain the extra Block and Copy 2 (kickstart the Mirror system).
         if (MirrorClone.CountAlive(base.Owner) == 0)
         {
             await CreatureCmd.GainBlock(base.Owner.Creature, (BlockVar)base.DynamicVars["ExtraBlock"], cardPlay);
+            await MirrorClone.Copy(base.Owner, 2, choiceContext);
         }
     }
 

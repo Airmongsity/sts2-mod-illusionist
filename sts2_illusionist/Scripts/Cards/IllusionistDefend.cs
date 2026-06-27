@@ -36,7 +36,9 @@ public sealed class IllusionistDefend : CardModel
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await CreatureCmd.GainBlock(base.Owner.Creature, base.DynamicVars.Block.BaseValue, ValueProp.Move, cardPlay);
+        // Use the BlockVar overload exactly like the native Defend (and our LastStand) so the block is
+        // tagged as "powered card block from a Defend" — which is what Fasten's +Block hook checks.
+        await CreatureCmd.GainBlock(base.Owner.Creature, base.DynamicVars.Block, cardPlay);
     }
 
     protected override void OnUpgrade()

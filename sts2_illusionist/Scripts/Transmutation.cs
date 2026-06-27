@@ -93,6 +93,19 @@ public static class Transmutation
         }
     }
 
+    /// <summary>
+    /// Register that <paramref name="token"/> (a card already placed in a combat pile) reverts into
+    /// <paramref name="revertTo"/> at the start of the owner's next turn. Use for "the played card
+    /// turned into a token; bring its form back next turn" — where the played card has already left
+    /// play (e.g. removed via a <see cref="PileType.None"/> result pile) so we DON'T transform the
+    /// in-play card (which hangs — no base card self-transforms on play).
+    /// </summary>
+    public static async Task RegisterRevert(Player owner, PlayerChoiceContext choiceContext, CardModel source, CardModel revertTo, CardModel token)
+    {
+        TransmutePower revert = await EnsureRevertPower(owner, choiceContext, source);
+        revert.RegisterTransmute(revertTo, token);
+    }
+
     /// <summary>One shared revert power per turn; created lazily on the first transmute.</summary>
     private static async Task<TransmutePower> EnsureRevertPower(Player owner, PlayerChoiceContext choiceContext, CardModel source)
     {

@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
-using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Logging;
@@ -11,97 +12,76 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
-using MegaCrit.Sts2.Core.MonsterMoves.MonsterMoveStateMachine;
+using MegaCrit.Sts2.Core.ValueProps;
 
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 逆转 (Reversal) — 1 cost Skill. Upgraded: also applies 1 Weak to the target.
-/// If the target's intent is NOT a buff (强化), swap its intent this turn with its
-/// intent next turn: it now performs what it would have done next turn, and performs
-/// its original move on the following turn.
+/// 逆转 (Reversal) — 2 cost Skill, Uncommon (upgraded: Retain).
+/// Apply 2 Vulnerable. If the target intends to attack, turn its attack against itself: it is stunned
+/// (does not attack) and instead gains Block equal to the damage it would have dealt.
 ///
-/// KNOWN LIMITATION (accepted for MVP, by design decision 2026-06-22):
-/// This effect reorders the monster's move sequence. A few enemies whose moves carry
-/// cross-turn state by relying on a fixed move ORDER will glitch when reordered — e.g.
-/// Toadpole's SPIKEN move grants +Thorns and its SPIKE_SPIT move removes that same
-/// Thorns next turn, so reordering can leave Thorns lingering an extra turn or going
-/// negative. This is inherent to ANY "swap/reorder intents" approach (including
-/// pre-caching rolled intents), because the side effects live in the monster's own
-/// move code, not in how the next move is chosen. We intentionally keep the swap and
-/// treat these as rare cosmetic quirks rather than redesigning the card.
+/// <para>Implemented with the engine's Stun (a clean, robust mechanic) plus a stun-turn move that
+/// makes the enemy gain Block — so the intent icon shows "stunned" rather than a shield, but the
+/// effect (no attack; the foe defends for that much instead) matches.</para>
 /// </summary>
 public sealed class Reversal : CardModel
 {
-    // Belong to the Necrobinder pool explicitly, so CardModel.Pool never throws even if
-    // pool registration (ModHelper.AddModelToPool) did not run.
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    // Retain: intent-manipulation is situational, so let the player hold it until it's worthwhile.
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Retain };
-
-    // Only the upgraded version applies Weak, so only surface its tip when upgraded.
-    protected override IEnumerable<IHoverTip> ExtraHoverTips =>
-        IsUpgraded ? new IHoverTip[] { HoverTipFactory.FromPower<WeakPower>() } : Array.Empty<IHoverTip>();
+    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    {
+        HoverTipFactory.FromPower<VulnerablePower>(),
+        HoverTipFactory.Static(StaticHoverTip.Block),
+    };
 
     public Reversal()
-        : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
+        : base(2, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
+    }
+
+    protected override void OnUpgrade()
+    {
+        AddKeyword(CardKeyword.Retain);
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay.Target, "cardPlay.Target");
-
         Creature target = cardPlay.Target;
 
-        // Upgrade bonus: apply 1 Weak to the target.
-        if (IsUpgraded)
-        {
-            await PowerCmd.Apply<WeakPower>(choiceContext, target, 1, base.Owner.Creature, this);
-        }
+        await PowerCmd.Apply<VulnerablePower>(choiceContext, target, 2, base.Owner.Creature, this);
 
         if (target.Monster == null)
         {
             return;
         }
 
-        // Per design: only reverse intents that are NOT a buff (强化). Many enemies have
-        // special strengthen moves, and reversing those was both off-theme and the source
-        // of a self-reinforcing loop, so leave buff intents untouched.
-        bool intendsToBuff = target.Monster.NextMove.Intents.Any(i => i.IntentType == IntentType.Buff);
-        if (intendsToBuff)
+        // Only acts on an attack intent: change it into "gain Block equal to the intended damage".
+        List<AttackIntent> attacks = target.Monster.NextMove.Intents.OfType<AttackIntent>().ToList();
+        if (attacks.Count == 0)
         {
             return;
         }
 
         try
         {
-            // The move the enemy currently intends to perform this turn.
-            MoveState thisTurnMove = target.Monster.NextMove;
-
-            // Force the enemy to decide what it would do next turn.
-            IReadOnlyList<Creature> playerTargets = new[] { base.Owner.Creature };
-            target.Monster.RollMove(playerTargets);
-            MoveState nextTurnMove = target.Monster.NextMove;
-
-            // If the move can't transition yet (e.g. a "must perform once" move that hasn't
-            // been performed), RollMove returns the same move. Setting its FollowUpState to
-            // itself would loop the move forever, so only swap when we got a distinct move.
-            if (ReferenceEquals(nextTurnMove, thisTurnMove))
+            IReadOnlyList<Creature> me = new[] { base.Owner.Creature };
+            int block = attacks.Sum(a => a.GetTotalDamage(me, target));
+            if (block <= 0)
             {
-                Log.Info("[illusionist] Reversal: enemy has no distinct next move to swap; no effect.");
                 return;
             }
 
-            // This turn the enemy now performs what it would have done next turn, and its
-            // original move is queued to follow.
-            nextTurnMove.FollowUpState = thisTurnMove;
-            target.Monster.SetMoveImmediate(nextTurnMove, forceTransition: true);
+            // Cancel the attack (stun) and have the enemy gain that much Block on its turn instead.
+            await CreatureCmd.Stun(target, async _ =>
+            {
+                await CreatureCmd.GainBlock(target, block, ValueProp.Unpowered, null);
+            });
         }
         catch (Exception ex)
         {
-            Log.Error($"[illusionist] Reversal failed to swap intents: {ex}");
+            Log.Error($"[illusionist] Reversal: failed to convert attack to block: {ex}");
         }
     }
 }

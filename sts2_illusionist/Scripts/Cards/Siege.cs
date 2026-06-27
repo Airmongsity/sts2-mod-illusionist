@@ -16,8 +16,8 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 围攻 (Siege) — 1 cost Attack, Rare.
-/// For each mirror clone (复制品) you have, deal 3 damage to ALL enemies once.
-/// Upgraded: 4 damage.
+/// For each mirror clone (复制品) you have, deal 8 damage to ALL enemies once.
+/// Upgraded: 9 damage.
 /// </summary>
 public sealed class Siege : CardModel
 {
@@ -27,7 +27,7 @@ public sealed class Siege : CardModel
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(3m, ValueProp.Move),
+        new DamageVar(8m, ValueProp.Move),
     };
 
     public Siege()
@@ -59,6 +59,6 @@ public sealed class Siege : CardModel
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Damage.UpgradeValueBy(1m);
+        base.DynamicVars.Damage.UpgradeValueBy(2m);
     }
 }

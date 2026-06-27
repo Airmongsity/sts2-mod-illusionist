@@ -36,6 +36,8 @@ public static class Entry
         try
         {
             ModHelper.AddModelToPool<IllusionistCardPool, Riposte>();
+            ModHelper.AddModelToPool<IllusionistCardPool, PhantomVenom>();
+            ModHelper.AddModelToPool<IllusionistCardPool, Feint>();
             ModHelper.AddModelToPool<IllusionistCardPool, Disrupt>();
             ModHelper.AddModelToPool<IllusionistCardPool, Reversal>();
             ModHelper.AddModelToPool<IllusionistCardPool, Counter>();
@@ -46,11 +48,9 @@ public static class Entry
             ModHelper.AddModelToPool<IllusionistCardPool, Detonate>();
             ModHelper.AddModelToPool<IllusionistCardPool, Siphon>();
             ModHelper.AddModelToPool<IllusionistCardPool, SilverLining>();
-            ModHelper.AddModelToPool<IllusionistCardPool, Illusion>();
             ModHelper.AddModelToPool<IllusionistCardPool, Memory>();
             ModHelper.AddModelToPool<IllusionistCardPool, Ambush>();
             ModHelper.AddModelToPool<IllusionistCardPool, Echo>();
-            ModHelper.AddModelToPool<IllusionistCardPool, Dim>();
             ModHelper.AddModelToPool<IllusionistCardPool, Conscript>();
             ModHelper.AddModelToPool<IllusionistCardPool, HeavySlash>();
             ModHelper.AddModelToPool<IllusionistCardPool, FateLoom>();
@@ -73,7 +73,6 @@ public static class Entry
             ModHelper.AddModelToPool<IllusionistCardPool, Fluxweave>();
             ModHelper.AddModelToPool<IllusionistCardPool, ShiftingBlade>();
             ModHelper.AddModelToPool<IllusionistCardPool, MirrorWard>();
-            ModHelper.AddModelToPool<IllusionistCardPool, PhantomBlast>();
             ModHelper.AddModelToPool<IllusionistCardPool, MyriadFaces>();
             ModHelper.AddModelToPool<IllusionistCardPool, Kindle>();
             ModHelper.AddModelToPool<IllusionistCardPool, Summon>();

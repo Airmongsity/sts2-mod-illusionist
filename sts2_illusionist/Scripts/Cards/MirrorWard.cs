@@ -13,8 +13,8 @@ using Illusionist.Scripts;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 拟形之盾 (Mirror Ward) — 1 cost Skill, Common (upgraded: 5 -> 7 Block).
-/// Gain 5 Block, then 幻化 a card in your hand into a COPY of this Ward until end of turn (carrying
+/// 拟形之盾 (Mirror Ward) — 1 cost Skill, Common (upgraded: 7 -> 10 Block).
+/// Gain 7 Block, then 幻化 a card in your hand into a COPY of this Ward until end of turn (carrying
 /// this card's upgrades/enchantments/temporary effects). The defense backbone of the 幻化 system:
 /// turn a dead card into more Block, and with Fluxweave draw a card for the reshape.
 /// </summary>
@@ -31,7 +31,7 @@ public sealed class MirrorWard : CardModel
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new BlockVar(5m, ValueProp.Move),
+        new BlockVar(7m, ValueProp.Move),
     };
 
     public MirrorWard()
@@ -49,6 +49,6 @@ public sealed class MirrorWard : CardModel
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Block.UpgradeValueBy(2m);
+        base.DynamicVars.Block.UpgradeValueBy(3m);
     }
 }
