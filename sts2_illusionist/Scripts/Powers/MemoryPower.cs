@@ -10,7 +10,7 @@ using Illusionist.Scripts.Monsters;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
-/// 记忆 (Memory) power. Whenever one of your mirror clones is destroyed (shattered by damage, or
+/// 记忆 (MemoryIllusionist) power. Whenever one of your mirror clones is destroyed (shattered by damage, or
 /// consumed by 引爆/汲取), draw 2 cards and gain 1 energy. Self-contained via the AfterDeath hook,
 /// which fires once per clone death.
 /// </summary>

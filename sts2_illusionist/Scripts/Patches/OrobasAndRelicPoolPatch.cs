@@ -25,7 +25,7 @@ public static class TouchOfOrobasRefinementPatch
 
 /// <summary>
 /// Teach Archaic Tooth (the Ancient relic that transcends a starter card) about the Illusionist:
-/// map Riposte -> Sabotage (破坏). Same private-static-getter postfix pattern as Touch of Orobas.
+/// map RiposteIllusionist -> SabotageIllusionist (破坏). Same private-static-getter postfix pattern as Touch of Orobas.
 /// Without an entry the option simply isn't offered to the Illusionist (no trap), but we want it.
 /// </summary>
 [HarmonyPatch(typeof(ArchaicTooth), "TranscendenceUpgrades", MethodType.Getter)]
@@ -33,14 +33,14 @@ public static class ArchaicToothTranscendencePatch
 {
     private static void Postfix(ref Dictionary<ModelId, CardModel> __result)
     {
-        __result[ModelDb.Card<Riposte>().Id] = ModelDb.Card<Sabotage>();
+        __result[ModelDb.Card<RiposteIllusionist>().Id] = ModelDb.Card<SabotageIllusionist>();
     }
 }
 
 /// <summary>
 /// Base-game Darv ("the Hoarder") offers the Ancient relic DustyTome, whose SetupForPlayer picks a
 /// random Ancient card from the player's pool. The Illusionist pool provides Ancient cards (Phantasm
-/// Storm, Sabotage), so it should set up fine — but we keep this Finalizer as a safety net: if it
+/// Storm, SabotageIllusionist), so it should set up fine — but we keep this Finalizer as a safety net: if it
 /// ever throws, swallow the exception so the call returns false and Darv simply doesn't offer
 /// DustyTome instead of HANGING the ancient event.
 /// </summary>

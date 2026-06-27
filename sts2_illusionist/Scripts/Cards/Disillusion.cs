@@ -17,19 +17,19 @@ using Illusionist.Scripts;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 幻灭 (Disillusion) — 1 cost Skill, Common (upgraded: 3 cards instead of 1).
+/// 幻灭 (DisillusionIllusionist) — 1 cost Skill, Common (upgraded: 2 cards instead of 1).
 /// Choose 3 cards from your draw pile and 幻化 (transmute) them into 暗淡油灯 (Dim Lamps), then
 /// transmute THIS card into a Dim Lamp too (added to your hand). The Lamps revert to their originals
 /// at the start of your next turn — a burst of "draw + energy" you cash in this turn.
 /// </summary>
-public sealed class Disillusion : CardModel
+public sealed class DisillusionIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
     {
-        IllusionHoverTips.Transmute,
-        HoverTipFactory.FromCard<DimLamp>(),
+        IllusionHoverTips.TransmuteIllusionist,
+        HoverTipFactory.FromCard<DimLampIllusionist>(),
     };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
@@ -37,7 +37,7 @@ public sealed class Disillusion : CardModel
         new CardsVar(1),
     };
 
-    public Disillusion()
+    public DisillusionIllusionist()
         : base(1, CardType.Skill, CardRarity.Common, TargetType.Self)
     {
     }
@@ -49,7 +49,7 @@ public sealed class Disillusion : CardModel
     {
         Player owner = base.Owner;
 
-        // 1) Transmute up to N draw-pile cards into Dim Lamps (the same FromSimpleGrid picker 幻化 uses).
+        // 1) TransmuteIllusionist up to N draw-pile cards into Dim Lamps (the same FromSimpleGrid picker 幻化 uses).
         List<CardModel> drawCards = PileType.Draw.GetPile(owner).Cards.ToList();
         if (drawCards.Count > 0)
         {
@@ -59,27 +59,27 @@ public sealed class Disillusion : CardModel
                 new CardSelectorPrefs(base.SelectionScreenPrompt, count))).ToList();
 
             await Transmutation.TransmuteCards(selected, this, choiceContext,
-                original => original.CardScope!.CreateCard<DimLamp>(original.Owner));
+                original => original.CardScope!.CreateCard<DimLampIllusionist>(original.Owner));
         }
 
-        // 2) Transmute THIS card into a Dim Lamp too. It can't safely transform itself mid-play
+        // 2) TransmuteIllusionist THIS card into a Dim Lamp too. It can't safely transform itself mid-play
         //    (hangs), so — like 淬毒 — it removes itself via the None result pile, drops a Dim Lamp in
         //    hand, and registers it to revert into a clone of this card next turn.
         try
         {
             CardModel revertTo = CreateClone();
-            CardModel lamp = base.CardScope!.CreateCard<DimLamp>(owner);
+            CardModel lamp = base.CardScope!.CreateCard<DimLampIllusionist>(owner);
             await CardPileCmd.Add(lamp, PileType.Hand);
             await Transmutation.RegisterRevert(owner, choiceContext, this, revertTo, lamp);
         }
         catch (Exception ex)
         {
-            Log.Error($"[illusionist] Disillusion: self-transmute failed: {ex}");
+            Log.Error($"[illusionist] DisillusionIllusionist: self-transmute failed: {ex}");
         }
     }
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Cards.UpgradeValueBy(2m);
+        base.DynamicVars.Cards.UpgradeValueBy(1m);
     }
 }

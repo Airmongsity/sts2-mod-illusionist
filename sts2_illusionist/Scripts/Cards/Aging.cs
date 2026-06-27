@@ -17,16 +17,16 @@ using MegaCrit.Sts2.Core.ValueProps;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 老化 (Aging) — 2 cost Attack, Uncommon, Retain (upgraded: 5 -> 8 HP loss).
+/// 老化 (AgingIllusionist) — 2 cost Attack, Uncommon, Retain (upgraded: 5 -> 8 HP loss).
 /// The enemy loses 5 HP (unblockable). If its intent this turn consists ONLY of Attack and/or
 /// Defend, advance it to next turn's intent, DISCARDING the current one (it performs what it would
-/// have done next turn, and the current move is dropped — like Reversal but without queuing the
+/// have done next turn, and the current move is dropped — like ReversalIllusionist but without queuing the
 /// original back).
 ///
-/// Shares Reversal's known limitation: reordering moves can desync enemies whose moves carry
+/// Shares ReversalIllusionist's known limitation: reordering moves can desync enemies whose moves carry
 /// order-dependent cross-turn state (e.g. Toadpole's Thorns). Accepted by design.
 /// </summary>
-public sealed class Aging : CardModel
+public sealed class AgingIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -38,7 +38,7 @@ public sealed class Aging : CardModel
         new HpLossVar(5m),
     };
 
-    public Aging()
+    public AgingIllusionist()
         : base(2, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
@@ -78,17 +78,17 @@ public sealed class Aging : CardModel
             // RollMove returns the same move — leave the intent untouched.
             if (ReferenceEquals(nextTurnMove, thisTurnMove))
             {
-                Log.Info("[illusionist] Aging: no distinct next move to advance to; no intent change.");
+                Log.Info("[illusionist] AgingIllusionist: no distinct next move to advance to; no intent change.");
                 return;
             }
 
-            // Discard the current move: the enemy performs next turn's move now. Unlike Reversal,
+            // Discard the current move: the enemy performs next turn's move now. Unlike ReversalIllusionist,
             // we do NOT set FollowUpState back to the original, so the current move is dropped.
             target.Monster.SetMoveImmediate(nextTurnMove, forceTransition: true);
         }
         catch (Exception ex)
         {
-            Log.Error($"[illusionist] Aging failed to advance intent: {ex}");
+            Log.Error($"[illusionist] AgingIllusionist failed to advance intent: {ex}");
         }
     }
 

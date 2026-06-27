@@ -15,7 +15,7 @@ namespace Illusionist.Scripts.Cards;
 /// (upgraded: 8). Its own card so it belongs to <see cref="IllusionistCardPool"/> rather than the
 /// Necrobinder's (so deck-transform effects target the Illusionist's cards).
 /// </summary>
-public sealed class IllusionistDefend : CardModel
+public sealed class IllusionistDefendIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -29,14 +29,14 @@ public sealed class IllusionistDefend : CardModel
         new BlockVar(5m, ValueProp.Move),
     };
 
-    public IllusionistDefend()
+    public IllusionistDefendIllusionist()
         : base(1, CardType.Skill, CardRarity.Basic, TargetType.Self)
     {
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        // Use the BlockVar overload exactly like the native Defend (and our LastStand) so the block is
+        // Use the BlockVar overload exactly like the native Defend (and our LastStandIllusionist) so the block is
         // tagged as "powered card block from a Defend" — which is what Fasten's +Block hook checks.
         await CreatureCmd.GainBlock(base.Owner.Creature, base.DynamicVars.Block, cardPlay);
     }

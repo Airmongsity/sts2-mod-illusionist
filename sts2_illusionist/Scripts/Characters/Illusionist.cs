@@ -48,16 +48,16 @@ public sealed class Illusionist : CharacterModel
 
     public override IEnumerable<CardModel> StartingDeck => new CardModel[]
     {
-        ModelDb.Card<IllusionistStrike>(),
-        ModelDb.Card<IllusionistStrike>(),
-        ModelDb.Card<IllusionistStrike>(),
-        ModelDb.Card<IllusionistStrike>(),
-        ModelDb.Card<IllusionistDefend>(),
-        ModelDb.Card<IllusionistDefend>(),
-        ModelDb.Card<IllusionistDefend>(),
-        ModelDb.Card<IllusionistDefend>(),
-        ModelDb.Card<Riposte>(),
-        ModelDb.Card<Disrupt>(),
+        ModelDb.Card<IllusionistStrikeIllusionist>(),
+        ModelDb.Card<IllusionistStrikeIllusionist>(),
+        ModelDb.Card<IllusionistStrikeIllusionist>(),
+        ModelDb.Card<IllusionistStrikeIllusionist>(),
+        ModelDb.Card<IllusionistDefendIllusionist>(),
+        ModelDb.Card<IllusionistDefendIllusionist>(),
+        ModelDb.Card<IllusionistDefendIllusionist>(),
+        ModelDb.Card<IllusionistDefendIllusionist>(),
+        ModelDb.Card<RiposteIllusionist>(),
+        ModelDb.Card<DisruptIllusionist>(),
     };
 
     public override IReadOnlyList<RelicModel> StartingRelics => new RelicModel[]

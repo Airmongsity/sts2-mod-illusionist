@@ -16,11 +16,11 @@ using Illusionist.Scripts;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 幻化 (Transmute) — 1 cost Skill, Uncommon, Exhaust (upgraded: pick from 5 instead of 3).
+/// 幻化 (TransmuteIllusionist) — 1 cost Skill, Uncommon, Exhaust (upgraded: pick from 5 instead of 3).
 /// Look at 3 random cards from your exhaust pile, choose one, then 幻化 a card in your hand into a
 /// copy of it (carrying that card's upgrades/enchantments). Upgraded: pick from 5. Exhausts itself.
 /// </summary>
-public sealed class Transmute : CardModel
+public sealed class TransmuteIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -28,7 +28,7 @@ public sealed class Transmute : CardModel
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
     {
-        IllusionHoverTips.Transmute,
+        IllusionHoverTips.TransmuteIllusionist,
     };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
@@ -36,7 +36,7 @@ public sealed class Transmute : CardModel
         new CardsVar(3),
     };
 
-    public Transmute()
+    public TransmuteIllusionist()
         : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
     {
     }
@@ -57,7 +57,7 @@ public sealed class Transmute : CardModel
 
         CardModel? chosen = (await CardSelectCmd.FromSimpleGrid(
             choiceContext, choices, owner,
-            new CardSelectorPrefs(new LocString("cards", "TRANSMUTE.selectionScreenPrompt"), 1))).FirstOrDefault();
+            new CardSelectorPrefs(new LocString("cards", "TRANSMUTE_ILLUSIONIST.selectionScreenPrompt"), 1))).FirstOrDefault();
         if (chosen == null)
         {
             return;

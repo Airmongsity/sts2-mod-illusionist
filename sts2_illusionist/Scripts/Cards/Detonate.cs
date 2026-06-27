@@ -15,11 +15,11 @@ using Illusionist.Scripts.Monsters;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 引爆 (Detonate) — 1 cost Attack, Uncommon.
+/// 引爆 (DetonateIllusionist) — 1 cost Attack, Uncommon.
 /// Destroy all mirror clones; for each one destroyed, deal 12 damage to ALL enemies once.
 /// Upgraded: 15 damage.
 /// </summary>
-public sealed class Detonate : CardModel
+public sealed class DetonateIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -30,7 +30,7 @@ public sealed class Detonate : CardModel
         new DamageVar(12m, ValueProp.Move),
     };
 
-    public Detonate()
+    public DetonateIllusionist()
         : base(1, CardType.Attack, CardRarity.Uncommon, TargetType.AllEnemies)
     {
     }

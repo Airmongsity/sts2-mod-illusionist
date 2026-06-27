@@ -15,11 +15,11 @@ using Illusionist.Scripts.Monsters;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 围攻 (Siege) — 1 cost Attack, Rare.
+/// 围攻 (SiegeIllusionist) — 1 cost Attack, Rare.
 /// For each mirror clone (复制品) you have, deal 8 damage to ALL enemies once.
 /// Upgraded: 9 damage.
 /// </summary>
-public sealed class Siege : CardModel
+public sealed class SiegeIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -30,7 +30,7 @@ public sealed class Siege : CardModel
         new DamageVar(8m, ValueProp.Move),
     };
 
-    public Siege()
+    public SiegeIllusionist()
         : base(1, CardType.Attack, CardRarity.Rare, TargetType.AllEnemies)
     {
     }

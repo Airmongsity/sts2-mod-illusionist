@@ -14,10 +14,10 @@ using MegaCrit.Sts2.Core.ValueProps;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 障目 (Obscure) — 1 cost Skill, Common.
+/// 障目 (ObscureIllusionist) — 1 cost Skill, Common.
 /// Gain 6 Block; if no enemy intends to attack, draw 2 cards. Upgraded: 9 Block.
 /// </summary>
-public sealed class Obscure : CardModel
+public sealed class ObscureIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -29,7 +29,7 @@ public sealed class Obscure : CardModel
         new CardsVar(2),
     };
 
-    public Obscure()
+    public ObscureIllusionist()
         : base(1, CardType.Skill, CardRarity.Common, TargetType.Self)
     {
     }

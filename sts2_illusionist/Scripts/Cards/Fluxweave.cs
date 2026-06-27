@@ -12,20 +12,20 @@ using Illusionist.Scripts.Powers;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 流变 (Fluxweave) — 2 cost Power, Rare (upgraded: 1 cost). The engine of the 幻化 system: while active, whenever you
-/// transform or transmute a card, draw 1 card. Turns every reshape into a cantrip, so the
-/// "reshape your hand" archetype becomes a self-sustaining draw engine.
+/// 流变 (FluxweaveIllusionist) — 2 cost Power, Rare (upgraded: Innate). The engine of the 幻化 system:
+/// while active, for every 2 cards you transform or transmute, draw 1 card. Turns reshaping your
+/// hand into a self-sustaining draw engine. Multiple copies settle separately.
 /// </summary>
-public sealed class Fluxweave : CardModel
+public sealed class FluxweaveIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
     {
-        IllusionHoverTips.Transmute,
+        IllusionHoverTips.TransmuteIllusionist,
     };
 
-    public Fluxweave()
+    public FluxweaveIllusionist()
         : base(2, CardType.Power, CardRarity.Rare, TargetType.Self)
     {
     }
@@ -37,6 +37,6 @@ public sealed class Fluxweave : CardModel
 
     protected override void OnUpgrade()
     {
-        base.EnergyCost.UpgradeBy(-1);
+        AddKeyword(CardKeyword.Innate);
     }
 }

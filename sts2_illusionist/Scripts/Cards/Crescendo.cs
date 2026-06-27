@@ -12,18 +12,18 @@ using Illusionist.Scripts.Powers;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 渐强 (Crescendo) — 1 cost Power, Uncommon (upgraded: 0 cost).
+/// 渐强 (CrescendoIllusionist) — 1 cost Power, Uncommon (upgraded: 0 cost).
 /// Lose 4 Strength immediately, then gain 2 Strength at the start of each turn (net positive after
 /// 2 turns). Pairs with the Illusionist's other Strength manipulation.
 /// </summary>
-public sealed class Crescendo : CardModel
+public sealed class CrescendoIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     // References Strength — surface its tip (base-game Bash pattern).
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { HoverTipFactory.FromPower<StrengthPower>() };
 
-    public Crescendo()
+    public CrescendoIllusionist()
         : base(1, CardType.Power, CardRarity.Uncommon, TargetType.Self)
     {
     }

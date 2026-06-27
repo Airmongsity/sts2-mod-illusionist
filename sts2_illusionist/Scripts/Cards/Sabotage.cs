@@ -15,11 +15,11 @@ using Illusionist.Scripts;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 破坏 (Sabotage) — 1 cost Attack, Ancient. Orobas's reward — the strongest of the Illusionist's
+/// 破坏 (SabotageIllusionist) — 1 cost Attack, Ancient. Orobas's reward — the strongest of the Illusionist's
 /// ancient cards. Deal 20 damage, gain 15 Block, then 幻化 (transmute) a card in your hand into a
 /// copy of this card (so you can chain another huge swing this turn). Upgraded: 27 damage / 22 Block.
 /// </summary>
-public sealed class Sabotage : CardModel
+public sealed class SabotageIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -27,7 +27,7 @@ public sealed class Sabotage : CardModel
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
     {
-        IllusionHoverTips.Transmute,
+        IllusionHoverTips.TransmuteIllusionist,
     };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
@@ -36,7 +36,7 @@ public sealed class Sabotage : CardModel
         new BlockVar(15m, ValueProp.Move),
     };
 
-    public Sabotage()
+    public SabotageIllusionist()
         : base(1, CardType.Attack, CardRarity.Ancient, TargetType.AnyEnemy)
     {
     }

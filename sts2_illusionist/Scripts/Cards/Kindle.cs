@@ -12,19 +12,19 @@ using Illusionist.Scripts;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 点灯 (Kindle) — 1 cost Skill, Uncommon (upgraded: 3 instead of 2).
+/// 点灯 (KindleIllusionist) — 1 cost Skill, Uncommon (upgraded: 3 instead of 2).
 /// Add 2 Dazed to your draw pile, then 幻化 each into a 暗淡油灯 (Dim Lamp). The Lamp reverts to the
 /// Dazed at the end of the turn (transmute stack), so it's a strong but fleeting "draw + energy" you
 /// must dig up and play this turn. Upgraded: add 3.
 /// </summary>
-public sealed class Kindle : CardModel
+public sealed class KindleIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
     {
-        IllusionHoverTips.Transmute,
-        HoverTipFactory.FromCard<DimLamp>(),
+        IllusionHoverTips.TransmuteIllusionist,
+        HoverTipFactory.FromCard<DimLampIllusionist>(),
     };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
@@ -32,7 +32,7 @@ public sealed class Kindle : CardModel
         new CardsVar(2),
     };
 
-    public Kindle()
+    public KindleIllusionist()
         : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
     {
     }
@@ -55,7 +55,7 @@ public sealed class Kindle : CardModel
 
         // 幻化 each Dazed into a Dim Lamp (reverts back to the Dazed at end of turn via the stack).
         await Transmutation.TransmuteCards(dazes, this, choiceContext,
-            original => original.CardScope!.CreateCard<DimLamp>(original.Owner));
+            original => original.CardScope!.CreateCard<DimLampIllusionist>(original.Owner));
     }
 
     protected override void OnUpgrade()

@@ -18,7 +18,7 @@
   "TRANSMUTE_POWER.title": "幻化",
   "TRANSMUTE_POWER.description": "回合结束时，每张被幻化的牌将[gold]变化[/gold]为它前一次[gold]变化[/gold]前的牌。",
   "FLUXWEAVE_POWER.title": "流变",
-  "FLUXWEAVE_POWER.description": "每当你变化或幻化一张牌时，抽 1 张牌。",
+  "FLUXWEAVE_POWER.description": "你每变化2张牌，抽1张牌。",
   "IMPROVISE_POWER.title": "即兴",
   "IMPROVISE_POWER.description": "每回合你第一次幻化一张牌时，将幻化后的牌对随机敌人打出。"
 }

@@ -17,15 +17,15 @@ namespace Illusionist.Scripts.Cards;
 /// 变幻之刃 (Shifting Blade) — 1 cost Attack, Common (upgraded: 11 -> 15 damage).
 /// Deal 11 damage, then 幻化 a card in your hand into a COPY of this Blade until end of turn (carrying
 /// this card's upgrades/enchantments/temporary effects). The attack backbone of the 幻化 system: turn
-/// a dead card into more damage, and with Fluxweave draw a card for the reshape.
+/// a dead card into more damage, and with FluxweaveIllusionist draw a card for the reshape.
 /// </summary>
-public sealed class ShiftingBlade : CardModel
+public sealed class ShiftingBladeIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
     {
-        IllusionHoverTips.Transmute,
+        IllusionHoverTips.TransmuteIllusionist,
     };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
@@ -33,7 +33,7 @@ public sealed class ShiftingBlade : CardModel
         new DamageVar(11m, ValueProp.Move),
     };
 
-    public ShiftingBlade()
+    public ShiftingBladeIllusionist()
         : base(1, CardType.Attack, CardRarity.Common, TargetType.AnyEnemy)
     {
     }

@@ -17,7 +17,7 @@ namespace Illusionist.Scripts.Cards;
 /// Necrobinder's — so deck-transform effects (event "transform a card", New Leaf, etc.) target the
 /// Illusionist's cards.
 /// </summary>
-public sealed class IllusionistStrike : CardModel
+public sealed class IllusionistStrikeIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -29,7 +29,7 @@ public sealed class IllusionistStrike : CardModel
         new DamageVar(6m, ValueProp.Move),
     };
 
-    public IllusionistStrike()
+    public IllusionistStrikeIllusionist()
         : base(1, CardType.Attack, CardRarity.Basic, TargetType.AnyEnemy)
     {
     }

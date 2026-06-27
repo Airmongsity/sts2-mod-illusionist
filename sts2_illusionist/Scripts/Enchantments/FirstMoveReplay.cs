@@ -9,7 +9,7 @@ using MegaCrit.Sts2.Core.Models;
 namespace Illusionist.Scripts.Enchantments;
 
 /// <summary>
-/// 先机:重放1 (First Move: Replay 1) — a permanent card enchantment applied by 重塑 (Reshape).
+/// 先机:重放1 (First Move: Replay 1) — a permanent card enchantment applied by 重塑 (ReshapeIllusionist).
 /// The enchanted card is played one extra time, but ONLY when it is the first card played this
 /// turn. Uses the engine's per-card <see cref="EnchantmentModel.EnchantPlayCount"/> hook (the same
 /// one the Spiral enchantment uses for plain Replay).

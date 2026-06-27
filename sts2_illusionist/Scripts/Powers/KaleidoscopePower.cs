@@ -13,13 +13,13 @@ using Illusionist.Scripts.Monsters;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
-/// 万花筒 (Kaleidoscope) power. Counts the cards the owner plays; on every 5th card it triggers:
+/// 万花筒 (KaleidoscopeIllusionist) power. Counts the cards the owner plays; on every 5th card it triggers:
 /// Copy 1 (create a mirror image) and deal 6 damage to ALL enemies. The running count is cumulative
 /// across the whole combat (not reset per turn) and is shown as a counter on the power icon.
 ///
-/// <para>Instanced (like <c>TheBombPower</c>): each Kaleidoscope you play — including replays — adds
+/// <para>Instanced (like <c>TheBombPower</c>): each KaleidoscopeIllusionist you play — including replays — adds
 /// its OWN counter that ticks independently, so the effect stacks. Mirrors <c>PanachePower</c>'s
-/// "every N cards" counter pattern (Counter stack type + a visible CardsPlayed DynamicVar).</para>
+/// "every N cards" counter pattern (CounterIllusionist stack type + a visible CardsPlayed DynamicVar).</para>
 /// </summary>
 public sealed class KaleidoscopePower : PowerModel
 {
@@ -27,7 +27,7 @@ public sealed class KaleidoscopePower : PowerModel
 
     private class Data
     {
-        // Don't count the Kaleidoscope card that applied this instance toward its own counter.
+        // Don't count the KaleidoscopeIllusionist card that applied this instance toward its own counter.
         public bool alreadyApplied;
     }
 

@@ -43,10 +43,10 @@ public static class IllusionHoverTips
         new LocString("cards", "FIRST_MOVE.description"));
 
     /// <summary>
-    /// "Transmute" (幻化) — transform a card; at the start of your next turn it reverts one step to
+    /// "TransmuteIllusionist" (幻化) — transform a card; at the start of your next turn it reverts one step to
     /// the form it had before. Loc: TRANSMUTE_TIP.title / TRANSMUTE_TIP.description in cards.json.
     /// </summary>
-    public static IHoverTip Transmute => new HoverTip(
+    public static IHoverTip TransmuteIllusionist => new HoverTip(
         new LocString("cards", "TRANSMUTE_TIP.title"),
         new LocString("cards", "TRANSMUTE_TIP.description"));
 }

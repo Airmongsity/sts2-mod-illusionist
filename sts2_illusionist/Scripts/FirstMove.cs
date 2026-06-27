@@ -13,7 +13,7 @@ namespace Illusionist.Scripts;
 /// MUST be called from inside a card's <c>OnPlay</c>. By that point the engine has already logged
 /// this card's <c>CardPlayStarted</c> history entry (CardModel.OnPlayWrapper records it immediately
 /// before awaiting OnPlay), so the count of this turn's original (first-in-series) card plays is
-/// exactly 1 when this is the first card. Replays (Mirror Image / Echo Form) are first-in-series
+/// exactly 1 when this is the first card. Replays (Mirror Image / EchoIllusionist Form) are first-in-series
 /// = false and don't count, so they don't consume "first move".
 /// </summary>
 public static class FirstMove

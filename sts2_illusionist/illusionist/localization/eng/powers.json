@@ -18,7 +18,7 @@
   "TRANSMUTE_POWER.title": "Transmute",
   "TRANSMUTE_POWER.description": "At the end of your turn, each transmuted card [gold]transforms[/gold] into the card it was before its latest [gold]transform[/gold].",
   "FLUXWEAVE_POWER.title": "Fluxweave",
-  "FLUXWEAVE_POWER.description": "Whenever you transform or transmute a card, draw 1 card.",
+  "FLUXWEAVE_POWER.description": "For every 2 cards you transform, draw 1 card.",
   "IMPROVISE_POWER.title": "Improvise",
   "IMPROVISE_POWER.description": "The first time you transmute a card each turn, play the transmuted card at a random enemy."
 }

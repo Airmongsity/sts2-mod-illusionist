@@ -17,7 +17,7 @@ namespace Illusionist.Scripts.Cards;
 /// Copy 1 (create a mirror): while a mirror is present, the first card you play each turn is
 /// replayed once. Taking unblocked damage shatters all mirrors. No drawback.
 /// </summary>
-public sealed class MirrorImage : CardModel
+public sealed class MirrorImageIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -26,7 +26,7 @@ public sealed class MirrorImage : CardModel
     // (复制品) it creates, so the card explains both what "Copy 1" does and how the copy behaves.
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.Copy, IllusionHoverTips.CopyToken };
 
-    public MirrorImage()
+    public MirrorImageIllusionist()
         : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
     {
     }
@@ -34,8 +34,8 @@ public sealed class MirrorImage : CardModel
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         await PowerCmd.Apply<MirrorImagePower>(choiceContext, base.Owner.Creature, 1, base.Owner.Creature, this);
-        // Summon the cosmetic clone that stands beside you (visual only; mechanics live in the power).
-        await MirrorClone.Summon(base.Owner);
+        // SummonIllusionist the cosmetic clone that stands beside you (visual only; mechanics live in the power).
+        await MirrorClone.SummonIllusionist(base.Owner);
     }
 
     protected override void OnUpgrade()

@@ -12,16 +12,16 @@ using Illusionist.Scripts.Powers;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 记忆 (Memory) — 2 cost Power, Rare (upgraded: 1 cost).
-/// Apply Memory: whenever a mirror clone is destroyed, draw 2 cards and gain 1 energy.
+/// 记忆 (MemoryIllusionist) — 2 cost Power, Rare (upgraded: 1 cost).
+/// Apply MemoryIllusionist: whenever a mirror clone is destroyed, draw 2 cards and gain 1 energy.
 /// </summary>
-public sealed class Memory : CardModel
+public sealed class MemoryIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
 
-    public Memory()
+    public MemoryIllusionist()
         : base(2, CardType.Power, CardRarity.Rare, TargetType.Self)
     {
     }

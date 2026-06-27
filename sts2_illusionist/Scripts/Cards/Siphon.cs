@@ -13,10 +13,10 @@ using Illusionist.Scripts.Monsters;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 汲取 (Siphon) — 2 cost Skill, Rare (upgraded: 1 cost).
+/// 汲取 (SiphonIllusionist) — 2 cost Skill, Rare (upgraded: 1 cost).
 /// Destroy all mirror clones; for each one destroyed, gain 1 Strength and 1 Dexterity.
 /// </summary>
-public sealed class Siphon : CardModel
+public sealed class SiphonIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -27,7 +27,7 @@ public sealed class Siphon : CardModel
         HoverTipFactory.FromPower<DexterityPower>(),
     };
 
-    public Siphon()
+    public SiphonIllusionist()
         : base(2, CardType.Skill, CardRarity.Rare, TargetType.Self)
     {
     }

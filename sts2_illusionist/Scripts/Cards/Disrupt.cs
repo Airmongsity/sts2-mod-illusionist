@@ -16,11 +16,11 @@ using Illusionist.Scripts;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 干扰 (Disrupt) — 1 cost Skill, Basic (starter). Targets an enemy.
+/// 干扰 (DisruptIllusionist) — 1 cost Skill, Basic (starter). Targets an enemy.
 /// Gain 6 Block and apply 1 Weak (虚弱: the enemy deals 25% less attack damage). If you have no
 /// mirror images, also Copy 2 (so it doubles as your opener for the Mirror system). Upgraded: 8 Block / 2 Weak.
 /// </summary>
-public sealed class Disrupt : CardModel
+public sealed class DisruptIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -40,7 +40,7 @@ public sealed class Disrupt : CardModel
         new PowerVar<WeakPower>(1m),
     };
 
-    public Disrupt()
+    public DisruptIllusionist()
         : base(1, CardType.Skill, CardRarity.Basic, TargetType.AnyEnemy)
     {
     }

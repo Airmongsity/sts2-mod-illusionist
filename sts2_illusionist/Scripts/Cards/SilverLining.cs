@@ -15,11 +15,11 @@ namespace Illusionist.Scripts.Cards;
 /// If you have a negative effect (a debuff, or any power with a negative amount such as the
 /// Illusionist's −Strength/−Dexterity), gain 1 energy. Upgraded: gain the energy unconditionally.
 /// </summary>
-public sealed class SilverLining : CardModel
+public sealed class SilverLiningIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    public SilverLining()
+    public SilverLiningIllusionist()
         : base(0, CardType.Skill, CardRarity.Common, TargetType.Self)
     {
     }

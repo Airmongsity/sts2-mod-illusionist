@@ -25,7 +25,7 @@ namespace Illusionist.Scripts.Monsters;
 /// replaying the first card each turn and shattering on unblocked damage — lives in
 /// <see cref="Illusionist.Scripts.Powers.MirrorImagePower"/>; this entity is only the visual.
 ///
-/// Summon/despawn are best-effort (try/catch): if the engine can't spawn or kill the clone, the
+/// SummonIllusionist/despawn are best-effort (try/catch): if the engine can't spawn or kill the clone, the
 /// worst case is "no clone appears / a clone lingers", never a crash that breaks the run.
 /// </summary>
 public sealed class MirrorClone : MonsterModel
@@ -36,7 +36,7 @@ public sealed class MirrorClone : MonsterModel
 
     // The base MonsterModel.Title looks up "MIRROR_CLONE.name" in the "monsters" loc table, which
     // we don't ship — that threw a LocException on every name lookup. Point at a key we do define.
-    public override LocString Title => new LocString("cards", "MIRROR_IMAGE.title");
+    public override LocString Title => new LocString("cards", "MIRROR_IMAGE_ILLUSIONIST.title");
 
     // Reuse the reskinned player's own (Necrobinder) visuals so the clone looks like a copy of you.
     protected override string VisualsPath => SceneHelper.GetScenePath("creature_visuals/necrobinder");
@@ -52,8 +52,8 @@ public sealed class MirrorClone : MonsterModel
         return new MonsterMoveStateMachine(new MonsterState[] { idle }, idle);
     }
 
-    /// <summary>Summon one mirror clone beside the player (best-effort).</summary>
-    public static async Task Summon(Player player)
+    /// <summary>SummonIllusionist one mirror clone beside the player (best-effort).</summary>
+    public static async Task SummonIllusionist(Player player)
     {
         try
         {
@@ -81,7 +81,7 @@ public sealed class MirrorClone : MonsterModel
         await PowerCmd.Apply<MirrorImagePower>(choiceContext, player.Creature, count, player.Creature, null);
         for (int i = 0; i < count; i++)
         {
-            await Summon(player);
+            await SummonIllusionist(player);
         }
     }
 

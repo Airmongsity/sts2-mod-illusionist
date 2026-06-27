@@ -9,7 +9,7 @@ using MegaCrit.Sts2.Core.Models;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
-/// 即兴 (Improvise) power — the first time you transmute a card each turn, that transmuted card is
+/// 即兴 (ImproviseIllusionist) power — the first time you transmute a card each turn, that transmuted card is
 /// auto-played for free at a random enemy (<see cref="CardCmd.AutoPlay"/> with a null target, the
 /// same call Hellraiser uses). Risk/reward: you don't pick the target, but it costs nothing (so it
 /// cheats out expensive transmuted cards) and, as your first card played, it gets replayed by your

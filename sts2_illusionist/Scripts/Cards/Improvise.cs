@@ -12,21 +12,21 @@ using Illusionist.Scripts.Powers;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 即兴 (Improvise) — 1 cost Power, Rare (upgraded: Innate). The first time you transmute a card each
+/// 即兴 (ImproviseIllusionist) — 1 cost Power, Rare (upgraded: Innate). The first time you transmute a card each
 /// turn, play that transmuted card for free at a random enemy. High-risk/high-reward: you don't choose
 /// the target, but it's free (cheats out expensive transmuted cards) and, as your first play, it's
 /// replayed by your mirror images.
 /// </summary>
-public sealed class Improvise : CardModel
+public sealed class ImproviseIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
     {
-        IllusionHoverTips.Transmute,
+        IllusionHoverTips.TransmuteIllusionist,
     };
 
-    public Improvise()
+    public ImproviseIllusionist()
         : base(1, CardType.Power, CardRarity.Rare, TargetType.Self)
     {
     }

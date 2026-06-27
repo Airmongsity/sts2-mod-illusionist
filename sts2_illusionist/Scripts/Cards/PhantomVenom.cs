@@ -16,7 +16,7 @@ using Illusionist.Scripts;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 淬毒 (Phantom Venom) — 0 cost Attack, Common (upgraded: 18 damage). Named PhantomVenom because the
+/// 淬毒 (Phantom Venom) — 0 cost Attack, Common (upgraded: 18 damage). Named PhantomVenomIllusionist because the
 /// base game already has a card whose type is "Envenom" (model ids are derived from the type name).
 /// Deal 12 damage, then 幻化 (transmute) this card into a Toxic — it reverts back at the start of your
 /// next turn, so it stays a repeatable cheap nuke while temporarily polluting your pile.
@@ -26,13 +26,13 @@ namespace Illusionist.Scripts.Cards;
 /// result pile, drops a Toxic in the discard, and registers that Toxic to revert into a clone of this
 /// card next turn (via <see cref="Transmutation.RegisterRevert"/>).</para>
 /// </summary>
-public sealed class PhantomVenom : CardModel
+public sealed class PhantomVenomIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
     {
-        IllusionHoverTips.Transmute,
+        IllusionHoverTips.TransmuteIllusionist,
         HoverTipFactory.FromCard<MegaCrit.Sts2.Core.Models.Cards.Toxic>(),
     };
 
@@ -41,7 +41,7 @@ public sealed class PhantomVenom : CardModel
         new DamageVar(12m, ValueProp.Move),
     };
 
-    public PhantomVenom()
+    public PhantomVenomIllusionist()
         : base(0, CardType.Attack, CardRarity.Common, TargetType.AnyEnemy)
     {
     }
@@ -76,7 +76,7 @@ public sealed class PhantomVenom : CardModel
         }
         catch (Exception ex)
         {
-            Log.Error($"[illusionist] PhantomVenom: transmute-to-Toxic failed: {ex}");
+            Log.Error($"[illusionist] PhantomVenomIllusionist: transmute-to-Toxic failed: {ex}");
         }
     }
 

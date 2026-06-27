@@ -13,19 +13,19 @@ using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 虚晃 (Feint) — 2 cost Attack, Rare (upgraded: 1 cost). Retain.
+/// 虚晃 (FeintIllusionist) — 2 cost Attack, Rare (upgraded: 1 cost). Retain.
 /// If the target's intent this turn includes Attack, Stun it (it does nothing this turn). A reactive
 /// control piece for the Intent system — hold it (Retain) until a foe telegraphs a big hit, then
 /// cancel the swing entirely.
 /// </summary>
-public sealed class Feint : CardModel
+public sealed class FeintIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     // Retain: it only pays off against an attack intent, so let the player bank it until then.
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Retain };
 
-    public Feint()
+    public FeintIllusionist()
         : base(2, CardType.Attack, CardRarity.Rare, TargetType.AnyEnemy)
     {
     }

@@ -17,11 +17,11 @@ using MegaCrit.Sts2.Core.ValueProps;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 致盲 (Blind) — 1 cost Attack, Common.
+/// 致盲 (BlindIllusionist) — 1 cost Attack, Common.
 /// Deal 5 damage; if the enemy intends to attack, apply 1 Weak and gain 5 Block — a reactive
 /// attack that punishes (and partly defends against) an incoming swing. Upgraded: 8 damage.
 /// </summary>
-public sealed class Blind : CardModel
+public sealed class BlindIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -37,7 +37,7 @@ public sealed class Blind : CardModel
         new BlockVar(5m, ValueProp.Move),
     };
 
-    public Blind()
+    public BlindIllusionist()
         : base(1, CardType.Attack, CardRarity.Common, TargetType.AnyEnemy)
     {
     }

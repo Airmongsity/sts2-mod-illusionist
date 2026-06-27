@@ -22,7 +22,7 @@ namespace Illusionist.Scripts.Cards;
 /// and Copy 2. Upgraded: 9 damage. (Registered in the pool but Ancient rarity keeps it out of
 /// normal rewards.)
 /// </summary>
-public sealed class PhantasmStorm : CardModel
+public sealed class PhantasmStormIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -37,7 +37,7 @@ public sealed class PhantasmStorm : CardModel
         new DamageVar(6m, ValueProp.Move),
     };
 
-    public PhantasmStorm()
+    public PhantasmStormIllusionist()
         : base(1, CardType.Attack, CardRarity.Ancient, TargetType.AllEnemies)
     {
     }

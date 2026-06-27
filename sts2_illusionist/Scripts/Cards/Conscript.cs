@@ -14,11 +14,11 @@ using Illusionist.Scripts.Powers;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 征召 (Conscript) — 1 cost Skill, Rare (upgraded: 0 cost), Exhaust.
+/// 征召 (ConscriptIllusionist) — 1 cost Skill, Rare (upgraded: 0 cost), Exhaust.
 /// Copy 4 (create four mirror images, each with its own cosmetic clone), then lose 1 Strength
 /// and 1 Dexterity for the rest of combat.
 /// </summary>
-public sealed class Conscript : CardModel
+public sealed class ConscriptIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -32,7 +32,7 @@ public sealed class Conscript : CardModel
         HoverTipFactory.FromPower<DexterityPower>(),
     };
 
-    public Conscript()
+    public ConscriptIllusionist()
         : base(1, CardType.Skill, CardRarity.Rare, TargetType.Self)
     {
     }
@@ -41,10 +41,10 @@ public sealed class Conscript : CardModel
     {
         // Copy 4: four mirrors (power amount 4) plus one cosmetic clone per mirror.
         await PowerCmd.Apply<MirrorImagePower>(choiceContext, base.Owner.Creature, 4, base.Owner.Creature, this);
-        await MirrorClone.Summon(base.Owner);
-        await MirrorClone.Summon(base.Owner);
-        await MirrorClone.Summon(base.Owner);
-        await MirrorClone.Summon(base.Owner);
+        await MirrorClone.SummonIllusionist(base.Owner);
+        await MirrorClone.SummonIllusionist(base.Owner);
+        await MirrorClone.SummonIllusionist(base.Owner);
+        await MirrorClone.SummonIllusionist(base.Owner);
         // Cost of the copies: lose 1 Strength and 1 Dexterity (both allow negative stacks).
         await PowerCmd.Apply<StrengthPower>(choiceContext, base.Owner.Creature, -1, base.Owner.Creature, this);
         await PowerCmd.Apply<DexterityPower>(choiceContext, base.Owner.Creature, -1, base.Owner.Creature, this);

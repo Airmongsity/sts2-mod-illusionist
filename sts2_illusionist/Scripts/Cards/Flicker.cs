@@ -12,10 +12,10 @@ using MegaCrit.Sts2.Core.ValueProps;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 闪烁 (Flicker) — 1 cost Attack, Common.
+/// 闪烁 (FlickerIllusionist) — 1 cost Attack, Common.
 /// Deal 12 damage to ALL enemies. Upgraded: 16 damage.
 /// </summary>
-public sealed class Flicker : CardModel
+public sealed class FlickerIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -24,7 +24,7 @@ public sealed class Flicker : CardModel
         new DamageVar(12m, ValueProp.Move),
     };
 
-    public Flicker()
+    public FlickerIllusionist()
         : base(1, CardType.Attack, CardRarity.Common, TargetType.AllEnemies)
     {
     }

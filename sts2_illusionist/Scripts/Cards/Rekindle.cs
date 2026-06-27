@@ -13,13 +13,13 @@ using Illusionist.Scripts.Powers;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 重燃 (Rekindle) — 1 cost Skill, Common (upgraded: no longer gains Frail).
+/// 重燃 (RekindleIllusionist) — 1 cost Skill, Common (upgraded: no longer gains Frail).
 /// Gain 1 Frail (on yourself); at the start of your next turn, Copy 1. The cheap, Common, reliable
 /// 0->1 restart: even if every mirror shatters this turn, the delayed copy lands next turn no matter
 /// what. The self-Frail (block gained -25%) is a soft tax you can dodge by building your Block FIRST,
-/// then playing Rekindle.
+/// then playing RekindleIllusionist.
 /// </summary>
-public sealed class Rekindle : CardModel
+public sealed class RekindleIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -29,7 +29,7 @@ public sealed class Rekindle : CardModel
         ? new IHoverTip[] { IllusionHoverTips.Copy, IllusionHoverTips.CopyToken }
         : new IHoverTip[] { HoverTipFactory.FromPower<FrailPower>(), IllusionHoverTips.Copy, IllusionHoverTips.CopyToken };
 
-    public Rekindle()
+    public RekindleIllusionist()
         : base(1, CardType.Skill, CardRarity.Common, TargetType.Self)
     {
     }

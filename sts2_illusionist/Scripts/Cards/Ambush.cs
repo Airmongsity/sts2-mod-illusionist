@@ -14,11 +14,11 @@ using Illusionist.Scripts;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 突袭 (Ambush) — 1 cost Attack, Common.
+/// 突袭 (AmbushIllusionist) — 1 cost Attack, Common.
 /// Deal 7 damage. 先机 (First Move): if this is the first card you play this turn, gain 7 Block.
 /// Upgraded: 9 damage / 9 Block.
 /// </summary>
-public sealed class Ambush : CardModel
+public sealed class AmbushIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -32,7 +32,7 @@ public sealed class Ambush : CardModel
         new BlockVar(7m, ValueProp.Move),
     };
 
-    public Ambush()
+    public AmbushIllusionist()
         : base(1, CardType.Attack, CardRarity.Common, TargetType.AnyEnemy)
     {
     }

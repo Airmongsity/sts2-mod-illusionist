@@ -14,7 +14,7 @@ namespace Illusionist.Scripts.Powers;
 
 /// <summary>
 /// 镜像 (Mirror Image) power. While the owner has at least one mirror, the first card(s) they
-/// play each turn are replayed — one extra play per mirror (the same engine mechanism Echo Form
+/// play each turn are replayed — one extra play per mirror (the same engine mechanism EchoIllusionist Form
 /// uses, so the WHOLE card is replayed, effects and all). When the owner takes unblocked damage,
 /// all mirrors shatter (the power is removed entirely).
 /// </summary>

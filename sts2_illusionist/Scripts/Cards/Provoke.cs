@@ -14,19 +14,19 @@ using Illusionist.Scripts.Powers;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 挑衅 (Provoke) — 0 cost Skill, Uncommon (upgraded: 10 -> 18 Strength, 1 -> 2 Dexterity).
+/// 挑衅 (ProvokeIllusionist) — 0 cost Skill, Uncommon (upgraded: 10 -> 18 Strength, 1 -> 2 Dexterity).
 /// This turn, give the target enemy temporary Strength (inflating its attack telegraph), and gain
 /// permanent Dexterity yourself. The intent payoff terminal: goad the enemy into a bigger swing,
-/// then reflect it with 抗衡 (Counter) or block it with 预见 (Foresight). It scales with the Strength
+/// then reflect it with 抗衡 (CounterIllusionist) or block it with 预见 (ForesightIllusionist). It scales with the Strength
 /// YOU grant — not the enemy's base numbers — so it beats high-HP single targets that a 1:1 reflect
 /// never could, and the Dexterity makes it worth playing even outside the combo (block scaling).
 ///
 /// The Strength is temporary (<see cref="ProvokePower"/>, Flex-style): it lasts through the enemy's
-/// own attack and is removed at the end of the enemy's turn. So Provoke makes the REAL incoming hit
-/// bigger — the player must neutralize it (Foresight block, a kill, or an intent change), which is
+/// own attack and is removed at the end of the enemy's turn. So ProvokeIllusionist makes the REAL incoming hit
+/// bigger — the player must neutralize it (ForesightIllusionist block, a kill, or an intent change), which is
 /// the skill check that keeps "give the enemy +Strength" honest. The Dexterity is permanent (self).
 /// </summary>
-public sealed class Provoke : CardModel
+public sealed class ProvokeIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -42,7 +42,7 @@ public sealed class Provoke : CardModel
         new PowerVar<DexterityPower>(1m),
     };
 
-    public Provoke()
+    public ProvokeIllusionist()
         : base(0, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }

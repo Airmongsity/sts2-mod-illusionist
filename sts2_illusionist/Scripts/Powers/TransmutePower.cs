@@ -16,17 +16,17 @@ using MegaCrit.Sts2.Core.Nodes.CommonUi;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
-/// 幻化 (Transmute) revert power — maintains, for each transmuted card, a STACK of its previous
+/// 幻化 (TransmuteIllusionist) revert power — maintains, for each transmuted card, a STACK of its previous
 /// forms, and pops ONE layer at the START of each of your turns (after the hand is drawn, before you
 /// can play). A transmuted card therefore stays transmuted through the enemy's turn and unwinds one
 /// step when your next turn begins — so a single 幻化 lasts until your next turn, and chained 幻化 on
 /// the same card peel back one step per turn:
 ///
-/// <para>Turn 1: 打击 → Flicker → 防御 (stack under 防御 = [打击, Flicker]). Start of turn 2: 防御 → Flicker.
-/// Start of turn 3: Flicker → 打击. The card "remembers" every form and unwinds one per turn.</para>
+/// <para>Turn 1: 打击 → FlickerIllusionist → 防御 (stack under 防御 = [打击, FlickerIllusionist]). Start of turn 2: 防御 → FlickerIllusionist.
+/// Start of turn 3: FlickerIllusionist → 打击. The card "remembers" every form and unwinds one per turn.</para>
 ///
 /// Reverting at turn START (not end) avoids any race between the revert and the enemy acting — most
-/// importantly, Improvise's auto-played card resolves fully and nothing reverts mid-enemy-turn.
+/// importantly, ImproviseIllusionist's auto-played card resolves fully and nothing reverts mid-enemy-turn.
 ///
 /// Single-instance, one shared set of chains per combat. A transmuted card keeps unwinding wherever
 /// it lives — hand, draw, discard, AND the EXHAUST pile (its <see cref="CardModel.Pile"/> is non-null
@@ -97,13 +97,18 @@ public sealed class TransmutePower : PowerModel
         return (chain != null && chain.Predecessors.Count > 0) ? chain.Predecessors[^1] : null;
     }
 
-    public override async Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
+    public override async Task AfterPlayerTurnStartLate(PlayerChoiceContext choiceContext, Player player)
     {
-        // Revert at the START of the owner's turn — after the hand is drawn, before they can play
-        // (this hook fires immediately after CardPileCmd.Draw in the turn-start sequence). Doing it
-        // here instead of at end-of-turn keeps transmuted cards intact through the enemy's turn, so
-        // there's no race between reverting and the enemy acting — in particular, Improvise's
-        // auto-played card resolves fully on the player's turn and nothing reverts mid-enemy-turn.
+        // Revert at the START of the owner's turn — after the hand is drawn, before they can play.
+        // Doing it here instead of at end-of-turn keeps transmuted cards intact through the enemy's
+        // turn, so there's no race between reverting and the enemy acting — in particular,
+        // ImproviseIllusionist's auto-played card resolves fully on the player's turn and nothing
+        // reverts mid-enemy-turn.
+        //
+        // We use the LATE turn-start phase specifically so this runs AFTER every power's regular
+        // AfterPlayerTurnStart — most importantly after ImproviseIllusionist has reset its
+        // "first transmute this turn" flag. The revert is itself a transformation that must be able
+        // to count as that first transmute (see the NotifyTransformed call below).
         if (player.Creature != base.Owner)
         {
             return;
@@ -161,7 +166,7 @@ public sealed class TransmutePower : PowerModel
             }
             catch (Exception ex)
             {
-                Log.Error($"[illusionist] Transmute: batch revert failed: {ex}");
+                Log.Error($"[illusionist] TransmuteIllusionist: batch revert failed: {ex}");
             }
 
             foreach ((Chain chain, CardModel previous) in pending)
@@ -172,9 +177,19 @@ public sealed class TransmutePower : PowerModel
                     data.Chains.Remove(chain);
                 }
             }
+
+            // The turn-start revert is itself a transformation, so each reverted card runs through
+            // the same transmute-payoff choke point a forward 幻化 does: 流变 advances once per
+            // reverted card ("two transforms is two transforms"), and 即兴 auto-plays the first
+            // reverted card of the turn at a random enemy. Two transforms is two transforms — every
+            // reverted card pings NotifyTransformed, in revert order.
+            foreach ((Chain _, CardModel previous) in pending)
+            {
+                await Transmutation.NotifyTransformed(player, choiceContext, previous);
+            }
         }
 
-        Log.Info($"[illusionist] Transmute: reverted {batch.Count} card(s) one layer; {data.Chains.Count} chain(s) remain.");
+        Log.Info($"[illusionist] TransmuteIllusionist: reverted {batch.Count} card(s) one layer; {data.Chains.Count} chain(s) remain.");
 
         // Nothing left to unwind — remove the power so it doesn't linger as an empty status.
         if (data.Chains.Count == 0)

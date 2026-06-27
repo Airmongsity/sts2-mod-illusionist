@@ -17,7 +17,7 @@ using MegaCrit.Sts2.Core.ValueProps;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 反击 (Riposte) — 1 cost Attack, Basic (starter).
+/// 反击 (RiposteIllusionist) — 1 cost Attack, Basic (starter).
 /// Deal 6 damage; if the enemy intends to attack this turn, deal 4 extra damage. Then 幻化
 /// (transmute) this card into its upgraded version — each play upgrades it IN PLACE, so replays/
 /// re-draws hit harder each time. It reverts one tier at the START of your next turn.
@@ -27,7 +27,7 @@ namespace Illusionist.Scripts.Cards;
 /// real campfire upgrade is untouched (fake-upgrade and true-upgrade coexist). The revert runs in
 /// <see cref="AfterPlayerTurnStart"/>; every combat card receives that hook in any pile.</para>
 /// </summary>
-public sealed class Riposte : CardModel
+public sealed class RiposteIllusionist : CardModel
 {
     /// <summary>Per play-morph tier: extra base damage and extra "intends to attack" bonus.</summary>
     private const decimal MorphDamage = 2m;
@@ -45,7 +45,7 @@ public sealed class Riposte : CardModel
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
     {
-        Illusionist.Scripts.IllusionHoverTips.Transmute,
+        Illusionist.Scripts.IllusionHoverTips.TransmuteIllusionist,
     };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
@@ -54,7 +54,7 @@ public sealed class Riposte : CardModel
         new DynamicVar("Bonus", 4m),
     };
 
-    public Riposte()
+    public RiposteIllusionist()
         : base(1, CardType.Attack, CardRarity.Basic, TargetType.AnyEnemy)
     {
     }

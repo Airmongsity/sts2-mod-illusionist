@@ -13,7 +13,7 @@ using Illusionist.Scripts.Powers;
 namespace Illusionist.Scripts;
 
 /// <summary>
-/// Shared helpers for the 幻化 (Transmute) system: temporarily transform cards in hand (reverting at
+/// Shared helpers for the 幻化 (TransmuteIllusionist) system: temporarily transform cards in hand (reverting at
 /// end of turn if unplayed, via <see cref="TransmutePower"/>). Every transmute also pings
 /// <see cref="FluxweavePower"/>, so "draw on transform" lives in one place.
 /// </summary>
@@ -46,11 +46,11 @@ public static class Transmutation
 
     /// <summary>
     /// 幻化 a specific set of cards (until end of turn). Skips un-transformable cards, registers the
-    /// revert, and triggers Fluxweave per card. Used by 千面 / Myriad Faces to reshape a whole hand.
+    /// revert, and triggers FluxweaveIllusionist per card. Used by 千面 / Myriad Faces to reshape a whole hand.
     /// </summary>
     public static async Task TransmuteCards(IEnumerable<CardModel> originals, CardModel source, PlayerChoiceContext choiceContext, Func<CardModel, CardModel> makeReplacement)
     {
-        // Snapshot up front: transforming (and the Fluxweave draws it triggers) mutates the piles.
+        // Snapshot up front: transforming (and the FluxweaveIllusionist draws it triggers) mutates the piles.
         List<CardModel> targets = originals.Where(c => c.IsTransformable).ToList();
         if (targets.Count == 0)
         {
@@ -76,14 +76,15 @@ public static class Transmutation
 
     /// <summary>
     /// Call whenever a card is transmuted (幻化), passing the resulting (transformed) card. The single
-    /// choke point for transmute payoffs: Fluxweave draws, and Improvise auto-plays the first transmute
+    /// choke point for transmute payoffs: FluxweaveIllusionist draws, and ImproviseIllusionist auto-plays the first transmute
     /// of the turn at a random enemy.
     /// </summary>
     public static async Task NotifyTransformed(Player player, PlayerChoiceContext choiceContext, CardModel transformedCard)
     {
-        if (player.Creature.GetPower<FluxweavePower>() != null)
+        // Each 流变 is its own instance and settles separately, so advance every live copy.
+        foreach (FluxweavePower flux in player.Creature.GetPowerInstances<FluxweavePower>().ToList())
         {
-            await CardPileCmd.Draw(choiceContext, 1m, player);
+            await flux.OnTransform(choiceContext);
         }
 
         ImprovisePower? improvise = player.Creature.GetPower<ImprovisePower>();

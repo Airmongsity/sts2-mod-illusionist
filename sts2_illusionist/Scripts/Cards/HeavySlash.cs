@@ -19,7 +19,7 @@ namespace Illusionist.Scripts.Cards;
 /// Deal 22 damage. 先机 (First Move): if this is the first card you play this turn, gain 1 energy.
 /// Upgraded: 30 damage.
 /// </summary>
-public sealed class HeavySlash : CardModel
+public sealed class HeavySlashIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -33,7 +33,7 @@ public sealed class HeavySlash : CardModel
         new DamageVar(22m, ValueProp.Move),
     };
 
-    public HeavySlash()
+    public HeavySlashIllusionist()
         : base(3, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }

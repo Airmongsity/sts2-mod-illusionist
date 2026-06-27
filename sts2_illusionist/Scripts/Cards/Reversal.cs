@@ -10,32 +10,29 @@ using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
-using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
+using MegaCrit.Sts2.Core.MonsterMoves.MonsterMoveStateMachine;
 using MegaCrit.Sts2.Core.ValueProps;
 
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 逆转 (Reversal) — 2 cost Skill, Uncommon (upgraded: Retain).
-/// Apply 2 Vulnerable. If the target intends to attack, turn its attack against itself: it is stunned
-/// (does not attack) and instead gains Block equal to the damage it would have dealt.
-///
-/// <para>Implemented with the engine's Stun (a clean, robust mechanic) plus a stun-turn move that
-/// makes the enemy gain Block — so the intent icon shows "stunned" rather than a shield, but the
-/// effect (no attack; the foe defends for that much instead) matches.</para>
+/// If the target intends to attack, CHANGE that attack into intending to gain Block equal to the
+/// damage it would have dealt — this turn's attack is discarded and replaced by a defend. Any
+/// non-attack intents on the same move stay in the telegraph, and the enemy's later turns are
+/// untouched (its move sequence continues normally after).
 /// </summary>
-public sealed class Reversal : CardModel
+public sealed class ReversalIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
     {
-        HoverTipFactory.FromPower<VulnerablePower>(),
         HoverTipFactory.Static(StaticHoverTip.Block),
     };
 
-    public Reversal()
+    public ReversalIllusionist()
         : base(2, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
@@ -50,15 +47,13 @@ public sealed class Reversal : CardModel
         ArgumentNullException.ThrowIfNull(cardPlay.Target, "cardPlay.Target");
         Creature target = cardPlay.Target;
 
-        await PowerCmd.Apply<VulnerablePower>(choiceContext, target, 2, base.Owner.Creature, this);
-
         if (target.Monster == null)
         {
             return;
         }
 
-        // Only acts on an attack intent: change it into "gain Block equal to the intended damage".
-        List<AttackIntent> attacks = target.Monster.NextMove.Intents.OfType<AttackIntent>().ToList();
+        MoveState move = target.Monster.NextMove;
+        List<AttackIntent> attacks = move.Intents.OfType<AttackIntent>().ToList();
         if (attacks.Count == 0)
         {
             return;
@@ -68,16 +63,29 @@ public sealed class Reversal : CardModel
         {
             IReadOnlyList<Creature> me = new[] { base.Owner.Creature };
             int block = attacks.Sum(a => a.GetTotalDamage(me, target));
-            if (block <= 0)
-            {
-                return;
-            }
 
-            // Cancel the attack (stun) and have the enemy gain that much Block on its turn instead.
-            await CreatureCmd.Stun(target, async _ =>
+            // New telegraph: a Defend, plus this move's NON-attack intents (kept untouched).
+            List<AbstractIntent> intents = new List<AbstractIntent> { new DefendIntent() };
+            intents.AddRange(move.Intents.Where(i => i.IntentType != IntentType.Attack && i.IntentType != IntentType.DeathBlow));
+
+            MoveState blockMove = new MoveState(
+                "REVERSAL_DEFEND_ILLUSIONIST",
+                async (IReadOnlyList<Creature> _) =>
+                {
+                    if (block > 0)
+                    {
+                        await CreatureCmd.GainBlock(target, block, ValueProp.Unpowered, null);
+                    }
+                },
+                intents.ToArray())
             {
-                await CreatureCmd.GainBlock(target, block, ValueProp.Unpowered, null);
-            });
+                // Preserve the enemy's sequence exactly: after this defend it goes wherever the
+                // attack would have led, so no cross-turn intent is changed.
+                FollowUpStateId = move.FollowUpStateId,
+            };
+            blockMove.FollowUpState = move.FollowUpState;
+
+            target.Monster.SetMoveImmediate(blockMove, forceTransition: true);
         }
         catch (Exception ex)
         {

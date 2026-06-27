@@ -17,7 +17,7 @@ namespace Illusionist.Scripts.Cards;
 /// Gain 8 Block, then put a chosen card from your discard pile on top of your draw pile
 /// (top-deck control). Upgraded: gain 10 Block.
 /// </summary>
-public sealed class FateLoom : CardModel
+public sealed class FateLoomIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -28,7 +28,7 @@ public sealed class FateLoom : CardModel
         new BlockVar(8m, ValueProp.Move),
     };
 
-    public FateLoom()
+    public FateLoomIllusionist()
         : base(1, CardType.Skill, CardRarity.Common, TargetType.Self)
     {
     }

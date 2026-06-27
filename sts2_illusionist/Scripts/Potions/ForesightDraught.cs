@@ -14,7 +14,7 @@ using MegaCrit.Sts2.Core.Models.Powers;
 namespace Illusionist.Scripts.Potions;
 
 /// <summary>
-/// 预见药剂 (Foresight Draught) — Uncommon, combat-only. Draw 2 cards and Retain your hand this
+/// 预见药剂 (ForesightIllusionist Draught) — Uncommon, combat-only. Draw 2 cards and Retain your hand this
 /// turn (via the engine's RetainHandPower — the same mechanism as Stable Serum / 稳定血清).
 /// </summary>
 public sealed class ForesightDraught : PotionModel

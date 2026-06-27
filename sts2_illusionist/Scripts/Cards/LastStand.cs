@@ -14,15 +14,17 @@ using Illusionist.Scripts.Monsters;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 绝境 (Last Stand) — 1 cost Skill, Common.
-/// Gain 7 Block. If you have no mirror clones (复制品), gain 7 extra Block AND Copy 2 (so it doubles
+/// 绝境 (Last Stand) — 1 cost Skill, Common, Exhaust.
+/// Gain 5 Block. If you have no mirror clones (复制品), gain 5 extra Block AND Copy 2 (so it doubles
 /// as a Mirror opener). Upgraded: gains the Retain keyword.
 /// </summary>
-public sealed class LastStand : CardModel
+public sealed class LastStandIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
+
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
 
     // Block tip comes from GainsBlock; add the Copy action + mirror-image (复制品) tips it references.
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
@@ -35,11 +37,11 @@ public sealed class LastStand : CardModel
     // type MUST be given an explicit name or DynamicVarSet throws on the duplicate "Block" key.
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new BlockVar(7m, ValueProp.Move),
-        new BlockVar("ExtraBlock", 7m, ValueProp.Move),
+        new BlockVar(5m, ValueProp.Move),
+        new BlockVar("ExtraBlock", 5m, ValueProp.Move),
     };
 
-    public LastStand()
+    public LastStandIllusionist()
         : base(1, CardType.Skill, CardRarity.Common, TargetType.Self)
     {
     }

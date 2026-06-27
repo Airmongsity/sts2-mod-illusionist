@@ -3,7 +3,7 @@
   "name": "Illusionist (幻术师)",
   "author": "airmongsity",
   "description": "A standalone mirror-and-illusion character with three coupled systems — Mirror (Copy/replay), Intent (read & reflect enemy telegraphs), and Transmute (reshape your own cards). ~40 themed cards plus custom relics, potions, and Orobas (Ancient) content. English & 简体中文.",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "has_pck": true,
   "has_dll": true,
   "affects_gameplay": true

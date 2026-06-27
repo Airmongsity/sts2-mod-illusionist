@@ -18,18 +18,18 @@ namespace Illusionist.Scripts.Cards;
 /// 千面 (Myriad Faces) — 1 cost Skill, Uncommon (upgraded: 0 cost). Choose a card in your hand; 幻化
 /// every OTHER card in your hand into a copy of it until end of turn. The controllable burst enabler:
 /// pick 幻爆 (Phantom Blast) and your whole hand becomes free copies of it to dump in one turn — and
-/// with Fluxweave each reshape draws, refilling for even more.
+/// with FluxweaveIllusionist each reshape draws, refilling for even more.
 /// </summary>
-public sealed class MyriadFaces : CardModel
+public sealed class MyriadFacesIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
     {
-        IllusionHoverTips.Transmute,
+        IllusionHoverTips.TransmuteIllusionist,
     };
 
-    public MyriadFaces()
+    public MyriadFacesIllusionist()
         : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
     {
     }
@@ -41,7 +41,7 @@ public sealed class MyriadFaces : CardModel
         // Pick the template to copy (any card; it stays unchanged — only the others are reshaped).
         List<CardModel> picked = (await CardSelectCmd.FromHand(
             choiceContext, owner,
-            new CardSelectorPrefs(new LocString("cards", "MYRIAD_FACES.selectionScreenPrompt"), 1),
+            new CardSelectorPrefs(new LocString("cards", "MYRIAD_FACES_ILLUSIONIST.selectionScreenPrompt"), 1),
             null,
             this)).ToList();
         if (picked.Count == 0)

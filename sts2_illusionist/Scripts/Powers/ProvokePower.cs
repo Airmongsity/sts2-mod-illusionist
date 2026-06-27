@@ -5,7 +5,7 @@ using MegaCrit.Sts2.Core.Models.Powers;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
-/// The temporary-Strength power applied to an enemy by 挑衅 (Provoke). Subclasses the base game's
+/// The temporary-Strength power applied to an enemy by 挑衅 (ProvokeIllusionist). Subclasses the base game's
 /// <see cref="TemporaryStrengthPower"/> (same machinery as Flex Potion): it grants real Strength on
 /// application and strips it again at the end of the owner's turn. Applied to an enemy, the bonus
 /// persists through the enemy's own attack — so the inflated swing is real (the player must block or
@@ -13,5 +13,5 @@ namespace Illusionist.Scripts.Powers;
 /// </summary>
 public sealed class ProvokePower : TemporaryStrengthPower
 {
-    public override AbstractModel OriginModel => ModelDb.Card<Provoke>();
+    public override AbstractModel OriginModel => ModelDb.Card<ProvokeIllusionist>();
 }

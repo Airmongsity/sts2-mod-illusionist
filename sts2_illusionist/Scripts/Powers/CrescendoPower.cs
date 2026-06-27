@@ -9,8 +9,8 @@ using MegaCrit.Sts2.Core.Models.Powers;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
-/// 渐强 (Crescendo) power. At the start of each of your turns, gain Strength equal to this power's
-/// stacks (1 per Crescendo played). Stacks add, so multiple Crescendos ramp faster.
+/// 渐强 (CrescendoIllusionist) power. At the start of each of your turns, gain Strength equal to this power's
+/// stacks (1 per CrescendoIllusionist played). Stacks add, so multiple Crescendos ramp faster.
 /// </summary>
 public sealed class CrescendoPower : PowerModel
 {

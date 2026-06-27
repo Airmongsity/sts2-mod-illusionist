@@ -12,10 +12,10 @@ using Illusionist.Scripts.Powers;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 炫目 (Dazzle) — 2 cost Power, Uncommon (upgraded: 1 cost).
+/// 炫目 (DazzleIllusionist) — 2 cost Power, Uncommon (upgraded: 1 cost).
 /// At the start of each turn, gain Block equal to your current number of mirror clones (复制品).
 /// </summary>
-public sealed class Dazzle : CardModel
+public sealed class DazzleIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -27,7 +27,7 @@ public sealed class Dazzle : CardModel
         IllusionHoverTips.CopyToken,
     };
 
-    public Dazzle()
+    public DazzleIllusionist()
         : base(2, CardType.Power, CardRarity.Uncommon, TargetType.Self)
     {
     }

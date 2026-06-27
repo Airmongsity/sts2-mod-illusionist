@@ -12,12 +12,12 @@ using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 抗衡 (Counter) — 2 cost Attack, Rare, Exhaust + Ethereal (upgraded: loses Ethereal).
+/// 抗衡 (CounterIllusionist) — 2 cost Attack, Rare, Exhaust + Ethereal (upgraded: loses Ethereal).
 /// Deal damage equal to the target's current attack intent. Heavily gated: Exhaust makes it a
-/// one-shot (no Encore loop), and Ethereal means you must play it the turn you draw it or it
+/// one-shot (no EncoreIllusionist loop), and Ethereal means you must play it the turn you draw it or it
 /// vanishes. Upgrading removes Ethereal so you can hold it for the right (inflated) telegraph.
 /// </summary>
-public sealed class Counter : CardModel
+public sealed class CounterIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -25,7 +25,7 @@ public sealed class Counter : CardModel
     // Upgrade strips Ethereal.
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust, CardKeyword.Ethereal };
 
-    public Counter()
+    public CounterIllusionist()
         : base(2, CardType.Attack, CardRarity.Rare, TargetType.AnyEnemy)
     {
     }
@@ -65,7 +65,7 @@ public sealed class Counter : CardModel
 
     protected override void OnUpgrade()
     {
-        // Lose Ethereal so the upgraded Counter can be held across turns (Exhaust still applies).
+        // Lose Ethereal so the upgraded CounterIllusionist can be held across turns (Exhaust still applies).
         RemoveKeyword(CardKeyword.Ethereal);
     }
 }

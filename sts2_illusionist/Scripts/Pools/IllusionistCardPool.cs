@@ -29,12 +29,12 @@ public sealed class IllusionistCardPool : CardPoolModel
 
     protected override CardModel[] GenerateAllCards() => new CardModel[]
     {
-        ModelDb.Card<IllusionistStrike>(),
-        ModelDb.Card<IllusionistDefend>(),
+        ModelDb.Card<IllusionistStrikeIllusionist>(),
+        ModelDb.Card<IllusionistDefendIllusionist>(),
         // Tokens / Ancient cards that aren't added to the reward pool, but should still appear in the
         // card compendium (the library shows every card in a pool's AllCards). Their Token/Ancient
         // rarity keeps them out of all reward rolls.
-        ModelDb.Card<DimLamp>(),
-        ModelDb.Card<Sabotage>(),
+        ModelDb.Card<DimLampIllusionist>(),
+        ModelDb.Card<SabotageIllusionist>(),
     };
 }

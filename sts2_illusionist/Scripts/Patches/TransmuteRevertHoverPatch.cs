@@ -11,7 +11,7 @@ namespace Illusionist.Scripts.Patches;
 /// <summary>
 /// Show players what a transmuted card reverts to. A card in a 幻化 chain displays no hint of its
 /// underlying form, so we append the revert target's card hover-tip to <see cref="CardModel.HoverTips"/>
-/// — the same way 点灯 / 召唤 (Kindle/Summon) surface their Dim Lamp / Beckon via a card hover.
+/// — the same way 点灯 / 召唤 (KindleIllusionist/SummonIllusionist) surface their Dim Lamp / Beckon via a card hover.
 ///
 /// Only fires for a card that <see cref="TransmutePower"/> tracks; for every other card (and other
 /// characters) <c>GetPower</c> returns null and this is a no-op.

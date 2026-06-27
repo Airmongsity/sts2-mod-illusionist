@@ -15,11 +15,11 @@ using MegaCrit.Sts2.Core.Models.Powers;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 揭露 (Unveil) — 1 cost Skill, Common, Exhaust (upgraded: 0 cost).
+/// 揭露 (UnveilIllusionist) — 1 cost Skill, Common, Exhaust (upgraded: 0 cost).
 /// Apply 2 Vulnerable to ALL enemies. (Renamed from "Expose" — that name collides with a
 /// base-game card's model ID and crashes the game on startup.)
 /// </summary>
-public sealed class Unveil : CardModel
+public sealed class UnveilIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -33,7 +33,7 @@ public sealed class Unveil : CardModel
         new PowerVar<VulnerablePower>(2m),
     };
 
-    public Unveil()
+    public UnveilIllusionist()
         : base(1, CardType.Skill, CardRarity.Common, TargetType.AllEnemies)
     {
     }

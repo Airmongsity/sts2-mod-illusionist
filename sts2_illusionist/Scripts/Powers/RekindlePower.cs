@@ -10,8 +10,8 @@ using Illusionist.Scripts.Monsters;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
-/// 重燃 (Rekindle) delayed-Copy power. A one-shot: at the start of the player's NEXT turn it does
-/// Copy N (N = stacks, one per Rekindle played this turn) and then removes itself. Because the copy
+/// 重燃 (RekindleIllusionist) delayed-Copy power. A one-shot: at the start of the player's NEXT turn it does
+/// Copy N (N = stacks, one per RekindleIllusionist played this turn) and then removes itself. Because the copy
 /// lands at the start of next turn — AFTER any unblocked damage this turn would have shattered your
 /// mirrors — it's a guaranteed rebuild from 0, the reliable restart button after a shatter.
 /// </summary>

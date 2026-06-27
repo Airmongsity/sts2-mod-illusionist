@@ -13,15 +13,15 @@ using MegaCrit.Sts2.Core.ValueProps;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 预见 (Foresight) — 2 cost Skill, Uncommon, Exhaust. Gain Block equal to the selected enemy's
+/// 预见 (ForesightIllusionist) — 2 cost Skill, Uncommon, Exhaust. Gain Block equal to the selected enemy's
 /// current total attack-intent damage. Upgraded: gains Retain.
 ///
-/// The First-Move gate was removed so Foresight slots into the intent-reflect combo: play 挑衅
-/// (Provoke) to inflate an enemy's attack with temporary Strength, then Foresight blocks the
-/// inflated swing while 抗衡 (Counter) reflects it. (Provoke is your first card those turns, which
+/// The First-Move gate was removed so ForesightIllusionist slots into the intent-reflect combo: play 挑衅
+/// (ProvokeIllusionist) to inflate an enemy's attack with temporary Strength, then ForesightIllusionist blocks the
+/// inflated swing while 抗衡 (CounterIllusionist) reflects it. (ProvokeIllusionist is your first card those turns, which
 /// would have disabled a First-Move version.)
 /// </summary>
-public sealed class Foresight : CardModel
+public sealed class ForesightIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
@@ -29,7 +29,7 @@ public sealed class Foresight : CardModel
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
 
-    public Foresight()
+    public ForesightIllusionist()
         : base(2, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
