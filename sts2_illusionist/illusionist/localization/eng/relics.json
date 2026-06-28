@@ -1,14 +1,20 @@
 {
   "HALLUCINATORY_LAMP.title": "Hallucinatory Lamp",
   "HALLUCINATORY_LAMP.description": "At the start of each combat, [gold]Copy[/gold] 1.",
+  "HALLUCINATORY_LAMP.flavor": "Rub it, and a second you steps out of the smoke.",
   "PRISM_SHARD.title": "Prism Shard",
   "PRISM_SHARD.description": "Whenever you create a [gold]mirror image[/gold], gain 1 [gold]Block[/gold].",
-  "HEAD_START.title": "Head Start",
+  "PRISM_SHARD.flavor": "Every facet remembers a different light.",
+  "HEAD_START.title": "Swift Boots",
   "HEAD_START.description": "The first card you play each turn costs 1 less.",
+  "HEAD_START.flavor": "The race is won before the first step.",
   "UNBREAKABLE_MIRROR.title": "Unbreakable Mirror",
   "UNBREAKABLE_MIRROR.description": "The first time you would take unblocked damage each combat, your [gold]mirror images[/gold] are not destroyed.",
+  "UNBREAKABLE_MIRROR.flavor": "Crack it all you like — the reflection will not break.",
   "PRISTINE_MIRROR.title": "Pristine Mirror",
   "PRISTINE_MIRROR.description": "At the end of your turn, if you took no unblocked damage that turn, [gold]Copy[/gold] 1.",
+  "PRISTINE_MIRROR.flavor": "Not a single smudge. Not a single scar.",
   "ANCIENT_LAMP.title": "Lamp Unbound",
-  "ANCIENT_LAMP.description": "At the start of each combat, [gold]Copy[/gold] 3. At the start of your turn, if you have no [gold]mirror images[/gold], [gold]Copy[/gold] 1."
+  "ANCIENT_LAMP.description": "At the start of each combat, [gold]Copy[/gold] 3. At the start of your turn, if you have no [gold]mirror images[/gold], [gold]Copy[/gold] 1.",
+  "ANCIENT_LAMP.flavor": "Its first owner wished for company. He was never alone again."
 }

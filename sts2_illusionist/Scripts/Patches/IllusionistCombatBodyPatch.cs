@@ -24,15 +24,19 @@ namespace Illusionist.Scripts.Patches;
 [HarmonyPatch(typeof(CharacterModel), nameof(CharacterModel.CreateVisuals))]
 public static class IllusionistCombatBodyPatch
 {
-    /// <summary>Desired on-screen height of the character, in pixels. Tune to taste.</summary>
-    private const float TargetHeightPx = 240f;
-
-    /// <summary>Vertical nudge (local px, + = down) applied to the overlaid image. Tune to taste.</summary>
+    /// <summary>Vertical nudge (local px, + = down) for the static fallback image. Tune to taste.</summary>
     private const float YOffset = 0f;
 
     private static void Postfix(CharacterModel __instance, NCreatureVisuals __result)
     {
         if (__instance is not global::Illusionist.Scripts.Characters.Illusionist || __result == null)
+        {
+            return;
+        }
+
+        // Swap the game-driven body skeleton to ours (so idle/attack/cast/hurt/die all animate). Falls
+        // back to the flat static image only if Spine is unavailable.
+        if (SpineBody.SwapOnReady(__result, alpha: 1f))
         {
             return;
         }
@@ -44,8 +48,6 @@ public static class IllusionistCombatBodyPatch
             return;
         }
 
-        // _Ready hasn't run yet (the node isn't in the tree), so %Bounds / the body node aren't
-        // resolved. The shared overlay defers until it is.
-        StaticBodyOverlay.ApplyOnReady(__result, texture, TargetHeightPx, YOffset, alpha: 1f, "IllusionistStaticBody");
+        StaticBodyOverlay.ApplyOnReady(__result, texture, 300f, YOffset, alpha: 1f, "IllusionistStaticBody");
     }
 }

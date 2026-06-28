@@ -23,7 +23,7 @@ namespace Illusionist.Scripts.Patches;
 public static class IllusionistMirrorVisualPatch
 {
     /// <summary>On-screen height of a clone (matches the player body). Tune to taste.</summary>
-    private const float TargetHeightPx = 240f;
+    private const float TargetHeightPx = 300f;
 
     /// <summary>Vertical nudge for the clone image (local px, + = down).</summary>
     private const float YOffset = 0f;
@@ -34,6 +34,13 @@ public static class IllusionistMirrorVisualPatch
     private static void Postfix(MonsterModel __instance, NCreatureVisuals __result)
     {
         if (__instance is not MirrorClone || __result == null)
+        {
+            return;
+        }
+
+        // Clones reuse the SAME skeleton — swap the clone's game-driven body to ours, drawn translucent,
+        // so its animator drives our skeleton. Fall back to the flat image if Spine is unavailable.
+        if (SpineBody.SwapOnReady(__result, Alpha))
         {
             return;
         }

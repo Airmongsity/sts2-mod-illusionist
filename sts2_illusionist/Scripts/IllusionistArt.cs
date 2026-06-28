@@ -17,6 +17,11 @@ public static class IllusionistArt
 {
     private const string CombatBodyPath = "res://illusionist/art/illusionist.jpg";
     private const string CharacterSelectBgPath = "res://illusionist/art/illusionist_background.png";
+    // Avatars are resolved WITHOUT an extension: the loader tries .tga / .webp / .png in turn (the
+    // first two carry an alpha channel; 24-bit PNG does not). An optional grayscale companion file
+    // "<base>_mask.png" supplies alpha for tools that can only export opaque images.
+    private const string TopBarIconBase = "res://illusionist/art/avatar-s";
+    private const string SelectPortraitBase = "res://illusionist/art/avatar-m";
 
     /// <summary>
     /// Pixels whose R, G and B are all at or above this (0..1) are treated as the combat image's
@@ -31,6 +36,12 @@ public static class IllusionistArt
 
     private static ImageTexture? _characterSelectBg;
     private static bool _characterSelectBgTried;
+
+    private static ImageTexture? _topBarIcon;
+    private static bool _topBarIconTried;
+
+    private static ImageTexture? _selectPortrait;
+    private static bool _selectPortraitTried;
 
     /// <summary>The static in-combat character image (replaces the Necrobinder Spine body).</summary>
     public static ImageTexture? CombatBody
@@ -57,6 +68,34 @@ public static class IllusionistArt
                 _characterSelectBg = LoadPng(CharacterSelectBgPath);
             }
             return _characterSelectBg;
+        }
+    }
+
+    /// <summary>The in-run top-bar / run-history avatar (square; replaces Necrobinder's 85×85 icon).</summary>
+    public static ImageTexture? TopBarIcon
+    {
+        get
+        {
+            if (!_topBarIconTried)
+            {
+                _topBarIconTried = true;
+                _topBarIcon = LoadAvatar(TopBarIconBase);
+            }
+            return _topBarIcon;
+        }
+    }
+
+    /// <summary>The character-select portrait (replaces Necrobinder's 132×195 select icon).</summary>
+    public static ImageTexture? SelectPortrait
+    {
+        get
+        {
+            if (!_selectPortraitTried)
+            {
+                _selectPortraitTried = true;
+                _selectPortrait = LoadAvatar(SelectPortraitBase);
+            }
+            return _selectPortrait;
         }
     }
 
@@ -94,6 +133,12 @@ public static class IllusionistArt
 
         return ImageTexture.CreateFromImage(image);
     }
+
+    /// <summary>
+    /// Load an avatar from "&lt;baseNoExt&gt;.(tga|webp|png)" (+ optional "_mask.png") via the shared
+    /// <see cref="ArtImage"/> loader. Transparency must be real (alpha channel or mask) — no keying.
+    /// </summary>
+    private static ImageTexture? LoadAvatar(string baseNoExt) => ArtImage.Load(baseNoExt);
 
     /// <summary>
     /// Make the image's white backdrop transparent (color-key). Runs once at load.

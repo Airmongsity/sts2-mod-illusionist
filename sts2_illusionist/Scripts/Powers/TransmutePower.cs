@@ -162,7 +162,15 @@ public sealed class TransmutePower : PowerModel
         {
             try
             {
-                await CardCmd.Transform(batch, null, CardPreviewStyle.HorizontalLayout);
+                // Many cards can revert in one turn (a hand-wide 千面, chained 幻化, etc.). The base
+                // game's own rule (CardPileCmd.AddToCombatAndPreview, slimed_berserker's 10 Slimed)
+                // is: <=5 cards fan out horizontally, more than that use the "messy" pile layout so
+                // they don't run off the sides of the screen — the engine even logs a warning when a
+                // horizontal preview exceeds five cards.
+                CardPreviewStyle revertStyle = batch.Count > 5
+                    ? CardPreviewStyle.MessyLayout
+                    : CardPreviewStyle.HorizontalLayout;
+                await CardCmd.Transform(batch, null, revertStyle);
             }
             catch (Exception ex)
             {

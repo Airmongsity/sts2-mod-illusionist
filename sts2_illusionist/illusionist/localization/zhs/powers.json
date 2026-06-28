@@ -20,5 +20,7 @@
   "FLUXWEAVE_POWER.title": "流变",
   "FLUXWEAVE_POWER.description": "你每变化2张牌，抽1张牌。",
   "IMPROVISE_POWER.title": "即兴",
-  "IMPROVISE_POWER.description": "每回合你第一次幻化一张牌时，将幻化后的牌对随机敌人打出。"
+  "IMPROVISE_POWER.description": "每回合你第一次幻化一张牌时，将幻化后的牌对随机敌人打出。",
+  "TRANSFORM_COUNT_POWER.title": "本回合变化数",
+  "TRANSFORM_COUNT_POWER.description": "记录你本回合变化的牌的数量。"
 }

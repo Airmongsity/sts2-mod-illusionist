@@ -48,18 +48,19 @@ public static class Transmutation
     /// 幻化 a specific set of cards (until end of turn). Skips un-transformable cards, registers the
     /// revert, and triggers FluxweaveIllusionist per card. Used by 千面 / Myriad Faces to reshape a whole hand.
     /// </summary>
-    public static async Task TransmuteCards(IEnumerable<CardModel> originals, CardModel source, PlayerChoiceContext choiceContext, Func<CardModel, CardModel> makeReplacement)
+    public static async Task<int> TransmuteCards(IEnumerable<CardModel> originals, CardModel source, PlayerChoiceContext choiceContext, Func<CardModel, CardModel> makeReplacement)
     {
         // Snapshot up front: transforming (and the FluxweaveIllusionist draws it triggers) mutates the piles.
         List<CardModel> targets = originals.Where(c => c.IsTransformable).ToList();
         if (targets.Count == 0)
         {
-            return;
+            return 0;
         }
 
         Player owner = source.Owner;
         TransmutePower revert = await EnsureRevertPower(owner, choiceContext, source);
 
+        int transformed = 0;
         foreach (CardModel original in targets)
         {
             CardModel replacement = makeReplacement(original);
@@ -71,7 +72,10 @@ public static class Transmutation
 
             revert.RegisterTransmute(original, result.Value.cardAdded);
             await NotifyTransformed(owner, choiceContext, result.Value.cardAdded);
+            transformed++;
         }
+
+        return transformed;
     }
 
     /// <summary>
@@ -81,6 +85,16 @@ public static class Transmutation
     /// </summary>
     public static async Task NotifyTransformed(Player player, PlayerChoiceContext choiceContext, CardModel transformedCard)
     {
+        // Tally this transform toward "cards transformed this turn" — counting both the forward
+        // transmutes you make and the turn-start reverts (both reach this choke point). Read by
+        // finishers like 嬗变 / Metamorphosis. The counter is a hidden, lazily-created power.
+        TransformCountPower? counter = player.Creature.GetPower<TransformCountPower>();
+        if (counter == null)
+        {
+            counter = await PowerCmd.Apply<TransformCountPower>(choiceContext, player.Creature, 1, player.Creature, null);
+        }
+        counter?.Increment();
+
         // Each 流变 is its own instance and settles separately, so advance every live copy.
         foreach (FluxweavePower flux in player.Creature.GetPowerInstances<FluxweavePower>().ToList())
         {

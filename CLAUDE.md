@@ -4,13 +4,15 @@ This file provides context for AI coding assistants (Claude Code, Cursor, GitHub
 
 ## Project Overview
 
-Sts2-Illusionist-mod is 
+Sts2-Illusionist-mod is a playable character for Slay the Spire 2, built arround mirrors, foresight, and illusion. Fully localized in English and Simplified Chinese
 
-- Repository: 
-- Documentation: 
-- License: 
+- Repository: https://github.com/Airmongsity/sts2-mod-illusionist
+- License: MIT LICENSE
 
 ## Repository Structure
+
+/illusionist-workshop  files upload to Steam workshop
+/sts2_illusionist      mod source
 
 ### Key Directories
 

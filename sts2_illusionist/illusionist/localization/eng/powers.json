@@ -20,5 +20,7 @@
   "FLUXWEAVE_POWER.title": "Fluxweave",
   "FLUXWEAVE_POWER.description": "For every 2 cards you transform, draw 1 card.",
   "IMPROVISE_POWER.title": "Improvise",
-  "IMPROVISE_POWER.description": "The first time you transmute a card each turn, play the transmuted card at a random enemy."
+  "IMPROVISE_POWER.description": "The first time you transmute a card each turn, play the transmuted card at a random enemy.",
+  "TRANSFORM_COUNT_POWER.title": "Transformed This Turn",
+  "TRANSFORM_COUNT_POWER.description": "Counts the cards you have transformed this turn."
 }

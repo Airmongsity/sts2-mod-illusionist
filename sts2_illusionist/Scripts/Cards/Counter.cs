@@ -5,25 +5,42 @@ using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
+using MegaCrit.Sts2.Core.ValueProps;
 
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 抗衡 (CounterIllusionist) — 2 cost Attack, Rare, Exhaust + Ethereal (upgraded: loses Ethereal).
-/// Deal damage equal to the target's current attack intent. Heavily gated: Exhaust makes it a
-/// one-shot (no EncoreIllusionist loop), and Ethereal means you must play it the turn you draw it or it
-/// vanishes. Upgrading removes Ethereal so you can hold it for the right (inflated) telegraph.
+/// 抗衡 (CounterIllusionist) — 2 cost Attack, Rare (upgraded: gains Retain). Deal 10 damage, then
+/// permanently add the target's current attack-intent damage to THIS card's damage — so every enemy
+/// telegraph you "counter" makes the card hit harder forever after (the Ironclad Thrash / Rampage
+/// self-growing pattern). Reflecting a big boss swing snowballs it into a heavy repeatable hit.
 /// </summary>
 public sealed class CounterIllusionist : CardModel
 {
+    // Accumulated growth, tracked separately so it can be re-applied if the card's vars are rebuilt
+    // (e.g. on downgrade), exactly like the base game's Thrash.
+    private decimal _extraDamage;
+
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    // Exhaust (one-shot, can't be recurred via discard) + Ethereal (use it this turn or lose it).
-    // Upgrade strips Ethereal.
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust, CardKeyword.Ethereal };
+    protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
+    {
+        new DamageVar(10m, ValueProp.Move),
+    };
+
+    private decimal ExtraDamage
+    {
+        get => _extraDamage;
+        set
+        {
+            AssertMutable();
+            _extraDamage = value;
+        }
+    }
 
     public CounterIllusionist()
         : base(2, CardType.Attack, CardRarity.Rare, TargetType.AnyEnemy)
@@ -33,39 +50,52 @@ public sealed class CounterIllusionist : CardModel
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay.Target, "cardPlay.Target");
-
         Creature target = cardPlay.Target;
-        if (target.Monster != null)
+
+        // Snapshot the enemy's attack intent BEFORE dealing damage (so a lethal hit doesn't matter).
+        int intentDamage = GetIncomingAttackDamage(target);
+
+        await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this).Targeting(target)
+            .WithHitFx("vfx/vfx_attack_slash")
+            .Execute(choiceContext);
+
+        // Permanently fold that telegraph into this card's damage.
+        if (intentDamage > 0)
         {
-            IReadOnlyList<Creature> playerTargets = new[] { base.Owner.Creature };
-
-            // Mirror the enemy's attack EXACTLY: same per-hit damage and same number of hits
-            // (e.g. an intent of "1 damage x8" deals 1 damage 8 times, not 8 damage once).
-            foreach (AbstractIntent intent in target.Monster.NextMove.Intents)
-            {
-                if (intent is not AttackIntent attack)
-                {
-                    continue;
-                }
-
-                int perHit = attack.GetSingleDamage(playerTargets, target);
-                int hits = attack.Repeats;
-                if (perHit <= 0 || hits <= 0)
-                {
-                    continue;
-                }
-
-                await DamageCmd.Attack(perHit).FromCard(this).Targeting(target)
-                    .WithHitCount(hits)
-                    .WithHitFx("vfx/vfx_attack_slash")
-                    .Execute(choiceContext);
-            }
+            base.DynamicVars.Damage.BaseValue += intentDamage;
+            ExtraDamage += intentDamage;
         }
     }
 
     protected override void OnUpgrade()
     {
-        // Lose Ethereal so the upgraded CounterIllusionist can be held across turns (Exhaust still applies).
-        RemoveKeyword(CardKeyword.Ethereal);
+        // Retain so you can hold it until a worthwhile attack intent is telegraphed.
+        AddKeyword(CardKeyword.Retain);
+    }
+
+    protected override void AfterDowngraded()
+    {
+        base.AfterDowngraded();
+        base.DynamicVars.Damage.BaseValue += ExtraDamage;
+    }
+
+    /// <summary>Total damage this enemy's current attack intent would deal (0 if not attacking).</summary>
+    private int GetIncomingAttackDamage(Creature target)
+    {
+        if (target.Monster == null)
+        {
+            return 0;
+        }
+
+        IReadOnlyList<Creature> playerTargets = new[] { base.Owner.Creature };
+        int total = 0;
+        foreach (AbstractIntent intent in target.Monster.NextMove.Intents)
+        {
+            if (intent is AttackIntent attack)
+            {
+                total += attack.GetTotalDamage(playerTargets, target);
+            }
+        }
+        return total;
     }
 }

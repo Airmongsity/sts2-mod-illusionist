@@ -9,6 +9,17 @@ const OUTPUT_FILE := "res://build/illusionist.pck"
 const CONTENT_DIRS := ["res://illusionist"]
 const SKIP_EXTENSIONS := [".import", ".uid"]
 
+# Textures that must be shipped as IMPORTED Godot resources (.ctex) rather than raw bytes, because
+# something loads them through ResourceLoader instead of FileAccess. spine-godot's atlas loader is the
+# case in point: it does ResourceLoader.load() on the atlas's texture, which only works if the PCK
+# contains the .import sidecar + the compiled .ctex (the raw source PNG is packed by no one). The build
+# script runs a `--import` pass first so these .ctex files exist under res://.godot/imported/.
+const IMPORTED_TEXTURES := [
+	"res://illusionist/art/illusionist.png",   # rest-body single image
+	"res://illusionist/art/skeleton.png",      # combat flipbook atlas page 1
+	"res://illusionist/art/skeleton2.png",     # combat flipbook atlas page 2
+]
+
 func _initialize() -> void:
 	DirAccess.make_dir_recursive_absolute(OUTPUT_DIR)
 	var packer := PCKPacker.new()
@@ -21,6 +32,10 @@ func _initialize() -> void:
 	var added := 0
 	for dir in CONTENT_DIRS:
 		added += _add_dir_recursive(packer, dir)
+
+	# Pack the imported-texture chain (.import sidecar + compiled .ctex) for each special texture.
+	for tex in IMPORTED_TEXTURES:
+		added += _add_imported_texture(packer, tex)
 
 	if added == 0:
 		push_error("No files were added to the PCK. Check CONTENT_DIRS paths.")
@@ -57,6 +72,9 @@ func _add_dir_recursive(packer: PCKPacker, dir_path: String) -> int:
 				if full.ends_with(ext):
 					skip = true
 					break
+			# Raw sources of imported textures are shipped as .ctex instead — don't pack the raw file.
+			if full in IMPORTED_TEXTURES:
+				skip = true
 			if not skip:
 				var add_ok := packer.add_file(full, full)
 				if add_ok != OK:
@@ -67,3 +85,48 @@ func _add_dir_recursive(packer: PCKPacker, dir_path: String) -> int:
 		name = dir.get_next()
 	dir.list_dir_end()
 	return count
+
+# Packs <texture>.import plus every compiled resource it references under res://.godot/imported/.
+func _add_imported_texture(packer: PCKPacker, tex_path: String) -> int:
+	var import_path := tex_path + ".import"
+	if not FileAccess.file_exists(import_path):
+		push_error("Imported texture has no .import (run --import first): %s" % tex_path)
+		quit(1)
+		return 0
+
+	var count := 0
+	# 1) the .import sidecar itself
+	if packer.add_file(import_path, import_path) == OK:
+		count += 1
+	else:
+		push_error("add_file failed: %s" % import_path)
+		quit(1)
+
+	# 2) every res://.godot/imported/*.ctex the sidecar points at
+	var text := FileAccess.get_file_as_string(import_path)
+	for ctex in _extract_imported_resources(text):
+		if not FileAccess.file_exists(ctex):
+			push_error("Compiled resource missing (re-run --import): %s" % ctex)
+			quit(1)
+			return count
+		if packer.add_file(ctex, ctex) == OK:
+			count += 1
+		else:
+			push_error("add_file failed: %s" % ctex)
+			quit(1)
+	return count
+
+# Pull unique "res://.godot/imported/....<ext>" tokens out of an .import file's text.
+func _extract_imported_resources(text: String) -> Array:
+	var found := {}
+	var needle := "res://.godot/imported/"
+	var from := text.find(needle)
+	while from != -1:
+		var end := from
+		# resource paths are quoted strings; read until the closing quote
+		while end < text.length() and text[end] != '"':
+			end += 1
+		var token := text.substr(from, end - from)
+		found[token] = true
+		from = text.find(needle, end)
+	return found.keys()

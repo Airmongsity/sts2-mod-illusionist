@@ -1,30 +1,32 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.Models.Powers;
+using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 using Illusionist.Scripts.Powers;
 
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 挑衅 (ProvokeIllusionist) — 0 cost Skill, Uncommon (upgraded: 10 -> 18 Strength, 1 -> 2 Dexterity).
-/// This turn, give the target enemy temporary Strength (inflating its attack telegraph), and gain
-/// permanent Dexterity yourself. The intent payoff terminal: goad the enemy into a bigger swing,
-/// then reflect it with 抗衡 (CounterIllusionist) or block it with 预见 (ForesightIllusionist). It scales with the Strength
-/// YOU grant — not the enemy's base numbers — so it beats high-HP single targets that a 1:1 reflect
-/// never could, and the Dexterity makes it worth playing even outside the combo (block scaling).
+/// Gain 1 Dexterity (permanent, self). If the target enemy's intent includes attack, give it 10
+/// temporary Strength this turn (inflating that swing). The intent enabler: goad an attacking enemy
+/// into a bigger swing, then reflect it with 抗衡 (CounterIllusionist) or block it with 预见
+/// (ForesightIllusionist) — and the Dexterity makes it worth playing even when the enemy isn't attacking.
 ///
-/// The Strength is temporary (<see cref="ProvokePower"/>, Flex-style): it lasts through the enemy's
-/// own attack and is removed at the end of the enemy's turn. So ProvokeIllusionist makes the REAL incoming hit
-/// bigger — the player must neutralize it (ForesightIllusionist block, a kill, or an intent change), which is
-/// the skill check that keeps "give the enemy +Strength" honest. The Dexterity is permanent (self).
+/// <para>The Strength is temporary (<see cref="ProvokePower"/>, Flex-style): it lasts through the
+/// enemy's own attack and is removed at the end of the enemy's turn, so it only ever makes the REAL
+/// incoming hit bigger (which you then neutralize). Conditioning it on an attack intent ties the card
+/// to the enemy's 意图 — so it reads as, and counts as, an intent card.</para>
 /// </summary>
 public sealed class ProvokeIllusionist : CardModel
 {
@@ -50,10 +52,26 @@ public sealed class ProvokeIllusionist : CardModel
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay.Target, "cardPlay.Target");
-        // Temporary Strength to the enemy (inflates its telegraph this turn).
-        await PowerCmd.Apply<ProvokePower>(choiceContext, cardPlay.Target, base.DynamicVars.Strength.BaseValue, base.Owner.Creature, this);
+
         // Permanent Dexterity to yourself (rest of combat).
         await PowerCmd.Apply<DexterityPower>(choiceContext, base.Owner.Creature, base.DynamicVars.Dexterity.BaseValue, base.Owner.Creature, this);
+
+        // Only if the enemy telegraphs an attack: give it temporary Strength this turn (inflating that
+        // swing — which you then neutralize/reflect). This is what makes the +Strength honest, and it
+        // ties Provoke to the enemy's intent (so it reads as, and counts as, an intent card).
+        if (IntendsToAttack(cardPlay.Target))
+        {
+            await PowerCmd.Apply<ProvokePower>(choiceContext, cardPlay.Target, base.DynamicVars.Strength.BaseValue, base.Owner.Creature, this);
+        }
+    }
+
+    private static bool IntendsToAttack(Creature target)
+    {
+        if (target.Monster == null)
+        {
+            return false;
+        }
+        return target.Monster.NextMove.Intents.Any(i => i.IntentType == IntentType.Attack);
     }
 
     protected override void OnUpgrade()

@@ -68,28 +68,68 @@ public sealed class AgingIllusionist : CardModel
 
         try
         {
-            MoveState thisTurnMove = target.Monster.NextMove;
+            MoveState currentMove = target.Monster.NextMove;
+            MoveState? nextMove = ResolveNextMove(target);
 
-            IReadOnlyList<Creature> playerTargets = new[] { base.Owner.Creature };
-            target.Monster.RollMove(playerTargets);
-            MoveState nextTurnMove = target.Monster.NextMove;
-
-            // If there's no distinct next move (a "must perform once" move can't advance yet),
-            // RollMove returns the same move — leave the intent untouched.
-            if (ReferenceEquals(nextTurnMove, thisTurnMove))
+            // No distinct next move (e.g. a single-move monster whose move loops back to itself) —
+            // leave the intent untouched.
+            if (nextMove == null || ReferenceEquals(nextMove, currentMove))
             {
                 Log.Info("[illusionist] AgingIllusionist: no distinct next move to advance to; no intent change.");
                 return;
             }
 
-            // Discard the current move: the enemy performs next turn's move now. Unlike ReversalIllusionist,
-            // we do NOT set FollowUpState back to the original, so the current move is dropped.
-            target.Monster.SetMoveImmediate(nextTurnMove, forceTransition: true);
+            // Discard the current move: the enemy performs next turn's move now. We force the
+            // transition (forceTransition) and resolve the next move via the state machine's follow-up
+            // chain directly — NOT RollMove, which the engine refuses to advance on the monster's first
+            // turn or for a freshly-rolled, not-yet-performed telegraph (that's why this used to do
+            // nothing). Unlike ReversalIllusionist we don't queue the original back, so it's dropped.
+            target.Monster.SetMoveImmediate(nextMove, forceTransition: true);
         }
         catch (Exception ex)
         {
             Log.Error($"[illusionist] AgingIllusionist failed to advance intent: {ex}");
         }
+    }
+
+    /// <summary>
+    /// The next MOVE the enemy would transition to after its current one — walking the move state
+    /// machine's follow-up chain (resolving random branches with the monster-AI rng) until a concrete
+    /// move is reached, or null if it can't be resolved. Calls <see cref="MonsterState.GetNextState"/>
+    /// exactly as the engine does, so the AI's branch/cooldown bookkeeping stays consistent; it just
+    /// skips the transition guards that stop <c>RollMove</c> from advancing a not-yet-performed move.
+    /// </summary>
+    private static MoveState? ResolveNextMove(Creature monster)
+    {
+        if (monster.Monster == null)
+        {
+            return null;
+        }
+
+        MonsterMoveStateMachine? machine = monster.Monster.MoveStateMachine;
+        if (machine == null)
+        {
+            return null;
+        }
+
+        var rng = monster.Monster.RunRng.MonsterAi;
+        MonsterState state = monster.Monster.NextMove;
+        for (int hops = 0; hops < 64; hops++)
+        {
+            string nextId = state.GetNextState(monster, rng);
+            if (string.IsNullOrEmpty(nextId) || !machine.States.TryGetValue(nextId, out MonsterState? next))
+            {
+                return null;
+            }
+
+            state = next;
+            if (state.IsMove)
+            {
+                return (MoveState)state;
+            }
+        }
+
+        return null;
     }
 
     protected override void OnUpgrade()

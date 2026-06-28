@@ -83,11 +83,40 @@ Write-Info "Phase 1/2: dotnet build"
 & $DotnetBin build $ProjectFile "/p:Sts2Root=$Sts2Root"
 if ($LASTEXITCODE -ne 0) { Write-Error "dotnet build failed ($LASTEXITCODE)."; exit 2 }
 
+# --- Phase 1.5: convert Spine skeletons (authored in 3.8, binary, named *.json) to the game's
+#     runtime version (4.2.43). The converter detects format by extension, so binary sources are
+#     copied to a temp *.skel first. Skipped (with a note) if the converter isn't present. ---
+$Converter = Join-Path $RepoRoot "SpineSkeletonDataConverter\SpineSkeletonDataConverter.exe"
+$ArtDir    = Join-Path $ProjectDir "illusionist\art"
+$SkeletonMap = @{ "skeleton.json" = "illusionist.skel"; "skeleton_rest.json" = "illusionist_rest.skel" }
+if (Test-Path $Converter) {
+    Write-Info "Phase 1.5: convert Spine skeletons -> 4.2.43"
+    foreach ($src in $SkeletonMap.Keys) {
+        $srcPath = Join-Path $ArtDir $src
+        if (-not (Test-Path $srcPath)) { continue }
+        # Binary export with a .json name -> give it a .skel temp so the converter reads it as binary.
+        $firstByte = [System.IO.File]::ReadAllBytes($srcPath)[0]
+        $tmpExt = if ($firstByte -eq 0x7B) { ".json" } else { ".skel" }  # 0x7B = '{' => text JSON
+        $tmp = Join-Path $ArtDir ("__skel_tmp" + $tmpExt)
+        Copy-Item $srcPath $tmp -Force
+        & $Converter $tmp (Join-Path $ArtDir $SkeletonMap[$src]) "-v" "4.2.43"
+        if ($LASTEXITCODE -ne 0) { Write-Error "Skeleton conversion failed for $src ($LASTEXITCODE)."; exit 2 }
+        Remove-Item $tmp -Force -ErrorAction SilentlyContinue
+    }
+} else {
+    Write-Info "Phase 1.5: Spine converter not found; using existing .skel files as-is"
+}
+
 # --- Phase 2: pack .pck with Godot (redirect user dirs into repo) ---
 Write-Info "Phase 2/2: Godot pck"
 $prevAppData = $env:APPDATA; $prevLocal = $env:LOCALAPPDATA; $prevTemp = $env:TEMP; $prevTmp = $env:TMP
 try {
     $env:APPDATA = $GodotAppData; $env:LOCALAPPDATA = $GodotLocalAppData; $env:TEMP = $GodotTemp; $env:TMP = $GodotTemp
+    # Import pass: compiles spine textures (and other PNGs) into .ctex under .godot/imported, so
+    # build_pck.gd can ship the Spine atlas texture as an imported resource (spine-godot loads it via
+    # ResourceLoader). Raw-PNG assets (cards/avatars) are still packed raw and read via FileAccess.
+    & $GodotExe --headless --path $ProjectDir --import
+    if ($LASTEXITCODE -ne 0) { Write-Error "Godot import pass failed ($LASTEXITCODE)."; exit 2 }
     & $GodotExe --headless --path $ProjectDir --script (Join-Path $ProjectDir "tools\build_pck.gd")
     if ($LASTEXITCODE -ne 0) { Write-Error "Godot pck build failed ($LASTEXITCODE)."; exit 2 }
 }

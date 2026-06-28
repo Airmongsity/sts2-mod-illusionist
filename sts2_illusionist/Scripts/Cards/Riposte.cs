@@ -89,6 +89,12 @@ public sealed class RiposteIllusionist : CardModel
         if (_morphLevel > 0 && base.Owner == player)
         {
             RevertOneMorph();
+
+            // This card morphs IN PLACE (a self-buff, not a real CardCmd.Transform), so the revert
+            // would otherwise change the card silently. Pop the reverted form up in the temporary
+            // card preview — the same "spawn mid-screen, fly back to the pile" display the engine
+            // uses everywhere — so the 幻化 reversal is visible instead of a silent stat change.
+            CardCmd.Preview(this);
         }
         return Task.CompletedTask;
     }
