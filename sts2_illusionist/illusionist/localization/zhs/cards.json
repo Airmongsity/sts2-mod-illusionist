@@ -110,7 +110,7 @@
   "METAMORPHOSIS_ILLUSIONIST.title": "嬗变",
   "METAMORPHOSIS_ILLUSIONIST.description": "造成 {Damage:diff()} 点伤害。\n你本回合每变化 1 张牌，就额外造成 {Bonus:diff()} 点伤害。",
   "CHANNEL_ILLUSIONIST.title": "导能",
-  "CHANNEL_ILLUSIONIST.description": "造成 {IfUpgraded:show:X+9|X+6} 点伤害。\n获得 {IfUpgraded:show:X|X-1} 点能量。",
+  "CHANNEL_ILLUSIONIST.description": "造成 {IfUpgraded:show:X+9|X+6} 点伤害。\n获得 {IfUpgraded:show:X|X-1} [img=32]res://illusionist/art/illusionist_energy_icon.webp[/img]。",
   "RECKONING_ILLUSIONIST.title": "清算",
   "RECKONING_ILLUSIONIST.description": "造成 {Damage:diff()} 点伤害。\n本场战斗中你每打出一张描述含有“意图”的牌，就额外造成 {Bonus:diff()} 点伤害。"
 }

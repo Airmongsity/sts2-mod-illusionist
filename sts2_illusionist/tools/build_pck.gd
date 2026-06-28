@@ -15,9 +15,10 @@ const SKIP_EXTENSIONS := [".import", ".uid"]
 # contains the .import sidecar + the compiled .ctex (the raw source PNG is packed by no one). The build
 # script runs a `--import` pass first so these .ctex files exist under res://.godot/imported/.
 const IMPORTED_TEXTURES := [
-	"res://illusionist/art/illusionist.png",   # rest-body single image
-	"res://illusionist/art/skeleton.png",      # combat flipbook atlas page 1
-	"res://illusionist/art/skeleton2.png",     # combat flipbook atlas page 2
+	"res://illusionist/art/illusionist.png",            # rest-body single image
+	"res://illusionist/art/skeleton.png",               # combat flipbook atlas page 1
+	"res://illusionist/art/skeleton2.png",              # combat flipbook atlas page 2
+	"res://illusionist/art/illusionist_energy_icon.webp", # in-text energy icon ([img] in descriptions)
 ]
 
 func _initialize() -> void:
@@ -90,8 +91,9 @@ func _add_dir_recursive(packer: PCKPacker, dir_path: String) -> int:
 func _add_imported_texture(packer: PCKPacker, tex_path: String) -> int:
 	var import_path := tex_path + ".import"
 	if not FileAccess.file_exists(import_path):
-		push_error("Imported texture has no .import (run --import first): %s" % tex_path)
-		quit(1)
+		# Art is gitignored; a code-only checkout won't have it. Skip gracefully (the author's full
+		# checkout has the files, so their packaged PCK includes them).
+		push_warning("Imported texture missing, skipping: %s" % tex_path)
 		return 0
 
 	var count := 0

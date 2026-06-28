@@ -110,7 +110,7 @@
   "METAMORPHOSIS_ILLUSIONIST.title": "Metamorphosis",
   "METAMORPHOSIS_ILLUSIONIST.description": "Deal {Damage:diff()} damage. Deal {Bonus:diff()} additional damage for each card you transformed this turn.",
   "CHANNEL_ILLUSIONIST.title": "Channel",
-  "CHANNEL_ILLUSIONIST.description": "Deal {IfUpgraded:show:X+9|X+6} damage.\nGain {IfUpgraded:show:X|X-1} energy.",
+  "CHANNEL_ILLUSIONIST.description": "Deal {IfUpgraded:show:X+9|X+6} damage.\nGain {IfUpgraded:show:X|X-1} [img=32]res://illusionist/art/illusionist_energy_icon.webp[/img].",
   "RECKONING_ILLUSIONIST.title": "Reckoning",
   "RECKONING_ILLUSIONIST.description": "Deal {Damage:diff()} damage. Deal {Bonus:diff()} additional damage for each card mentioning an enemy's intent you have played this combat."
 }
