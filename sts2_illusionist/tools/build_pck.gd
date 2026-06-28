@@ -15,10 +15,15 @@ const SKIP_EXTENSIONS := [".import", ".uid"]
 # contains the .import sidecar + the compiled .ctex (the raw source PNG is packed by no one). The build
 # script runs a `--import` pass first so these .ctex files exist under res://.godot/imported/.
 const IMPORTED_TEXTURES := [
-	"res://illusionist/art/illusionist.png",            # rest-body single image
-	"res://illusionist/art/skeleton.png",               # combat flipbook atlas page 1
-	"res://illusionist/art/skeleton2.png",              # combat flipbook atlas page 2
 	"res://illusionist/art/illusionist_energy_icon.webp", # in-text energy icon ([img] in descriptions)
+]
+
+# Spine atlases whose texture PAGES must all be imported (spine-godot loads them via ResourceLoader).
+# Every page filename listed inside each .atlas is imported automatically, so re-exporting with a
+# different number of pages (skeleton.png, skeleton2.png, skeleton3.png, …) just works.
+const SPINE_ATLASES := [
+	"res://illusionist/art/skeleton.atlas",     # combat flipbook
+	"res://illusionist/art/illusionist.atlas",  # rest-site single image
 ]
 
 func _initialize() -> void:
@@ -37,6 +42,11 @@ func _initialize() -> void:
 	# Pack the imported-texture chain (.import sidecar + compiled .ctex) for each special texture.
 	for tex in IMPORTED_TEXTURES:
 		added += _add_imported_texture(packer, tex)
+
+	# Pack every texture page referenced by each spine atlas (auto-discovered from the .atlas text).
+	for atlas in SPINE_ATLASES:
+		for page in _atlas_pages(atlas):
+			added += _add_imported_texture(packer, page)
 
 	if added == 0:
 		push_error("No files were added to the PCK. Check CONTENT_DIRS paths.")
@@ -117,6 +127,20 @@ func _add_imported_texture(packer: PCKPacker, tex_path: String) -> int:
 			push_error("add_file failed: %s" % ctex)
 			quit(1)
 	return count
+
+# Texture-page res:// paths referenced by a spine .atlas (the lines that are bare image filenames).
+func _atlas_pages(atlas_path: String) -> Array:
+	var pages := []
+	if not FileAccess.file_exists(atlas_path):
+		push_warning("Atlas missing, skipping pages: %s" % atlas_path)
+		return pages
+	var dir := atlas_path.get_base_dir()
+	for raw in FileAccess.get_file_as_string(atlas_path).split("\n"):
+		var line := raw.strip_edges()
+		var low := line.to_lower()
+		if low.ends_with(".png") or low.ends_with(".webp"):
+			pages.append(dir.path_join(line))
+	return pages
 
 # Pull unique "res://.godot/imported/....<ext>" tokens out of an .import file's text.
 func _extract_imported_resources(text: String) -> Array:
