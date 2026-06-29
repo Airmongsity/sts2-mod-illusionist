@@ -13,20 +13,17 @@ using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 虚晃 (FeintIllusionist) — 2 cost Attack, Rare (upgraded: 1 cost). Retain.
+/// 虚晃 (FeintIllusionist) — 3 cost Attack, Rare. Upgrade keeps the 3 cost but adds Retain.
 /// If the target's intent this turn includes Attack, Stun it (it does nothing this turn). A reactive
-/// control piece for the Intent system — hold it (Retain) until a foe telegraphs a big hit, then
-/// cancel the swing entirely.
+/// control piece for the Intent system; once upgraded, Retain lets you bank it until a foe telegraphs
+/// a big hit, then cancel the swing entirely.
 /// </summary>
 public sealed class FeintIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    // Retain: it only pays off against an attack intent, so let the player bank it until then.
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Retain };
-
     public FeintIllusionist()
-        : base(2, CardType.Attack, CardRarity.Rare, TargetType.AnyEnemy)
+        : base(3, CardType.Attack, CardRarity.Rare, TargetType.AnyEnemy)
     {
     }
 
@@ -43,6 +40,7 @@ public sealed class FeintIllusionist : CardModel
 
     protected override void OnUpgrade()
     {
-        base.EnergyCost.UpgradeBy(-1);
+        // Cost stays 3; the upgrade grants Retain so you can hold it for an attack intent.
+        AddKeyword(CardKeyword.Retain);
     }
 }

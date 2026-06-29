@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
 
 namespace Illusionist.Scripts;
@@ -28,13 +29,27 @@ public static class RelicArt
     public static ImageTexture? For(RelicModel relic)
     {
         Type type = relic.GetType();
-        if (Cache.TryGetValue(type, out ImageTexture? cached))
+        if (type.Assembly != typeof(RelicArt).Assembly)
+        {
+            return null; // not ours — never has custom art
+        }
+        // Cache only successes: an early call (before the PCK is mounted) must not poison the cache
+        // with a permanent null, or the icon would stay "NOPE" forever (e.g. on character select).
+        if (Cache.TryGetValue(type, out ImageTexture? cached) && cached != null)
         {
             return cached;
         }
 
-        ImageTexture? texture = Resolve(type);
-        Cache[type] = texture;
+        string baseName = ArtDir + type.Name.ToLowerInvariant();
+        ImageTexture? texture = ArtImage.Load(baseName);
+        if (texture != null)
+        {
+            Cache[type] = texture;
+        }
+        else
+        {
+            Log.Error($"[illusionist] RelicArt: art not loaded for {type.Name} (webp exists={Godot.FileAccess.FileExists(baseName + ".webp")})");
+        }
         return texture;
     }
 
@@ -46,32 +61,25 @@ public static class RelicArt
     public static ImageTexture? OutlineFor(RelicModel relic)
     {
         Type type = relic.GetType();
-        if (OutlineCache.TryGetValue(type, out ImageTexture? cached))
+        if (type.Assembly != typeof(RelicArt).Assembly)
+        {
+            return null;
+        }
+        if (OutlineCache.TryGetValue(type, out ImageTexture? cached) && cached != null)
         {
             return cached;
         }
 
-        ImageTexture? outline = ResolveOutline(type);
-        OutlineCache[type] = outline;
+        ImageTexture? outline = BuildOutline(type);
+        if (outline != null)
+        {
+            OutlineCache[type] = outline;
+        }
         return outline;
     }
 
-    private static ImageTexture? Resolve(Type type)
+    private static ImageTexture? BuildOutline(Type type)
     {
-        // Only our own relics may carry custom art.
-        if (type.Assembly != typeof(RelicArt).Assembly)
-        {
-            return null;
-        }
-        return ArtImage.Load(ArtDir + type.Name.ToLowerInvariant());
-    }
-
-    private static ImageTexture? ResolveOutline(Type type)
-    {
-        if (type.Assembly != typeof(RelicArt).Assembly)
-        {
-            return null;
-        }
         Image? image = ArtImage.LoadImage(ArtDir + type.Name.ToLowerInvariant());
         if (image == null)
         {
