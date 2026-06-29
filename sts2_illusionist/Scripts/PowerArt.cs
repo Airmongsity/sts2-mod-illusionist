@@ -9,7 +9,7 @@ namespace Illusionist.Scripts;
 /// Custom icon art for the Illusionist's own powers (the buff/debuff icons shown under the character),
 /// applied via Harmony patches on <c>PowerModel.Icon</c> / <c>PowerModel.BigIcon</c> (see
 /// <c>Patches/PowerArtPatch.cs</c>). Base-game powers use atlas sprites we can't add to, so — like
-/// <see cref="CardArt"/> / <see cref="RelicArt"/> — we decode a raw bitmap at runtime and substitute it.
+/// <see cref="CardArt"/> — we decode a raw bitmap at runtime and substitute it.
 ///
 /// <para><b>Adding art is filename-only.</b> Drop a file at
 /// <c>res://illusionist/art/powers/&lt;name&gt;.(webp|tga|png)</c> where <c>&lt;name&gt;</c> is the power's

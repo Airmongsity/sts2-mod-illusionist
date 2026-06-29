@@ -26,6 +26,13 @@ const SPINE_ATLASES := [
 	"res://illusionist/art/illusionist.atlas",  # rest-site single image
 ]
 
+# Dirs whose every texture is also imported (.ctex) so it can be loaded via ResourceLoader. Relic
+# icons need this: the game reaches them through the virtual PackedIconPath getter -> ResourceLoader,
+# not via FileAccess. The raw files are still packed too (harmless).
+const IMPORTED_DIRS := [
+	"res://illusionist/art/relics",
+]
+
 func _initialize() -> void:
 	DirAccess.make_dir_recursive_absolute(OUTPUT_DIR)
 	var packer := PCKPacker.new()
@@ -47,6 +54,11 @@ func _initialize() -> void:
 	for atlas in SPINE_ATLASES:
 		for page in _atlas_pages(atlas):
 			added += _add_imported_texture(packer, page)
+
+	# Import every texture in IMPORTED_DIRS (in addition to the raw file already packed above).
+	for dir in IMPORTED_DIRS:
+		for tex in _textures_in(dir):
+			added += _add_imported_texture(packer, tex)
 
 	if added == 0:
 		push_error("No files were added to the PCK. Check CONTENT_DIRS paths.")
@@ -127,6 +139,19 @@ func _add_imported_texture(packer: PCKPacker, tex_path: String) -> int:
 			push_error("add_file failed: %s" % ctex)
 			quit(1)
 	return count
+
+# res:// paths of every .webp/.png directly inside a directory.
+func _textures_in(dir_path: String) -> Array:
+	var out := []
+	var d := DirAccess.open(dir_path)
+	if d == null:
+		push_warning("Imported dir missing, skipping: %s" % dir_path)
+		return out
+	for f in d.get_files():
+		var low := f.to_lower()
+		if low.ends_with(".webp") or low.ends_with(".png"):
+			out.append(dir_path.path_join(f))
+	return out
 
 # Texture-page res:// paths referenced by a spine .atlas (the lines that are bare image filenames).
 func _atlas_pages(atlas_path: String) -> Array:

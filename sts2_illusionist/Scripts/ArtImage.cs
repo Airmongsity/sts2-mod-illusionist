@@ -9,7 +9,7 @@ namespace Illusionist.Scripts;
 /// step). Resolves a file WITHOUT an extension by trying alpha-capable formats first
 /// (<c>.tga</c> → <c>.webp</c> → <c>.png</c>) and supports an optional grayscale companion
 /// <c>&lt;base&gt;_mask.png</c> (white = opaque, black = transparent) so transparency can be supplied
-/// even by tools that only export opaque images. Used by <see cref="RelicArt"/> / <see cref="PotionArt"/>
+/// even by tools that only export opaque images. Used by <see cref="PotionArt"/> / <see cref="PowerArt"/>
 /// (and the avatar loader). No color-keying — transparency must be real (alpha channel or mask).
 /// </summary>
 public static class ArtImage
