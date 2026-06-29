@@ -137,6 +137,16 @@ if (-not $SkipInstallCopy) {
     Copy-Item $ManifestSrc   -Destination $ModsDir -Force
     Write-Info "Installed to: $ModsDir"
     Write-Info "Files: illusionist.dll, illusionist.pck, mod_manifest.json"
+
+    # Also refresh the Steam Workshop upload payload so it never goes stale (the art lives in the PCK).
+    # This only updates local files; uploading remains a separate, manual step.
+    $WorkshopContent = Join-Path $RepoRoot "illusionist-workshop\content"
+    if (Test-Path $WorkshopContent) {
+        Copy-Item $DllSource   -Destination $WorkshopContent -Force
+        Copy-Item $PckSource   -Destination $WorkshopContent -Force
+        Copy-Item $ManifestSrc -Destination $WorkshopContent -Force
+        Write-Info "Synced Steam Workshop payload: $WorkshopContent"
+    }
 } else {
     Write-Info "Build complete (install skipped)."
 }
