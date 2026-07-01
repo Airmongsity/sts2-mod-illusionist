@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
+using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Logging;
@@ -33,7 +34,7 @@ public sealed class ReversalIllusionist : CardModel
     };
 
     public ReversalIllusionist()
-        : base(2, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
+        : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
 
@@ -42,21 +43,48 @@ public sealed class ReversalIllusionist : CardModel
         AddKeyword(CardKeyword.Retain);
     }
 
-    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    /// <summary>
+    /// If this card has Ethereal, replace it with Retain instead.
+    /// Hook fires on every pile change + turn start to catch Ethereal no matter when it's applied.
+    /// </summary>
+    public override Task AfterCardChangedPiles(CardModel card, PileType oldPileType, AbstractModel? clonedBy)
+    {
+        ConvertEtherealToRetain();
+        return Task.CompletedTask;
+    }
+
+    public override Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
+    {
+        ConvertEtherealToRetain();
+        return Task.CompletedTask;
+    }
+
+    private void ConvertEtherealToRetain()
+    {
+        if (Keywords.Contains(CardKeyword.Ethereal))
+        {
+            RemoveKeyword(CardKeyword.Ethereal);
+            AddKeyword(CardKeyword.Retain);
+        }
+    }
+
+    // Not async: the only await lives inside the MoveState lambda below (which runs when the enemy
+    // later takes its turn), so OnPlay itself does no awaiting and returns a completed task.
+    protected override Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay.Target, "cardPlay.Target");
         Creature target = cardPlay.Target;
 
         if (target.Monster == null)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         MoveState move = target.Monster.NextMove;
         List<AttackIntent> attacks = move.Intents.OfType<AttackIntent>().ToList();
         if (attacks.Count == 0)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         try
@@ -91,5 +119,7 @@ public sealed class ReversalIllusionist : CardModel
         {
             Log.Error($"[illusionist] Reversal: failed to convert attack to block: {ex}");
         }
+
+        return Task.CompletedTask;
     }
 }

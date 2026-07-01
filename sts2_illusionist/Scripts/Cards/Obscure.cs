@@ -14,8 +14,9 @@ using MegaCrit.Sts2.Core.ValueProps;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 障目 (ObscureIllusionist) — 1 cost Skill, Common.
-/// Gain 6 Block; if no enemy intends to attack, draw 2 cards. Upgraded: 9 Block.
+/// 遮蔽 (ObscureIllusionist) — 1 cost Skill, Common.
+/// Gain 5 Block and draw 2 cards; if any enemy intends to attack, gain 7 extra Block. Upgraded:
+/// +2 to both Block values (5 -> 7, 7 -> 9).
 /// </summary>
 public sealed class ObscureIllusionist : CardModel
 {
@@ -23,10 +24,12 @@ public sealed class ObscureIllusionist : CardModel
 
     public override bool GainsBlock => true;
 
+    // A second BlockVar of the same type MUST be given an explicit name or DynamicVarSet throws.
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new BlockVar(6m, ValueProp.Move),
+        new BlockVar(5m, ValueProp.Move),
         new CardsVar(2),
+        new BlockVar("ExtraBlock", 7m, ValueProp.Move),
     };
 
     public ObscureIllusionist()
@@ -37,19 +40,21 @@ public sealed class ObscureIllusionist : CardModel
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         await CreatureCmd.GainBlock(base.Owner.Creature, base.DynamicVars.Block, cardPlay);
+        await CardPileCmd.Draw(choiceContext, base.DynamicVars.Cards.BaseValue, base.Owner);
 
-        // Draw only if NO enemy intends to attack this turn.
+        // Gain extra Block if ANY enemy intends to attack this turn.
         ICombatState? combat = base.Owner.Creature.CombatState;
         bool anyEnemyAttacks = combat != null
             && combat.Enemies.Any(e => e.IsAlive && e.Monster != null && e.Monster.IntendsToAttack);
-        if (!anyEnemyAttacks)
+        if (anyEnemyAttacks)
         {
-            await CardPileCmd.Draw(choiceContext, base.DynamicVars.Cards.BaseValue, base.Owner);
+            await CreatureCmd.GainBlock(base.Owner.Creature, (BlockVar)base.DynamicVars["ExtraBlock"], cardPlay);
         }
     }
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Block.UpgradeValueBy(3m);
+        base.DynamicVars.Block.UpgradeValueBy(2m);
+        ((BlockVar)base.DynamicVars["ExtraBlock"]).UpgradeValueBy(2m);
     }
 }

@@ -28,7 +28,7 @@ public sealed class DazzlePower : PowerModel
         }
 
         // Each DazzleIllusionist (this power's stacks) independently grants Block = your mirror count.
-        int block = MirrorClone.CountAlive(player) * base.Amount;
+        int block = MirrorClone.CountAlive(player) * base.Amount * 4;
         if (block > 0)
         {
             await CreatureCmd.GainBlock(base.Owner, block, ValueProp.Unpowered, null);

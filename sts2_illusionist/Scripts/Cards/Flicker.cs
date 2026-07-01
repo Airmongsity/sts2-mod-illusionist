@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
@@ -13,15 +14,19 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 闪烁 (FlickerIllusionist) — 1 cost Attack, Common.
-/// Deal 12 damage to ALL enemies. Upgraded: 16 damage.
+/// Deal 7 damage to ALL enemies, then gain 6 Block for each enemy that intends to attack. Upgraded:
+/// +2 to both (9 damage, 8 Block).
 /// </summary>
 public sealed class FlickerIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
+    public override bool GainsBlock => true;
+
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(12m, ValueProp.Move),
+        new DamageVar(7m, ValueProp.Move),
+        new BlockVar(6m, ValueProp.Move),
     };
 
     public FlickerIllusionist()
@@ -37,14 +42,26 @@ public sealed class FlickerIllusionist : CardModel
             return;
         }
 
+        // Snapshot how many enemies intend to attack BEFORE the hit, so one that dies to the blast
+        // still counts the blow you braced against.
+        int attackers = combat.Enemies.Count(e => e.IsAlive && e.Monster != null && e.Monster.IntendsToAttack);
+
         await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this)
             .TargetingAllOpponents(combat)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
+
+        // Gain Block per attacking enemy, in one event so Dexterity applies once to the total.
+        if (attackers > 0)
+        {
+            BlockVar block = base.DynamicVars.Block;
+            await CreatureCmd.GainBlock(base.Owner.Creature, block.BaseValue * attackers, block.Props, cardPlay);
+        }
     }
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Damage.UpgradeValueBy(4m);
+        base.DynamicVars.Damage.UpgradeValueBy(2m);
+        base.DynamicVars.Block.UpgradeValueBy(2m);
     }
 }

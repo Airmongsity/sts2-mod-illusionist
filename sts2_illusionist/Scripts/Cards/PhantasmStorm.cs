@@ -15,12 +15,9 @@ using Illusionist.Scripts.Monsters;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 幻象风暴 (Phantasm Storm) — 1 cost Attack, Ancient. The Illusionist's Darv ancient card: the only
-/// CardRarity.Ancient card in our pool that is NOT an Archaic Tooth transcendence target, so Darv's
-/// DustyTome (which picks a random non-transcendence Ancient card and adds it upgraded to your deck)
-/// can find it — fixing the empty-pool NRE that hung the Darv event. Deal 6 damage to ALL enemies
-/// and Copy 2. Upgraded: 9 damage. (Registered in the pool but Ancient rarity keeps it out of
-/// normal rewards.)
+/// 幻想风暴 (PhantasmStorm) — 1 cost Attack, Ancient.
+/// Deal X damage to ALL enemies per mirror image. Copy 3. If no mirrors, Copy 2 more.
+/// Upgraded: 9 → 13 damage per mirror.
 /// </summary>
 public sealed class PhantasmStormIllusionist : CardModel
 {
@@ -34,7 +31,7 @@ public sealed class PhantasmStormIllusionist : CardModel
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(6m, ValueProp.Move),
+        new DamageVar(4m, ValueProp.Move),
     };
 
     public PhantasmStormIllusionist()
@@ -47,13 +44,19 @@ public sealed class PhantasmStormIllusionist : CardModel
         ICombatState? combat = base.Owner.Creature.CombatState;
         if (combat != null && combat.HittableEnemies.Count > 0)
         {
-            await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this)
+            int mirrors = MirrorClone.CountAlive(base.Owner);
+            decimal damage = base.DynamicVars.Damage.BaseValue * (mirrors > 0 ? mirrors : 1);
+            await DamageCmd.Attack(damage).FromCard(this)
                 .TargetingAllOpponents(combat)
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
         }
 
-        await MirrorClone.Copy(base.Owner, 2, choiceContext);
+        int copies = 3;
+        if (MirrorClone.CountAlive(base.Owner) == 0)
+            copies += 2;
+
+        await MirrorClone.Copy(base.Owner, copies, choiceContext);
     }
 
     protected override void OnUpgrade()

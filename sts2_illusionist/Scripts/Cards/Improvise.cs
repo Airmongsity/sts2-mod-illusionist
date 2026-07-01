@@ -12,10 +12,11 @@ using Illusionist.Scripts.Powers;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 即兴 (ImproviseIllusionist) — 1 cost Power, Rare (upgraded: Innate). The first time you transmute a card each
-/// turn, play that transmuted card for free at a random enemy. High-risk/high-reward: you don't choose
-/// the target, but it's free (cheats out expensive transmuted cards) and, as your first play, it's
-/// replayed by your mirror images.
+/// 即兴 (ImproviseIllusionist) — 1 cost Power, Rare (upgraded: Innate). Each turn, the first card you
+/// transmute is played for free at a random enemy; Improvise stacks (Counter), so with N copies the
+/// first N transmuted cards each turn are each auto-played. High-risk/high-reward: you don't choose the
+/// target, but it's free (cheats out expensive transmuted cards) and, as your first play, it's copied
+/// by your mirror images.
 /// </summary>
 public sealed class ImproviseIllusionist : CardModel
 {

@@ -15,8 +15,8 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 征召 (ConscriptIllusionist) — 1 cost Skill, Rare (upgraded: 0 cost), Exhaust.
-/// Copy 4 (create four mirror images, each with its own cosmetic clone), then lose 1 Strength
-/// and 1 Dexterity for the rest of combat.
+/// Copy 4 (create four mirror images, each with its own cosmetic clone), then lose 2 Strength
+/// and 2 Dexterity until the end of this turn (restored automatically — the temporary down-powers).
 /// </summary>
 public sealed class ConscriptIllusionist : CardModel
 {
@@ -45,9 +45,10 @@ public sealed class ConscriptIllusionist : CardModel
         await MirrorClone.SummonIllusionist(base.Owner);
         await MirrorClone.SummonIllusionist(base.Owner);
         await MirrorClone.SummonIllusionist(base.Owner);
-        // Cost of the copies: lose 1 Strength and 1 Dexterity (both allow negative stacks).
-        await PowerCmd.Apply<StrengthPower>(choiceContext, base.Owner.Creature, -1, base.Owner.Creature, this);
-        await PowerCmd.Apply<DexterityPower>(choiceContext, base.Owner.Creature, -1, base.Owner.Creature, this);
+        // Cost of the copies: lose 2 Strength and 2 Dexterity, but only until end of this turn
+        // (TemporaryStrength/Dexterity down-powers restore the stats at the end of your turn).
+        await PowerCmd.Apply<ConscriptStrengthDownPower>(choiceContext, base.Owner.Creature, 2, base.Owner.Creature, this);
+        await PowerCmd.Apply<ConscriptDexterityDownPower>(choiceContext, base.Owner.Creature, 2, base.Owner.Creature, this);
     }
 
     protected override void OnUpgrade()

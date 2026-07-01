@@ -30,6 +30,13 @@ public sealed class HeadStart : RelicModel
             return false;
         }
 
+        // In multiplayer this cost hook fires for EVERY player's cards, so only discount the boots
+        // owner's own cards — otherwise the relic would cheapen teammates' first card too.
+        if (card.Owner != owner)
+        {
+            return false;
+        }
+
         // Count this turn's original (first-in-series) plays. While 0, the next card is "the first".
         int playedThisTurn = CombatManager.Instance.History.CardPlaysStarted.Count(
             e => e.Actor == owner.Creature && e.CardPlay.IsFirstInSeries && e.HappenedThisTurn(combat));

@@ -13,6 +13,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 using MegaCrit.Sts2.Core.ValueProps;
+using Illusionist.Scripts;
 
 namespace Illusionist.Scripts.Cards;
 
@@ -32,9 +33,6 @@ public sealed class RiposteIllusionist : CardModel
     /// <summary>Per play-morph tier: extra base damage and extra "intends to attack" bonus.</summary>
     private const decimal MorphDamage = 2m;
     private const decimal MorphBonus = 2m;
-
-    /// <summary>Safety cap on how high a single combat's morph chain can stack.</summary>
-    private const int MaxMorphLevel = 9;
 
     private int _morphLevel;
 
@@ -77,18 +75,15 @@ public sealed class RiposteIllusionist : CardModel
 
         // 幻化: upgrade IN PLACE after each hit, so a replay's next hit (and any later re-draw this
         // turn) is stronger. Capped; reverts one tier at the start of your next turn.
-        if (_morphLevel < MaxMorphLevel)
-        {
-            ApplyMorph();
-        }
+        await ApplyMorph(choiceContext);
     }
 
     /// <summary>Revert one play-morph tier at the start of your turn — the 幻化 "reverts next turn".</summary>
-    public override Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
+    public override async Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
     {
         if (_morphLevel > 0 && base.Owner == player)
         {
-            RevertOneMorph();
+            await RevertOneMorph(choiceContext);
 
             // This card morphs IN PLACE (a self-buff, not a real CardCmd.Transform), so the revert
             // would otherwise change the card silently. Pop the reverted form up in the temporary
@@ -96,7 +91,6 @@ public sealed class RiposteIllusionist : CardModel
             // uses everywhere — so the 幻化 reversal is visible instead of a silent stat change.
             CardCmd.Preview(this);
         }
-        return Task.CompletedTask;
     }
 
     protected override void OnUpgrade()
@@ -106,19 +100,23 @@ public sealed class RiposteIllusionist : CardModel
     }
 
     /// <summary>Bump this card up one play-morph tier (buffs its stats; 凋萎 / Wither style).</summary>
-    private void ApplyMorph()
+    private async Task ApplyMorph(PlayerChoiceContext choiceContext)
     {
         _morphLevel++;
         base.DynamicVars.Damage.UpgradeValueBy(MorphDamage);
         base.DynamicVars["Bonus"].UpgradeValueBy(MorphBonus);
+        CardCmd.Preview(this);
+        await Transmutation.NotifyTransformed(base.Owner, choiceContext, this);
     }
 
     /// <summary>Inverse of <see cref="ApplyMorph"/>.</summary>
-    private void RevertOneMorph()
+    private async Task RevertOneMorph(PlayerChoiceContext choiceContext)
     {
         _morphLevel--;
         base.DynamicVars.Damage.UpgradeValueBy(-MorphDamage);
         base.DynamicVars["Bonus"].UpgradeValueBy(-MorphBonus);
+        CardCmd.Preview(this);
+        await Transmutation.NotifyTransformed(base.Owner, choiceContext, this);
     }
 
     private static bool IntendsToAttack(Creature target)

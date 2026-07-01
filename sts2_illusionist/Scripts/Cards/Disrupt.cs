@@ -18,7 +18,7 @@ namespace Illusionist.Scripts.Cards;
 /// <summary>
 /// 干扰 (DisruptIllusionist) — 1 cost Skill, Basic (starter). Targets an enemy.
 /// Gain 6 Block and apply 1 Weak (虚弱: the enemy deals 25% less attack damage). If you have no
-/// mirror images, also Copy 2 (so it doubles as your opener for the Mirror system). Upgraded: 8 Block / 2 Weak.
+/// mirror images, also Copy 1 (so it doubles as your opener for the Mirror system). Upgraded: 8 Block / 2 Weak.
 /// </summary>
 public sealed class DisruptIllusionist : CardModel
 {
@@ -52,10 +52,10 @@ public sealed class DisruptIllusionist : CardModel
         await CreatureCmd.GainBlock(base.Owner.Creature, base.DynamicVars.Block, cardPlay);
         await PowerCmd.Apply<WeakPower>(choiceContext, cardPlay.Target, base.DynamicVars.Weak.BaseValue, base.Owner.Creature, this);
 
-        // Kickstart the Mirror system: if you have no mirror images yet, Copy 2.
+        // Kickstart the Mirror system: if you have no mirror images yet, Copy 1.
         if (Illusionist.Scripts.Monsters.MirrorClone.CountAlive(base.Owner) == 0)
         {
-            await Illusionist.Scripts.Monsters.MirrorClone.Copy(base.Owner, 2, choiceContext);
+            await Illusionist.Scripts.Monsters.MirrorClone.Copy(base.Owner, 1, choiceContext);
         }
     }
 

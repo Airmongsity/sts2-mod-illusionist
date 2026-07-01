@@ -1,34 +1,31 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
-using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
-using Illusionist.Scripts;
 using Illusionist.Scripts.Powers;
 
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 记忆 (MemoryIllusionist) — 2 cost Power, Uncommon (upgraded: 1 cost).
-/// Apply MemoryIllusionist: whenever a mirror clone is destroyed, draw 2 cards and gain 1 energy.
+/// 势能 (MomentumIllusionist) — 1 cost Power, Uncommon (upgraded: Innate).
+/// Gain Momentum: a permanent power that draws 1 card and gains 1 energy every
+/// 10th transform. Instanced — playing it twice gives two independent effects.
+/// (Pattern follows base-game Orbit.)
 /// </summary>
-public sealed class MemoryIllusionist : CardModel
+public sealed class MomentumIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
-
-    public MemoryIllusionist()
+    public MomentumIllusionist()
         : base(1, CardType.Power, CardRarity.Uncommon, TargetType.Self)
     {
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await PowerCmd.Apply<MemoryPower>(choiceContext, base.Owner.Creature, 1, base.Owner.Creature, this);
+        await PowerCmd.Apply<MomentumPower>(choiceContext, base.Owner.Creature, 1, base.Owner.Creature, this);
     }
 
     protected override void OnUpgrade()

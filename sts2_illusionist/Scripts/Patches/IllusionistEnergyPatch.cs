@@ -25,7 +25,15 @@ public static class IllusionistEnergy
     {
         if (_tried)
         {
-            return _orb;
+            if (_orb != null && GodotObject.IsInstanceValid(_orb))
+            {
+                return _orb;
+            }
+            if (_orb == null)
+            {
+                return null;
+            }
+            _orb = null;
         }
         _tried = true;
         _orb = ResourceLoader.Load<Texture2D>(OrbPath);

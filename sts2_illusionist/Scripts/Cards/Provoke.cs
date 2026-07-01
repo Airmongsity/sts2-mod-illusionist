@@ -40,7 +40,7 @@ public sealed class ProvokeIllusionist : CardModel
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new PowerVar<StrengthPower>(10m),
+        new PowerVar<StrengthPower>(5m),
         new PowerVar<DexterityPower>(1m),
     };
 
@@ -76,7 +76,7 @@ public sealed class ProvokeIllusionist : CardModel
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Strength.UpgradeValueBy(8m);
+        base.DynamicVars.Strength.UpgradeValueBy(4m);
         base.DynamicVars.Dexterity.UpgradeValueBy(1m);
     }
 }

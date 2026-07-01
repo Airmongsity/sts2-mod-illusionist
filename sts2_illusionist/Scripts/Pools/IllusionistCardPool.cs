@@ -35,6 +35,7 @@ public sealed class IllusionistCardPool : CardPoolModel
         // card compendium (the library shows every card in a pool's AllCards). Their Token/Ancient
         // rarity keeps them out of all reward rolls.
         ModelDb.Card<DimLampIllusionist>(),
+        ModelDb.Card<PrescienceIllusionist>(),
         ModelDb.Card<SabotageIllusionist>(),
     };
 }

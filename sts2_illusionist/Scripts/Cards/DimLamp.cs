@@ -9,9 +9,9 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 暗淡油灯 (Dim Lamp) — a 0 cost Token, Exhaust, created by 点灯 (KindleIllusionist), which transmutes a Dazed
-/// into it. Gain 1 energy and draw 2 cards. Because KindleIllusionist makes it via 幻化, it reverts to a Dazed
-/// at the end of the turn if you don't play it — so use it now.
+/// 暗淡油灯 (Dim Lamp) — a 0 cost Token, Exhaust, created by 点灯 (KindleIllusionist), which transmutes a
+/// 熄灭油灯 (Extinguished Lamp) into it. Gain 1 energy and draw 1 card. Because it's made via 幻化, it
+/// reverts to a 熄灭油灯 at the end of the turn if you don't play it — so use it now.
 /// </summary>
 public sealed class DimLampIllusionist : CardModel
 {

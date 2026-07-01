@@ -12,7 +12,7 @@ using Illusionist.Scripts.Powers;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 流变 (FluxweaveIllusionist) — 2 cost Power, Rare (upgraded: Innate). The engine of the 幻化 system:
+/// 流变 (FluxweaveIllusionist) — 2 cost Power, Uncommon (upgraded: Innate). The engine of the 幻化 system:
 /// while active, for every 2 cards you transform or transmute, draw 1 card. Turns reshaping your
 /// hand into a self-sustaining draw engine. Multiple copies settle separately.
 /// </summary>
@@ -26,7 +26,7 @@ public sealed class FluxweaveIllusionist : CardModel
     };
 
     public FluxweaveIllusionist()
-        : base(2, CardType.Power, CardRarity.Rare, TargetType.Self)
+        : base(2, CardType.Power, CardRarity.Uncommon, TargetType.Self)
     {
     }
 

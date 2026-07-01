@@ -11,7 +11,7 @@ using Illusionist.Scripts.Powers;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 返场 (EncoreIllusionist) — 2 cost Power, Rare (upgraded: gains Innate).
+/// 返场 (EncoreIllusionist) — 2 cost Power, Uncommon (upgraded: gains Innate).
 /// At the end of your turn, return all Retain cards from your discard pile to your hand. The
 /// recursion engine for the intent/control suite: it lets you replay CounterIllusionist, ForesightIllusionist, ReversalIllusionist
 /// and Catalyze every turn instead of once. Upgraded Innate so the engine is online from turn 1.
@@ -26,7 +26,7 @@ public sealed class EncoreIllusionist : CardModel
     };
 
     public EncoreIllusionist()
-        : base(2, CardType.Power, CardRarity.Rare, TargetType.Self)
+        : base(1, CardType.Power, CardRarity.Uncommon, TargetType.Self)
     {
     }
 

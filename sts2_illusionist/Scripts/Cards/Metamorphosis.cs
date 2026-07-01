@@ -15,7 +15,7 @@ using Illusionist.Scripts.Powers;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 嬗变 (Metamorphosis) — 2 cost Attack, Rare. The 幻化 system's output port: deal 12 damage, plus 5
+/// 嬗变 (Metamorphosis) — 2 cost Attack, Uncommon. The 幻化 system's output port: deal 12 damage, plus 5
 /// extra for EACH card you 变化 (transformed) this turn (upgraded: 16 + 7). "This turn's transforms"
 /// counts BOTH halves of the system — the turn-start reverts of last turn's transmuted cards AND the
 /// forward transmutes you make this turn — because both run through
@@ -34,11 +34,11 @@ public sealed class MetamorphosisIllusionist : CardModel
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
         new DamageVar(12m, ValueProp.Move),
-        new DynamicVar("Bonus", 5m),
+        new DynamicVar("Bonus", 7m),
     };
 
     public MetamorphosisIllusionist()
-        : base(2, CardType.Attack, CardRarity.Rare, TargetType.AnyEnemy)
+        : base(2, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
 
@@ -58,6 +58,6 @@ public sealed class MetamorphosisIllusionist : CardModel
     protected override void OnUpgrade()
     {
         base.DynamicVars.Damage.UpgradeValueBy(4m);   // 12 -> 16
-        base.DynamicVars["Bonus"].UpgradeValueBy(2m); // 5 -> 7
+        base.DynamicVars["Bonus"].UpgradeValueBy(4m); // 5 -> 7
     }
 }

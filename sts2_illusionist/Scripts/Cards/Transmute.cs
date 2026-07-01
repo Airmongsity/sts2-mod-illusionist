@@ -33,7 +33,7 @@ public sealed class TransmuteIllusionist : CardModel
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new CardsVar(3),
+        new CardsVar(10),
     };
 
     public TransmuteIllusionist()
@@ -69,6 +69,6 @@ public sealed class TransmuteIllusionist : CardModel
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Cards.UpgradeValueBy(2m);
+        base.DynamicVars.Cards.UpgradeValueBy(10m);
     }
 }

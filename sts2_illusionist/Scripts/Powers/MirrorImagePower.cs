@@ -1,11 +1,14 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Combat.History.Entries;
 using MegaCrit.Sts2.Core.Commands;
+using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts.Monsters;
@@ -13,10 +16,13 @@ using Illusionist.Scripts.Monsters;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
-/// 镜像 (Mirror Image) power. While the owner has at least one mirror, the first card(s) they
-/// play each turn are replayed — one extra play per mirror (the same engine mechanism EchoIllusionist Form
-/// uses, so the WHOLE card is replayed, effects and all). When the owner takes unblocked damage,
-/// all mirrors shatter (the power is removed entirely).
+/// 镜像 (Mirror Image) power. The first card you play each turn casts an echo for every mirror you have:
+/// for each mirror, a 0-cost, [gold]Ethereal[/gold], [gold]Exhaust[/gold] copy of that card is added to
+/// your hand. With 5 mirrors, playing a Riposte leaves 5 free Riposte copies in your hand that turn (the
+/// copies are made AFTER the card resolves, so they carry its in-play state, e.g. Riposte's +1). The
+/// copies are 虚无消耗 like Necrobinder's Call of the Void: Ethereal so any you don't play vanish at end
+/// of turn, Exhaust so a played one doesn't pile up in your discard. When you take unblocked damage, all
+/// mirrors shatter (the power is removed entirely).
 /// </summary>
 public sealed class MirrorImagePower : PowerModel
 {
@@ -25,32 +31,54 @@ public sealed class MirrorImagePower : PowerModel
     public override PowerStackType StackType => PowerStackType.Counter;
 
     /// <summary>
-    /// Replay the first card(s) of the turn. We count how many "first-in-series" (i.e. original,
-    /// non-replayed) card plays have already happened this turn; while that count is below the
-    /// number of mirrors, the next card gets one extra play. With 1 mirror this is exactly
-    /// "replay the first card each turn"; with N mirrors it is the first N cards.
+    /// When the owner plays their FIRST card of the turn, add one 0-cost Ethereal/Exhaust copy of it to
+    /// hand per mirror.
     /// </summary>
-    public override int ModifyCardPlayCount(CardModel card, Creature? target, int playCount)
+    public override async Task AfterCardPlayed(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        if (card.Owner.Creature != base.Owner)
+        if (base.Amount <= 0)
         {
-            return playCount;
+            return;
         }
 
-        int alreadyEchoed = CombatManager.Instance.History.CardPlaysStarted.Count(
-            (CardPlayStartedEntry e) => e.Actor == base.Owner && e.CardPlay.IsFirstInSeries && e.HappenedThisTurn(base.CombatState));
-        if (alreadyEchoed >= base.Amount)
+        // Only the owner's own original plays (in multiplayer this hook fires for every player's cards).
+        if (cardPlay.Card.Owner.Creature != base.Owner || !cardPlay.IsFirstInSeries)
         {
-            return playCount;
+            return;
         }
 
-        return playCount + 1;
-    }
+        // Fire only for the turn's FIRST card. CardPlaysStarted is chronological and stores the same
+        // CardPlay instance we get here, so the earliest first-in-series entry this turn IS the player's
+        // first card — identifying it by reference makes us immune to nested plays that resolve during
+        // the first card's own OnPlay (Improvise auto-play, transmute-driven draws/plays, etc.), which a
+        // simple count would miscount and skip on.
+        CardPlayStartedEntry? firstPlay = CombatManager.Instance.History.CardPlaysStarted.FirstOrDefault(
+            e => e.Actor == base.Owner && e.CardPlay.IsFirstInSeries && e.HappenedThisTurn(base.CombatState));
+        if (firstPlay == null || firstPlay.CardPlay != cardPlay)
+        {
+            return;
+        }
 
-    public override Task AfterModifyingCardPlayCount(CardModel card)
-    {
+        // The played card is still in the Play pile here (a combat pile), so CreateClone is legal and
+        // captures its current, post-OnPlay state.
+        CardModel source = cardPlay.Card;
+        if (!source.IsTransformable)
+        {
+            return;
+        }
+
+        List<CardModel> copies = new List<CardModel>();
+        for (int i = 0; i < base.Amount; i++)
+        {
+            CardModel copy = source.CreateClone();
+            copy.EnergyCost.SetThisCombat(0);
+            CardCmd.ApplyKeyword(copy, CardKeyword.Ethereal, CardKeyword.Exhaust);
+            copies.Add(copy);
+        }
+
         Flash();
-        return Task.CompletedTask;
+        await CardPileCmd.AddGeneratedCardsToCombat(copies, PileType.Hand, base.Owner.Player);
+        Log.Info($"[illusionist] MirrorImage: first card {source.Id.Entry} → added {copies.Count} 0-cost Ethereal/Exhaust copies (mirrors={base.Amount}).");
     }
 
     public override async Task AfterDamageReceived(PlayerChoiceContext choiceContext, Creature target, DamageResult result, ValueProp props, Creature? dealer, CardModel? cardSource)

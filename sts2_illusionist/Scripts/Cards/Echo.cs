@@ -29,7 +29,7 @@ public sealed class EchoIllusionist : CardModel
     };
 
     public EchoIllusionist()
-        : base(2, CardType.Skill, CardRarity.Rare, TargetType.Self)
+        : base(1, CardType.Skill, CardRarity.Rare, TargetType.Self)
     {
     }
 
@@ -48,6 +48,6 @@ public sealed class EchoIllusionist : CardModel
 
     protected override void OnUpgrade()
     {
-        base.EnergyCost.UpgradeBy(-1);
+        base.DynamicVars.Block.UpgradeValueBy(2m);
     }
 }

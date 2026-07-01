@@ -34,7 +34,7 @@ public sealed class HeavySlashIllusionist : CardModel
     };
 
     public HeavySlashIllusionist()
-        : base(3, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
+        : base(2, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
 

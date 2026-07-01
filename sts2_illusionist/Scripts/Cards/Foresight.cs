@@ -1,73 +1,57 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using MegaCrit.Sts2.Core.CardSelection;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
-using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
-using MegaCrit.Sts2.Core.MonsterMoves.Intents;
-using MegaCrit.Sts2.Core.ValueProps;
+using MegaCrit.Sts2.Core.Models.Powers;
 
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 预见 (ForesightIllusionist) — 2 cost Skill, Uncommon, Exhaust. Gain Block equal to the selected enemy's
-/// current total attack-intent damage. Upgraded: gains Retain.
-///
-/// The First-Move gate was removed so ForesightIllusionist slots into the intent-reflect combo: play 挑衅
-/// (ProvokeIllusionist) to inflate an enemy's attack with temporary Strength, then ForesightIllusionist blocks the
-/// inflated swing while 抗衡 (CounterIllusionist) reflects it. (ProvokeIllusionist is your first card those turns, which
-/// would have disabled a First-Move version.)
+/// 预见 (ForesightIllusionist) — 1 cost Skill, Uncommon (upgraded: Retain).
+/// Choose up to 8 cards from your draw pile and place them on top in any order.
 /// </summary>
 public sealed class ForesightIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    public override bool GainsBlock => true;
-
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
-
     public ForesightIllusionist()
-        : base(2, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
+        : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
     {
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        ArgumentNullException.ThrowIfNull(cardPlay.Target, "cardPlay.Target");
+        CardPile drawPile = PileType.Draw.GetPile(base.Owner);
+        if (drawPile.Cards.Count == 0) return;
 
-        int block = GetIncomingAttackDamage(cardPlay.Target);
-        if (block > 0)
+        int pickCount = System.Math.Min(8, drawPile.Cards.Count);
+
+        List<CardModel> selected = (await CardSelectCmd.FromCombatPile(
+            choiceContext, drawPile, base.Owner,
+            new CardSelectorPrefs(
+                new LocString("cards", "FORESIGHT_ILLUSIONIST.selectionScreenPrompt"),
+                pickCount))).ToList();
+
+        if (selected.Count == 0) return;
+
+        // Place selected cards on top; reverse so the first-picked is on top.
+        selected.Reverse();
+        foreach (CardModel card in selected)
         {
-            await CreatureCmd.GainBlock(base.Owner.Creature, block, ValueProp.Move, cardPlay);
+            await CardPileCmd.Add(card, PileType.Draw, CardPilePosition.Top);
         }
+
+        await PowerCmd.Apply<EnergyNextTurnPower>(choiceContext, base.Owner.Creature, 1, base.Owner.Creature, this);
     }
 
     protected override void OnUpgrade()
     {
-        // Retain so the player can hold it until the enemy reveals (or you inflate) an attack intent.
         AddKeyword(CardKeyword.Retain);
-    }
-
-    /// <summary>Total damage this enemy's current attack intent would deal (0 if not attacking).</summary>
-    private int GetIncomingAttackDamage(Creature target)
-    {
-        if (target.Monster == null)
-        {
-            return 0;
-        }
-
-        IReadOnlyList<Creature> playerTargets = new[] { base.Owner.Creature };
-        int total = 0;
-        foreach (AbstractIntent intent in target.Monster.NextMove.Intents)
-        {
-            if (intent is AttackIntent attack)
-            {
-                total += attack.GetTotalDamage(playerTargets, target);
-            }
-        }
-        return total;
     }
 }

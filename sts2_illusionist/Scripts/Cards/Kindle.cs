@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
@@ -7,19 +8,22 @@ using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
+using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 点灯 (KindleIllusionist) — 1 cost Skill, Uncommon (upgraded: 3 instead of 2).
-/// Add 2 Dazed to your draw pile, then 幻化 each into a 暗淡油灯 (Dim Lamp). The Lamp reverts to the
-/// Dazed at the end of the turn (transmute stack), so it's a strong but fleeting "draw + energy" you
-/// must dig up and play this turn. Upgraded: add 3.
+/// 点灯 (KindleIllusionist) — 1 cost Skill, Common (upgraded: 10 Block instead of 7).
+/// Gain {Block:diff()} [gold]Block[/gold], then [gold]Transmute[/gold] every Status card in your hand
+/// into a 暗淡油灯 (Dim Lamp). Each Lamp reverts at the start of your next turn (transmute stack),
+/// so play them this turn.
 /// </summary>
 public sealed class KindleIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
+
+    public override bool GainsBlock => true;
 
     protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
     {
@@ -29,37 +33,31 @@ public sealed class KindleIllusionist : CardModel
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new CardsVar(2),
+        new BlockVar(7m, ValueProp.Move),
     };
 
     public KindleIllusionist()
-        : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
+        : base(1, CardType.Skill, CardRarity.Common, TargetType.Self)
     {
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        int count = base.DynamicVars.Cards.IntValue;
+        await CreatureCmd.GainBlock(base.Owner.Creature, base.DynamicVars.Block, cardPlay);
 
-        // Add N Dazed to the draw pile, collecting the actual added instances.
-        List<CardModel> dazes = new List<CardModel>();
-        for (int i = 0; i < count; i++)
+        List<CardModel> lamps = PileType.Hand.GetPile(base.Owner).Cards
+            .Where(c => c.Type == CardType.Status).ToList();
+        if (lamps.Count == 0)
         {
-            CardModel daze = base.CardScope!.CreateCard<MegaCrit.Sts2.Core.Models.Cards.Dazed>(base.Owner);
-            CardPileAddResult result = await CardPileCmd.AddGeneratedCardToCombat(daze, PileType.Draw, base.Owner);
-            if (result.cardAdded != null)
-            {
-                dazes.Add(result.cardAdded);
-            }
+            return;
         }
 
-        // 幻化 each Dazed into a Dim Lamp (reverts back to the Dazed at end of turn via the stack).
-        await Transmutation.TransmuteCards(dazes, this, choiceContext,
+        await Transmutation.TransmuteCards(lamps, this, choiceContext,
             original => original.CardScope!.CreateCard<DimLampIllusionist>(original.Owner));
     }
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Cards.UpgradeValueBy(1m);
+        base.DynamicVars.Block.UpgradeValueBy(3m);
     }
 }

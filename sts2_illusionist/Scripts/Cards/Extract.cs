@@ -1,38 +1,37 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
-using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
-using Illusionist.Scripts;
+using Illusionist.Scripts.Monsters;
 using Illusionist.Scripts.Powers;
 
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 记忆 (MemoryIllusionist) — 2 cost Power, Uncommon (upgraded: 1 cost).
-/// Apply MemoryIllusionist: whenever a mirror clone is destroyed, draw 2 cards and gain 1 energy.
+/// 萃取 (ExtractIllusionist) — 1 cost Power, Uncommon (upgraded: Retain).
+/// Destroy all mirror images, then gain +1 energy per turn. Stacks with each play.
+/// Friendship power pattern.
 /// </summary>
-public sealed class MemoryIllusionist : CardModel
+public sealed class ExtractIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
-
-    public MemoryIllusionist()
+    public ExtractIllusionist()
         : base(1, CardType.Power, CardRarity.Uncommon, TargetType.Self)
     {
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await PowerCmd.Apply<MemoryPower>(choiceContext, base.Owner.Creature, 1, base.Owner.Creature, this);
+        await MirrorClone.ShatterAll(base.Owner);
+
+        await PowerCmd.Apply<ExtractPower>(choiceContext, base.Owner.Creature, 1, base.Owner.Creature, this);
     }
 
     protected override void OnUpgrade()
     {
-        AddKeyword(CardKeyword.Innate);
+        AddKeyword(CardKeyword.Retain);
     }
 }

@@ -12,7 +12,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 迷乱 (DazeIllusionist) — 1 cost Skill, Common (upgraded: 0 cost).
+/// 恍惚 (DazeIllusionist) — 1 cost Skill, Common (upgraded: draw 3 instead of 2).
 /// Draw 2 cards. 先机 (First Move): if this is the first card you play this turn, draw 1 extra card.
 /// </summary>
 public sealed class DazeIllusionist : CardModel
@@ -44,6 +44,6 @@ public sealed class DazeIllusionist : CardModel
 
     protected override void OnUpgrade()
     {
-        base.EnergyCost.UpgradeBy(-1);
+        base.DynamicVars.Cards.UpgradeValueBy(1m);
     }
 }

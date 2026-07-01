@@ -35,6 +35,8 @@ public static class Entry
 
         try
         {
+            ModHelper.AddModelToPool<IllusionistCardPool, IllusionistStrikeIllusionist>();
+            ModHelper.AddModelToPool<IllusionistCardPool, IllusionistDefendIllusionist>();
             ModHelper.AddModelToPool<IllusionistCardPool, RiposteIllusionist>();
             ModHelper.AddModelToPool<IllusionistCardPool, PhantomVenomIllusionist>();
             ModHelper.AddModelToPool<IllusionistCardPool, FeintIllusionist>();
@@ -80,6 +82,12 @@ public static class Entry
             ModHelper.AddModelToPool<IllusionistCardPool, MetamorphosisIllusionist>();
             ModHelper.AddModelToPool<IllusionistCardPool, ChannelIllusionist>();
             ModHelper.AddModelToPool<IllusionistCardPool, ReckoningIllusionist>();
+            ModHelper.AddModelToPool<IllusionistCardPool, MomentumIllusionist>();
+            ModHelper.AddModelToPool<IllusionistCardPool, ForewarnIllusionist>();
+            ModHelper.AddModelToPool<IllusionistCardPool, AccrueIllusionist>();
+            ModHelper.AddModelToPool<IllusionistCardPool, ShiftingWaveIllusionist>();
+            ModHelper.AddModelToPool<IllusionistCardPool, SacrificeIllusionist>();
+            ModHelper.AddModelToPool<IllusionistCardPool, ExtractIllusionist>();
             // Ancient-rarity (excluded from normal rewards). Registered so Darv's DustyTome can find
             // a valid Ancient card for the Illusionist; without one its picker NRE'd and hung Darv.
             ModHelper.AddModelToPool<IllusionistCardPool, PhantasmStormIllusionist>();

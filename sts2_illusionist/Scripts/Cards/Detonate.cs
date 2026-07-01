@@ -27,7 +27,7 @@ public sealed class DetonateIllusionist : CardModel
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(12m, ValueProp.Move),
+        new DamageVar(20m, ValueProp.Move),
     };
 
     public DetonateIllusionist()
@@ -60,6 +60,6 @@ public sealed class DetonateIllusionist : CardModel
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Damage.UpgradeValueBy(3m);
+        base.DynamicVars.Damage.UpgradeValueBy(8m);
     }
 }

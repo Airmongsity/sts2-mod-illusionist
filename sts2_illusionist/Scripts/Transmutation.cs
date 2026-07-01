@@ -95,6 +95,13 @@ public static class Transmutation
         }
         counter?.Increment();
 
+        CombatTransformCount? totalCounter = player.Creature.GetPower<CombatTransformCount>();
+        if (totalCounter == null)
+        {
+            totalCounter = await PowerCmd.Apply<CombatTransformCount>(choiceContext, player.Creature, 1, player.Creature, null);
+        }
+        totalCounter?.Increment();
+
         // Each 流变 is its own instance and settles separately, so advance every live copy.
         foreach (FluxweavePower flux in player.Creature.GetPowerInstances<FluxweavePower>().ToList())
         {
@@ -105,6 +112,11 @@ public static class Transmutation
         if (improvise != null)
         {
             await improvise.OnTransmuted(choiceContext, transformedCard);
+        }
+
+        foreach (MomentumPower momentum in player.Creature.GetPowerInstances<MomentumPower>())
+        {
+            await momentum.OnTransform();
         }
     }
 
