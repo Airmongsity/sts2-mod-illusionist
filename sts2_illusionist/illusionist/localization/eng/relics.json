@@ -3,7 +3,7 @@
   "ILLUSIONIST_RELIC_HALLUCINATORY_LAMP.description": "At the start of each combat, [gold]Copy[/gold] 1.",
   "ILLUSIONIST_RELIC_HALLUCINATORY_LAMP.flavor": "Rub it, and a second you steps out of the smoke.",
   "ILLUSIONIST_RELIC_PRISM_SHARD.title": "Prism Shard",
-  "ILLUSIONIST_RELIC_PRISM_SHARD.description": "Whenever you create a [gold]mirror image[/gold], gain 1 [gold]Block[/gold].",
+  "ILLUSIONIST_RELIC_PRISM_SHARD.description": "Whenever you create a [gold]mirror image[/gold], gain 8 [gold]Block[/gold].",
   "ILLUSIONIST_RELIC_PRISM_SHARD.flavor": "Every facet remembers a different light.",
   "ILLUSIONIST_RELIC_HEAD_START.title": "Swift Boots",
   "ILLUSIONIST_RELIC_HEAD_START.description": "The first card you play each turn costs 1 less.",

@@ -15,7 +15,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Relics;
 
 /// <summary>
-/// 棱镜碎片 (Prism Shard) — Common. Whenever a mirror image is created beside you, gain 1 Block.
+/// 棱镜碎片 (Prism Shard) — Common. Whenever a mirror image is created beside you, gain 8 Block.
 /// Hooks <c>AfterCreatureAddedToCombat</c> and filters to our own <see cref="MirrorClone"/> pets.
 /// </summary>
 [RegisterRelic(typeof(IllusionistRelicPool))]
@@ -34,7 +34,7 @@ public sealed class PrismShard : IllusionistRelic
         {
             if (creature.Monster is MirrorClone && creature.PetOwner == base.Owner)
             {
-                await CreatureCmd.GainBlock(base.Owner.Creature, 1, ValueProp.Unpowered, null);
+                await CreatureCmd.GainBlock(base.Owner.Creature, 8, ValueProp.Unpowered, null);
             }
         }
         catch (Exception ex)

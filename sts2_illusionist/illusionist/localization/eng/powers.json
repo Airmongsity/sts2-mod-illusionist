@@ -2,7 +2,7 @@
   "ILLUSIONIST_POWER_MIRROR_IMAGE_POWER.title": "Mirror Image",
   "ILLUSIONIST_POWER_MIRROR_IMAGE_POWER.description": "The first card you play each turn adds a 0-cost [gold]Ethereal[/gold] [gold]Exhaust[/gold] copy to your hand for each stack. Taking unblocked damage removes all stacks.",
   "ILLUSIONIST_POWER_MEMORY_POWER.title": "Memory",
-  "ILLUSIONIST_POWER_MEMORY_POWER.description": "Whenever one of your [gold]mirror images[/gold] is destroyed, draw 2 cards and gain 1 [img=32]res://illusionist/art/illusionist_energy_icon.webp[/img].",
+  "ILLUSIONIST_POWER_MEMORY_POWER.description": "Whenever one of your [gold]mirror images[/gold] is destroyed, draw 2 cards and gain 1 [img]res://illusionist/art/illusionist_energy_icon_text.webp[/img].",
   "ILLUSIONIST_POWER_KALEIDOSCOPE_POWER.title": "Kaleidoscope",
   "ILLUSIONIST_POWER_KALEIDOSCOPE_POWER.description": "Every 5 cards you play, create a mirror image and deal 6 damage to all enemies.",
   "ILLUSIONIST_POWER_PHASE_SHIFT_POWER.title": "Phase Shift",

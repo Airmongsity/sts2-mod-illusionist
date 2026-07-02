@@ -15,7 +15,8 @@ const SKIP_EXTENSIONS := [".import", ".uid"]
 # contains the .import sidecar + the compiled .ctex (the raw source PNG is packed by no one). The build
 # script runs a `--import` pass first so these .ctex files exist under res://.godot/imported/.
 const IMPORTED_TEXTURES := [
-	"res://illusionist/art/illusionist_energy_icon.webp", # in-text energy icon ([img] in descriptions)
+	"res://illusionist/art/illusionist_energy_icon.webp",      # 256px master: card cost orb (BigEnergyIconPath)
+	"res://illusionist/art/illusionist_energy_icon_text.webp", # 32px: in-text energy icon, bare [img] (TextEnergyIconPath)
 	# Referenced through the RitsuLib CharacterAssetProfile / hand-written .tscn scenes, all of which
 	# load via ResourceLoader — so these must ship imported (.ctex), not as raw bytes.
 	"res://illusionist/art/avatar-s.png",              # top-bar / HUD icon texture
