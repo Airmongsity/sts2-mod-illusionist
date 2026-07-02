@@ -21,10 +21,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class FluxweaveIllusionist : IllusionistCard
 {
 
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
-    {
-        IllusionHoverTips.TransmuteIllusionist,
-    };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Transmute };
 
     public FluxweaveIllusionist()
         : base(2, CardType.Power, CardRarity.Uncommon, TargetType.Self)

@@ -25,11 +25,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class PhantasmStormIllusionist : IllusionistCard
 {
 
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
-    {
-        IllusionHoverTips.Copy,
-        IllusionHoverTips.CopyToken,
-    };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

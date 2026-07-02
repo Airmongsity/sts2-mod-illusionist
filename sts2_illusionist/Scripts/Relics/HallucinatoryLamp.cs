@@ -30,11 +30,7 @@ public sealed class HallucinatoryLamp : IllusionistRelic
     // Reuse Bound Phylactery's art as a placeholder until the Lamp has its own.
     protected override string IconBaseName => "boundphylactery";
 
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
-    {
-        IllusionHoverTips.Copy,
-        IllusionHoverTips.CopyToken,
-    };
+    protected override IEnumerable<string> RegisteredKeywordIds => new[] { IllusionistKeywords.CopyId, IllusionistKeywords.MirrorImageId };
 
     public override async Task BeforeCombatStart()
     {

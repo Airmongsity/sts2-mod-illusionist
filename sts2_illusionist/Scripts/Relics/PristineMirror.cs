@@ -32,11 +32,7 @@ public sealed class PristineMirror : IllusionistRelic
 
     private bool _tookUnblockedDamageThisTurn;
 
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
-    {
-        IllusionHoverTips.Copy,
-        IllusionHoverTips.CopyToken,
-    };
+    protected override IEnumerable<string> RegisteredKeywordIds => new[] { IllusionistKeywords.CopyId, IllusionistKeywords.MirrorImageId };
 
     public override Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
     {

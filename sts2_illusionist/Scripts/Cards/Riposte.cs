@@ -44,10 +44,7 @@ public sealed class RiposteIllusionist : IllusionistCard
     // Show the play-morph tier in the title (on top of any real "+" campfire upgrade).
     public override string Title => _morphLevel > 0 ? $"{base.Title}+{_morphLevel}" : base.Title;
 
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
-    {
-        Illusionist.Scripts.IllusionHoverTips.TransmuteIllusionist,
-    };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Transmute };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

@@ -24,10 +24,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class ShiftingBladeIllusionist : IllusionistCard
 {
 
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
-    {
-        IllusionHoverTips.TransmuteIllusionist,
-    };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Transmute };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

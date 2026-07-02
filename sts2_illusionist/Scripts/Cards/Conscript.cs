@@ -23,12 +23,10 @@ namespace Illusionist.Scripts.Cards;
 public sealed class ConscriptIllusionist : IllusionistCard
 {
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust, IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage };
 
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
-        IllusionHoverTips.Copy,
-        IllusionHoverTips.CopyToken,
         HoverTipFactory.FromPower<StrengthPower>(),
         HoverTipFactory.FromPower<DexterityPower>(),
     };

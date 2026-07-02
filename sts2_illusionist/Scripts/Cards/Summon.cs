@@ -26,9 +26,10 @@ namespace Illusionist.Scripts.Cards;
 public sealed class SummonIllusionist : IllusionistCard
 {
 
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Transmute };
+
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
-        IllusionHoverTips.TransmuteIllusionist,
         HoverTipFactory.FromCard<MegaCrit.Sts2.Core.Models.Cards.Toxic>(),
     };
 

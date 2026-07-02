@@ -26,7 +26,7 @@ public sealed class PrismShard : IllusionistRelic
     // Placeholder art (reuses a base Necrobinder relic sprite) until the Shard has its own.
     protected override string IconBaseName => "ivorytile";
 
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
+    protected override IEnumerable<string> RegisteredKeywordIds => new[] { IllusionistKeywords.MirrorImageId };
 
     public override async Task AfterCreatureAddedToCombat(Creature creature)
     {

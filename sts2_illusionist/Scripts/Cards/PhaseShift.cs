@@ -21,8 +21,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class PhaseShiftIllusionist : IllusionistCard
 {
 
-    // This card references mirror images (镜像) — surface that tip.
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.MirrorImage };
 
     public PhaseShiftIllusionist()
         : base(1, CardType.Power, CardRarity.Common, TargetType.Self)

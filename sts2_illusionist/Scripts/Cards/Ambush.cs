@@ -25,7 +25,7 @@ public sealed class AmbushIllusionist : IllusionistCard
 
     public override bool GainsBlock => true;
 
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.FirstMove };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.FirstMove };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

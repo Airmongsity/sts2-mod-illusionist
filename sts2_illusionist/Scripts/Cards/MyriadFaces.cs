@@ -27,10 +27,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class MyriadFacesIllusionist : IllusionistCard
 {
 
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
-    {
-        IllusionHoverTips.TransmuteIllusionist,
-    };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Transmute };
 
     public MyriadFacesIllusionist()
         : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)

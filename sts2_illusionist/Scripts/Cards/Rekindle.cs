@@ -24,11 +24,13 @@ namespace Illusionist.Scripts.Cards;
 public sealed class RekindleIllusionist : IllusionistCard
 {
 
-    // Copy is our own mechanic (no engine tooltip), so attach the Copy / 复制品 tips explicitly,
-    // plus Frail for the self-debuff (dropped from the hover set once upgraded removes it).
+    // Copy / 复制品 come from the registered keywords below; Frail is attached only while the
+    // self-debuff exists (upgrading removes it).
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage };
+
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => IsUpgraded
-        ? new IHoverTip[] { IllusionHoverTips.Copy, IllusionHoverTips.CopyToken }
-        : new IHoverTip[] { HoverTipFactory.FromPower<FrailPower>(), IllusionHoverTips.Copy, IllusionHoverTips.CopyToken };
+        ? System.Array.Empty<IHoverTip>()
+        : new IHoverTip[] { HoverTipFactory.FromPower<FrailPower>() };
 
     public RekindleIllusionist()
         : base(1, CardType.Skill, CardRarity.Common, TargetType.Self)

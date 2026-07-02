@@ -26,7 +26,7 @@ public sealed class UnbreakableMirror : IllusionistRelic
     // Placeholder art until Unbreakable Mirror has its own.
     protected override string IconBaseName => "funerarymask";
 
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
+    protected override IEnumerable<string> RegisteredKeywordIds => new[] { IllusionistKeywords.MirrorImageId };
 
     public override async Task BeforeCombatStart()
     {

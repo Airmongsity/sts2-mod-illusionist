@@ -24,10 +24,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class HeavySlashIllusionist : IllusionistCard
 {
 
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
-    {
-        IllusionHoverTips.FirstMove,
-    };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.FirstMove };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

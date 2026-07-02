@@ -21,9 +21,10 @@ namespace Illusionist.Scripts.Cards;
 public sealed class SiphonIllusionist : IllusionistCard
 {
 
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.MirrorImage };
+
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
-        IllusionHoverTips.CopyToken,
         HoverTipFactory.FromPower<StrengthPower>(),
         HoverTipFactory.FromPower<DexterityPower>(),
     };

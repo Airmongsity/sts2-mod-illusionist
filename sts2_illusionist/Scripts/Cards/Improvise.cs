@@ -23,10 +23,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class ImproviseIllusionist : IllusionistCard
 {
 
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
-    {
-        IllusionHoverTips.TransmuteIllusionist,
-    };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Transmute };
 
     public ImproviseIllusionist()
         : base(1, CardType.Power, CardRarity.Rare, TargetType.Self)

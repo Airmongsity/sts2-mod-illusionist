@@ -22,10 +22,11 @@ public sealed class DazzleIllusionist : IllusionistCard
 
     // This power grants Block at the start of each turn (not on play), so don't flag GainsBlock —
     // add the Block tip explicitly, plus the mirror-image (复制品) tip it references.
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.MirrorImage };
+
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         HoverTipFactory.Static(StaticHoverTip.Block),
-        IllusionHoverTips.CopyToken,
     };
 
     public DazzleIllusionist()

@@ -25,14 +25,7 @@ public sealed class LastStandIllusionist : IllusionistCard
 
     public override bool GainsBlock => true;
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Retain, CardKeyword.Exhaust };
-
-    // Block tip comes from GainsBlock; add the Copy action + mirror-image (复制品) tips it references.
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
-    {
-        IllusionHoverTips.Copy,
-        IllusionHoverTips.CopyToken,
-    };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Retain, CardKeyword.Exhaust, IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage };
 
     // Two BlockVars: the base block ("Block") and the conditional bonus. A second var of the same
     // type MUST be given an explicit name or DynamicVarSet throws on the duplicate "Block" key.

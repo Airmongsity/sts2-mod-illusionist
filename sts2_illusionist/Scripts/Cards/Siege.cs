@@ -24,7 +24,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class SiegeIllusionist : IllusionistCard
 {
 
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.MirrorImage };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

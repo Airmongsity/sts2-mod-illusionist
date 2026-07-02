@@ -25,9 +25,10 @@ namespace Illusionist.Scripts.Cards;
 public sealed class DisillusionIllusionist : IllusionistCard
 {
 
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Transmute };
+
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
-        IllusionHoverTips.TransmuteIllusionist,
         HoverTipFactory.FromCard<DimLampIllusionist>(),
     };
 

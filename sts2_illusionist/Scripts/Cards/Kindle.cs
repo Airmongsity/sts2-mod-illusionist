@@ -26,9 +26,10 @@ public sealed class KindleIllusionist : IllusionistCard
 
     public override bool GainsBlock => true;
 
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Transmute };
+
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
-        IllusionHoverTips.TransmuteIllusionist,
         HoverTipFactory.FromCard<DimLampIllusionist>(),
     };
 

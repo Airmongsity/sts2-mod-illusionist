@@ -20,7 +20,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class KaleidoscopeIllusionist : IllusionistCard
 {
 
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.Copy, IllusionHoverTips.CopyToken };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage };
 
     public KaleidoscopeIllusionist()
         : base(1, CardType.Power, CardRarity.Rare, TargetType.Self)

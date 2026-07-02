@@ -20,7 +20,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class MemoryIllusionist : IllusionistCard
 {
 
-    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.MirrorImage };
 
     public MemoryIllusionist()
         : base(1, CardType.Power, CardRarity.Uncommon, TargetType.Self)

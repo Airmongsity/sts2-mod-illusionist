@@ -32,11 +32,10 @@ namespace Illusionist.Scripts.Cards;
 public sealed class PhantomVenomIllusionist : IllusionistCard
 {
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust, IllusionistKeywords.Transmute };
 
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
-        IllusionHoverTips.TransmuteIllusionist,
         HoverTipFactory.FromCard<MegaCrit.Sts2.Core.Models.Cards.Toxic>(),
     };
 
