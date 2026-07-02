@@ -115,7 +115,7 @@
   "ILLUSIONIST_CARD_PRESCIENCE.title": "Prescience",
   "ILLUSIONIST_CARD_PRESCIENCE.description": "Gain {Block:diff()} [gold]Block[/gold].",
   "ILLUSIONIST_CARD_ACCRUE.title": "Accrue",
-  "ILLUSIONIST_CARD_ACCRUE.description": "Deal {Damage:diff()} damage.\nAt the start of your turn, if this card is in your hand, [gold]Transmute[/gold] its damage to double it.",
+  "ILLUSIONIST_CARD_ACCRUE.description": "Deal {Damage:diff()} damage.\nAt the start of your turn, if this card is in your hand, its damage increases by {Bonus:diff()}.",
   "ILLUSIONIST_CARD_SACRIFICE.title": "Sacrifice",
   "ILLUSIONIST_CARD_SACRIFICE.description": "Gain 1 [img]res://illusionist/art/illusionist_energy_icon_text.webp[/img].\nDraw {Cards:diff()} card(s).\nIf you have a [gold]mirror image[/gold], destroy one.",
   "ILLUSIONIST_CARD_EXTRACT.title": "Extract",

@@ -261,5 +261,5 @@ Do not guess at engine method names. A wrong API name compiles into a crash the 
 - [references/effect-cookbook.md](./references/effect-cookbook.md) — verified copy-paste snippets for every supported effect (damage variants, block, debuffs, buffs, draw, energy, exhaust, custom keywords, reading enemy intent) and the DynamicVar reference. **Always pull effect code from here.**
 - `Scripts/IllusionistContent.cs` — the `IllusionistCard` base class (and the art-path convention).
 - `Scripts/IllusionistKeywords.cs` — the four custom keywords (Copy / Mirror Image / First Move / Transmute).
-- The existing cards in `sts2_illusionist/Scripts/Cards/` are the best worked examples — copy the closest one (e.g. `Ambush.cs` for First Move, `Unveil.cs` for an Exhaust AoE debuff, `Accrue.cs` for a self-transmuting attack).
+- The existing cards in `sts2_illusionist/Scripts/Cards/` are the best worked examples — copy the closest one (e.g. `Ambush.cs` for First Move, `Unveil.cs` for an Exhaust AoE debuff, `Accrue.cs` for a self-growing Retain attack with an Innate-on-upgrade toggle).
 - For anything beyond a single card — a new keyword, power, relic, the pool, the character — use the **`sts2-ritsulib-mod`** skill.

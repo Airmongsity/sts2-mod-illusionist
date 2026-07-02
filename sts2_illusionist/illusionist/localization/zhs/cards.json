@@ -115,7 +115,7 @@
   "ILLUSIONIST_CARD_PRESCIENCE.title": "先见",
   "ILLUSIONIST_CARD_PRESCIENCE.description": "获得 {Block:diff()} 点[gold]格挡[/gold]。",
   "ILLUSIONIST_CARD_ACCRUE.title": "积蓄",
-  "ILLUSIONIST_CARD_ACCRUE.description": "造成 {Damage:diff()} 点伤害。\n回合开始时，如果这张牌在你的手牌中，将这张牌的伤害[gold]幻化[/gold]为原来的两倍。",
+  "ILLUSIONIST_CARD_ACCRUE.description": "造成 {Damage:diff()} 点伤害。\n回合开始时，如果这张牌在你的手牌中，则其伤害提升 {Bonus:diff()} 点。",
   "ILLUSIONIST_CARD_SACRIFICE.title": "献祭",
   "ILLUSIONIST_CARD_SACRIFICE.description": "获得 1 [img]res://illusionist/art/illusionist_energy_icon_text.webp[/img]。\n抽 {Cards:diff()} 张牌。\n如果你有[gold]镜像[/gold]，则摧毁一个。",
   "ILLUSIONIST_CARD_EXTRACT.title": "萃取",

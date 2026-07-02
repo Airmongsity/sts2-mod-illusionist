@@ -15,34 +15,33 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 积蓄 (AccrueIllusionist) — 1 cost Attack, Uncommon. Deal 3 damage. Retain.
-/// At the start of your turn, if this is in your hand, 幻化 (Transmute) its damage to double it — the
-/// doubling ACCUMULATES turn over turn (3 -> 6 -> 12 -> ...), which is the whole "accrue" fantasy.
-/// The doubling is a REAL transmute: it pings Transmutation.NotifyTransformed, so it counts toward
-/// the 幻化 payoffs (Fluxweave draw, Momentum, Improvise, Metamorphosis) like every other 幻化 card.
-/// Upgraded: gains Innate, and base damage becomes 4 (+1).
+/// 积蓄 (AccrueIllusionist) — 2 cost Attack, Uncommon. Deal 10 damage. Retain.
+/// At the start of your turn, if this is in your hand, its damage grows by a flat Bonus (8; +2 when
+/// upgraded). The growth ACCUMULATES turn over turn (10 -> 18 -> 26 -> ...) — the "accrue" fantasy:
+/// a Retain attack that snowballs the longer you hold it. No 幻化 involved, just a flat add.
+/// Upgraded: gains Innate, base damage 10 -> 14, and the per-turn Bonus 8 -> 10.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "ACCRUE")]
 public sealed class AccrueIllusionist : IllusionistCard
 {
-    private decimal _doubledAmount;
+    // Total flat damage added at runtime by the turn-start growth; restored if the card is downgraded
+    // (a downgrade recomputes DynamicVars from canonical, which would otherwise drop the growth).
+    private decimal _accrued;
 
-
-    // Retain always; Transmute (幻化) marks the self-doubling as a transmute; Innate is added only
-    // on upgrade (see OnUpgrade).
+    // Retain always; Innate is added only on upgrade (see OnUpgrade).
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[]
     {
         CardKeyword.Retain,
-        IllusionistKeywords.Transmute,
     };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(3m, ValueProp.Move),
+        new DamageVar(10m, ValueProp.Move),
+        new DynamicVar("Bonus", 8m),
     };
 
     public AccrueIllusionist()
-        : base(1, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
+        : base(2, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
 
@@ -56,30 +55,29 @@ public sealed class AccrueIllusionist : IllusionistCard
             .Execute(choiceContext);
     }
 
-    public override async Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
+    public override Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
     {
-        if (player != base.Owner) return;
-        if (!IsInHand()) return;
+        if (player != base.Owner) return Task.CompletedTask;
+        if (!IsInHand()) return Task.CompletedTask;
 
-        _doubledAmount += base.DynamicVars.Damage.BaseValue;
-        base.DynamicVars.Damage.BaseValue *= 2;
+        decimal bonus = base.DynamicVars["Bonus"].BaseValue;
+        _accrued += bonus;
+        base.DynamicVars.Damage.BaseValue += bonus;
         CardCmd.Preview(this);
-
-        // The doubling IS a 幻化 (transform): route it through the shared transmute choke point so it
-        // tallies toward transmute-count payoffs and triggers Fluxweave / Momentum / Improvise.
-        await Transmutation.NotifyTransformed(base.Owner, choiceContext, this);
+        return Task.CompletedTask;
     }
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Damage.UpgradeValueBy(1m);
+        base.DynamicVars.Damage.UpgradeValueBy(4m);   // 10 -> 14
+        base.DynamicVars["Bonus"].UpgradeValueBy(2m); // 8 -> 10
         AddKeyword(CardKeyword.Innate);
     }
 
     protected override void AfterDowngraded()
     {
         base.AfterDowngraded();
-        base.DynamicVars.Damage.BaseValue += _doubledAmount;
+        base.DynamicVars.Damage.BaseValue += _accrued;
     }
 
     private bool IsInHand()
