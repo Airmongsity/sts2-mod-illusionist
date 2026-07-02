@@ -9,6 +9,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -16,6 +17,7 @@ namespace Illusionist.Scripts.Cards;
 /// while active, for every 2 cards you transform or transmute, draw 1 card. Turns reshaping your
 /// hand into a self-sustaining draw engine. Multiple copies settle separately.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "FLUXWEAVE_ILLUSIONIST")]
 public sealed class FluxweaveIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

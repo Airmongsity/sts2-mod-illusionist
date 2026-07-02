@@ -11,6 +11,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -19,6 +20,7 @@ namespace Illusionist.Scripts.Cards;
 /// into a 暗淡油灯 (Dim Lamp). Each Lamp reverts at the start of your next turn (transmute stack),
 /// so play them this turn.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "KINDLE_ILLUSIONIST")]
 public sealed class KindleIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

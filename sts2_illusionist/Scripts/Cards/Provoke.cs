@@ -14,6 +14,7 @@ using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -28,6 +29,7 @@ namespace Illusionist.Scripts.Cards;
 /// incoming hit bigger (which you then neutralize). Conditioning it on an attack intent ties the card
 /// to the enemy's 意图 — so it reads as, and counts as, an intent card.</para>
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "PROVOKE_ILLUSIONIST")]
 public sealed class ProvokeIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

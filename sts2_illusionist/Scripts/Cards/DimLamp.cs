@@ -6,6 +6,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -13,6 +14,7 @@ namespace Illusionist.Scripts.Cards;
 /// 熄灭油灯 (Extinguished Lamp) into it. Gain 1 energy and draw 1 card. Because it's made via 幻化, it
 /// reverts to a 熄灭油灯 at the end of the turn if you don't play it — so use it now.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "DIM_LAMP_ILLUSIONIST")]
 public sealed class DimLampIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

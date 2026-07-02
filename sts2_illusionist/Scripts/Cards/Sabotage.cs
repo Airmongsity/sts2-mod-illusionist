@@ -13,6 +13,7 @@ using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -22,6 +23,7 @@ namespace Illusionist.Scripts.Cards;
 /// card (chain another swing this turn). Upgraded: 17 damage / 23 Block. Its description mentions
 /// 意图, so it also fuels intent-flow outputs like 清算 (Reckoning).
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SABOTAGE_ILLUSIONIST")]
 public sealed class SabotageIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

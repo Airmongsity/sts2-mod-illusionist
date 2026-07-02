@@ -4,6 +4,7 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
+using STS2RitsuLib.Patching.Models;
 using Illusionist.Scripts.Powers;
 
 namespace Illusionist.Scripts.Patches;
@@ -16,9 +17,19 @@ namespace Illusionist.Scripts.Patches;
 /// Only fires for a card that <see cref="TransmutePower"/> tracks; for every other card (and other
 /// characters) <c>GetPower</c> returns null and this is a no-op.
 /// </summary>
-[HarmonyPatch(typeof(CardModel), nameof(CardModel.HoverTips), MethodType.Getter)]
-public static class TransmuteRevertHoverPatch
+public sealed class TransmuteRevertHoverPatch : IPatchMethod
 {
+    public static string PatchId => "illusionist_transmute_revert_hover";
+
+    public static string Description => "Append the revert target's hover-tip to transmuted cards";
+
+    public static bool IsCritical => false;
+
+    public static ModPatchTarget[] GetTargets() => new ModPatchTarget[]
+    {
+        new(typeof(CardModel), nameof(CardModel.HoverTips), MethodType.Getter),
+    };
+
     private static void Postfix(CardModel __instance, ref IEnumerable<IHoverTip> __result)
     {
         // Canonical (template) cards — e.g. a card previewed inside a relic's hover (CursedPearl) —

@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.Models.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -19,6 +20,7 @@ namespace Illusionist.Scripts.Cards;
 /// Apply 2 Vulnerable to ALL enemies. (Renamed from "Expose" — that name collides with a
 /// base-game card's model ID and crashes the game on startup.)
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "UNVEIL_ILLUSIONIST")]
 public sealed class UnveilIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

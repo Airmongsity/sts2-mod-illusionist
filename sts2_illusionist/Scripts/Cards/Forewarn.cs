@@ -11,6 +11,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -18,6 +19,7 @@ namespace Illusionist.Scripts.Cards;
 /// Target an enemy and put a 先见 (Prescience) into your hand whose [gold]Block[/gold]
 /// equals the target's current attack-intent damage. When upgraded, +10 extra Block.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "FOREWARN_ILLUSIONIST")]
 public sealed class ForewarnIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

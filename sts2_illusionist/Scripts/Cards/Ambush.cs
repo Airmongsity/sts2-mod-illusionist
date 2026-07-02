@@ -11,6 +11,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -18,6 +19,7 @@ namespace Illusionist.Scripts.Cards;
 /// Deal 7 damage. 先机 (First Move): if this is the first card you play this turn, gain 7 Block.
 /// Upgraded: 9 damage / 9 Block.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "AMBUSH_ILLUSIONIST")]
 public sealed class AmbushIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

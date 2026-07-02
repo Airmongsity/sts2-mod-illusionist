@@ -14,6 +14,7 @@ using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 using MegaCrit.Sts2.Core.ValueProps;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -21,6 +22,7 @@ namespace Illusionist.Scripts.Cards;
 /// Deal 5 damage; if the enemy intends to attack, apply 1 Weak and gain 5 Block — a reactive
 /// attack that punishes (and partly defends against) an incoming swing. Upgraded: 8 damage.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "BLIND_ILLUSIONIST")]
 public sealed class BlindIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

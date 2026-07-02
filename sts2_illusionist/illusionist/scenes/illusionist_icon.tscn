@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://illusionist_icon"]
+
+[ext_resource type="Texture2D" path="res://illusionist/art/avatar-s.png" id="1"]
+
+[node name="IllusionistIcon" type="TextureRect"]
+texture = ExtResource("1")
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2

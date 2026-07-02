@@ -13,6 +13,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -27,6 +28,7 @@ namespace Illusionist.Scripts.Cards;
 /// venom morph into a Toxic. That Toxic reverts into a Phantom Venom at the start of your next turn, so
 /// the card cycles back while the played copy is consumed.</para>
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "PHANTOM_VENOM_ILLUSIONIST")]
 public sealed class PhantomVenomIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

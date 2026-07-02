@@ -1,15 +1,15 @@
 {
-  "ILLUSIONIST.title": "Illusionist",
-  "ILLUSIONIST.titleObject": "Illusionist",
-  "ILLUSIONIST.description": "A trickster of mirrors and illusions. Copy summons mirror images that replay your first card each turn and shatter when you take unblocked damage; read and reflect enemy intent; and transmute your own cards on the fly.",
-  "ILLUSIONIST.pronounSubject": "she",
-  "ILLUSIONIST.pronounObject": "her",
-  "ILLUSIONIST.pronounPossessive": "hers",
-  "ILLUSIONIST.possessiveAdjective": "her",
-  "ILLUSIONIST.cardsModifierTitle": "Illusionist",
-  "ILLUSIONIST.cardsModifierDescription": "Adds the Illusionist's cards to the pool.",
-  "ILLUSIONIST.eventDeathPrevention": "The Illusionist slips behind a mirror and refuses to fade.",
-  "ILLUSIONIST.goldMonologue": "Why settle for one reflection of fortune? I'll take every glittering image at once.",
-  "ILLUSIONIST.aromaPrinciple": "Chaos is only another illusion — and illusions answer to me.",
-  "ILLUSIONIST.unlockText": "Unlocked from the start."
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.title": "Illusionist",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.titleObject": "Illusionist",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.description": "A trickster of mirrors and illusions. Copy summons mirror images that replay your first card each turn and shatter when you take unblocked damage; read and reflect enemy intent; and transmute your own cards on the fly.",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.pronounSubject": "she",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.pronounObject": "her",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.pronounPossessive": "hers",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.possessiveAdjective": "her",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.cardsModifierTitle": "Illusionist",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.cardsModifierDescription": "Adds the Illusionist's cards to the pool.",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.eventDeathPrevention": "The Illusionist slips behind a mirror and refuses to fade.",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.goldMonologue": "Why settle for one reflection of fortune? I'll take every glittering image at once.",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.aromaPrinciple": "Chaos is only another illusion — and illusions answer to me.",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.unlockText": "Unlocked from the start."
 }

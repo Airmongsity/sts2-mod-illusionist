@@ -11,6 +11,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -19,6 +20,7 @@ namespace Illusionist.Scripts.Cards;
 /// this card's upgrades/enchantments/temporary effects). The attack backbone of the 幻化 system: turn
 /// a dead card into more damage, and with FluxweaveIllusionist draw a card for the reshape.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SHIFTING_BLADE_ILLUSIONIST")]
 public sealed class ShiftingBladeIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

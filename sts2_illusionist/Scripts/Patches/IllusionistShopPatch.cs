@@ -6,28 +6,40 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Screens.Shops;
+using STS2RitsuLib.Patching.Models;
 
 namespace Illusionist.Scripts.Patches;
 
 /// <summary>
 /// Give the Illusionist its own Spine body in the shop. The merchant scene is per-character
-/// (<c>merchant/characters/&lt;id&gt;_merchant</c>, redirected to Necrobinder's), so without this the
-/// shop shows the Necrobinder figure. <see cref="NMerchantRoom"/>'s <c>AfterRoomIsLoaded</c> builds one
-/// <see cref="NMerchantCharacter"/> per player from <c>players[i].Character.MerchantAnimPath</c>; we
-/// postfix it, pair each visual to its player by index, and for the Illusionist hide the borrowed spine
-/// (the merchant node's first child) and overlay our own.
+/// (<c>merchant/characters/&lt;id&gt;_merchant</c>, Necrobinder's via the placeholder profile), so
+/// without this the shop shows the Necrobinder figure. <see cref="NMerchantRoom"/>'s
+/// <c>AfterRoomIsLoaded</c> builds one <see cref="NMerchantCharacter"/> per player from
+/// <c>players[i].Character.MerchantAnimPath</c>; we postfix it, pair each visual to its player by
+/// index, and for the Illusionist hide the borrowed spine (the merchant node's first child) and
+/// overlay our own.
 ///
 /// <para>Reuses the REST skeleton (a relaxed pose suits a shopkeeper) — no separate art needed. Swap
 /// <see cref="ShopSkel"/> to a dedicated skeleton later if desired. Tune
 /// <see cref="TargetHeightPx"/> / <see cref="YOffset"/> in-game.</para>
 /// </summary>
-[HarmonyPatch(typeof(NMerchantRoom), "AfterRoomIsLoaded")]
-public static class IllusionistShopPatch
+public sealed class IllusionistShopPatch : IPatchMethod
 {
     private static readonly string ShopSkel = SpineBody.RestSkel;
     private const float TargetHeightPx = 360f;
     private const float YOffset = 0f;
     private const string NodeName = "IllusionistShopSpine";
+
+    public static string PatchId => "illusionist_shop_body";
+
+    public static string Description => "Swap the borrowed merchant body for the Illusionist rest Spine";
+
+    public static bool IsCritical => false;
+
+    public static ModPatchTarget[] GetTargets() => new ModPatchTarget[]
+    {
+        new(typeof(NMerchantRoom), "AfterRoomIsLoaded"),
+    };
 
     private static void Postfix(NMerchantRoom __instance)
     {

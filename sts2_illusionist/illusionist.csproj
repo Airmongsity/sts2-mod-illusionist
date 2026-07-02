@@ -12,6 +12,9 @@
     <Sts2Root Condition="'$(Sts2Root)' == ''">D:\Program Files\Steam\steamapps\common\Slay the Spire 2</Sts2Root>
     <Sts2DataDir Condition="'$(Sts2DataDir)' == ''">$(Sts2Root)\data_sts2_windows_x86_64</Sts2DataDir>
     <Sts2ModsDir Condition="'$(Sts2ModsDir)' == ''">$(Sts2Root)\mods\illusionist</Sts2ModsDir>
+    <!-- RitsuLib NuGet package auto-deploys the RitsuLib mod here for local testing.
+         Players get it via the Steam Workshop dependency instead. -->
+    <RitsuLibDeployDir>$(Sts2Root)\mods\STS2-RitsuLib\</RitsuLibDeployDir>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,5 +30,8 @@
       <HintPath>$(Sts2DataDir)\Steamworks.NET.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <!-- Base library (compile-time). Runtime copy is the STS2-RitsuLib mod itself
+         (Workshop item 3747602295), declared in mod_manifest.json dependencies. -->
+    <PackageReference Include="STS2.RitsuLib" Version="0.4.46" />
   </ItemGroup>
 </Project>

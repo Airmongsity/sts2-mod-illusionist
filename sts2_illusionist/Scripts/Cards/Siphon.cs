@@ -10,12 +10,14 @@ using MegaCrit.Sts2.Core.Models.Powers;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 汲取 (SiphonIllusionist) — 2 cost Skill, Rare (upgraded: 1 cost).
 /// Destroy all mirror clones; for each one destroyed, gain 1 Strength and 1 Dexterity.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SIPHON_ILLUSIONIST")]
 public sealed class SiphonIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

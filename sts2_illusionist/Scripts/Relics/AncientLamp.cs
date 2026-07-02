@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Models;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Relics;
 
 /// <summary>
@@ -22,6 +23,7 @@ namespace Illusionist.Scripts.Relics;
 /// the relic pool (Entry.cs) — Starter rarity keeps it out of reward rolls, but a pool membership
 /// is required or the non-virtual RelicModel.Pool lookup throws when its description renders.
 /// </summary>
+[RegisterRelic(typeof(IllusionistRelicPool), FullPublicEntry = "ANCIENT_LAMP")]
 public sealed class AncientLamp : RelicModel
 {
     // Starter rarity, like the base ancient upgrade PhylacteryUnbound: it replaces the starter relic.

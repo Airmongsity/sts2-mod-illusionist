@@ -8,6 +8,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -15,6 +16,7 @@ namespace Illusionist.Scripts.Cards;
 /// Gain 1 energy. If the targeted enemy has a negative effect (a debuff, or any power with a negative
 /// amount), gain 1 more energy — rewarding the intent/debuff suite (Weak/Vulnerable/Frail you apply).
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SILVER_LINING_ILLUSIONIST")]
 public sealed class SilverLiningIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

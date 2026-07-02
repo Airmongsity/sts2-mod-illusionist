@@ -13,6 +13,7 @@ using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -20,6 +21,8 @@ namespace Illusionist.Scripts.Cards;
 /// Gain 6 Block and apply 1 Weak (虚弱: the enemy deals 25% less attack damage). If you have no
 /// mirror images, also Copy 1 (so it doubles as your opener for the Mirror system). Upgraded: 8 Block / 2 Weak.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "DISRUPT_ILLUSIONIST")]
+[RegisterCharacterStarterCard(typeof(Characters.Illusionist))]
 public sealed class DisruptIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

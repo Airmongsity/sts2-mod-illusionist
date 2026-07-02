@@ -15,6 +15,7 @@ using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -28,6 +29,9 @@ namespace Illusionist.Scripts.Cards;
 /// real campfire upgrade is untouched (fake-upgrade and true-upgrade coexist). The revert runs in
 /// <see cref="AfterPlayerTurnStart"/>; every combat card receives that hook in any pile.</para>
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "RIPOSTE_ILLUSIONIST")]
+[RegisterCharacterStarterCard(typeof(Characters.Illusionist))]
+[RegisterArchaicToothTranscendence(typeof(SabotageIllusionist))]
 public sealed class RiposteIllusionist : CardModel
 {
     /// <summary>Per play-morph tier: extra base damage and extra "intends to attack" bonus.</summary>

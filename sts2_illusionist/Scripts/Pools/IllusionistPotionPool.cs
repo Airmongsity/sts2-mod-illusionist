@@ -1,19 +1,13 @@
-using System;
-using System.Collections.Generic;
-using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Models.Potions;
+using STS2RitsuLib.Scaffolding.Content;
 
 namespace Illusionist.Scripts;
 
 /// <summary>
-/// The Illusionist's dedicated potion pool. Potions are added via
-/// <c>ModHelper.AddModelToPool&lt;IllusionistPotionPool, T&gt;()</c> in <see cref="Entry"/> (base
-/// <see cref="PotionPoolModel.AllPotions"/> = GenerateAllPotions + mod additions). Shared/common
+/// The Illusionist's dedicated potion pool. Potions register themselves with
+/// <c>[RegisterPotion(typeof(IllusionistPotionPool))]</c> (RitsuLib auto-registration). Shared/common
 /// potions come from the game's shared pools; this only holds the Illusionist's own.
 /// </summary>
-public sealed class IllusionistPotionPool : PotionPoolModel
+public sealed class IllusionistPotionPool : TypeListPotionPoolModel
 {
     public override string EnergyColorName => "necrobinder";
-
-    protected override IEnumerable<PotionModel> GenerateAllPotions() => Array.Empty<PotionModel>();
 }

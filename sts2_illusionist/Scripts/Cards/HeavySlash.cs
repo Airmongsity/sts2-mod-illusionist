@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.ValueProps;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -19,6 +20,7 @@ namespace Illusionist.Scripts.Cards;
 /// Deal 22 damage. 先机 (First Move): if this is the first card you play this turn, gain 1 energy.
 /// Upgraded: 30 damage.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "HEAVY_SLASH_ILLUSIONIST")]
 public sealed class HeavySlashIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

@@ -1,7 +1,7 @@
 using Godot;
 using HarmonyLib;
-using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
+using STS2RitsuLib.Patching.Models;
 
 namespace Illusionist.Scripts.Patches;
 
@@ -15,10 +15,13 @@ namespace Illusionist.Scripts.Patches;
 /// the character-select relic preview), which bypasses a getter postfix — that's why the icon showed
 /// "NOPE" there. The path getters are <c>virtual</c>, so they're never inlined and every relic-icon
 /// load (inlined or not, preload or not) flows through them. The webp must therefore be a
-/// ResourceLoader-loadable resource (imported <c>.ctex</c>, see <c>build_pck.gd</c> IMPORTED_TEXTURES).</para>
+/// ResourceLoader-loadable resource (imported <c>.ctex</c>, see <c>build_pck.gd</c> IMPORTED_DIRS).</para>
 ///
 /// <para><b>Potions</b>: still use the runtime-decoded raw image via <see cref="PotionArt"/> on the
 /// <c>PotionModel.Image</c> getter (potions aren't shown on screens that inline it).</para>
+///
+/// (Phase 2 of the RitsuLib migration replaces this with <c>ModRelicTemplate</c>/<c>ModPotionTemplate</c>
+/// asset profiles.)
 /// </summary>
 internal static class RelicArtPath
 {
@@ -36,9 +39,21 @@ internal static class RelicArtPath
     }
 }
 
-[HarmonyPatch(typeof(RelicModel), "PackedIconPath", MethodType.Getter)]
-public static class RelicPackedIconPathPatch
+public sealed class RelicIconPathPatch : IPatchMethod
 {
+    public static string PatchId => "illusionist_relic_icon_paths";
+
+    public static string Description => "Redirect relic icon path getters to the Illusionist's imported webps";
+
+    public static bool IsCritical => false;
+
+    public static ModPatchTarget[] GetTargets() => new ModPatchTarget[]
+    {
+        new(typeof(RelicModel), "PackedIconPath", MethodType.Getter),
+        new(typeof(RelicModel), "PackedIconOutlinePath", MethodType.Getter),
+        new(typeof(RelicModel), "BigIconPath", MethodType.Getter),
+    };
+
     private static void Postfix(RelicModel __instance, ref string __result)
     {
         string? path = RelicArtPath.For(__instance);
@@ -49,35 +64,19 @@ public static class RelicPackedIconPathPatch
     }
 }
 
-[HarmonyPatch(typeof(RelicModel), "PackedIconOutlinePath", MethodType.Getter)]
-public static class RelicIconOutlinePathPatch
+public sealed class PotionImageArtPatch : IPatchMethod
 {
-    private static void Postfix(RelicModel __instance, ref string __result)
-    {
-        string? path = RelicArtPath.For(__instance);
-        if (path != null)
-        {
-            __result = path;
-        }
-    }
-}
+    public static string PatchId => "illusionist_potion_image_art";
 
-[HarmonyPatch(typeof(RelicModel), "BigIconPath", MethodType.Getter)]
-public static class RelicBigIconPathPatch
-{
-    private static void Postfix(RelicModel __instance, ref string __result)
-    {
-        string? path = RelicArtPath.For(__instance);
-        if (path != null)
-        {
-            __result = path;
-        }
-    }
-}
+    public static string Description => "Serve runtime-decoded images for Illusionist potions";
 
-[HarmonyPatch(typeof(PotionModel), nameof(PotionModel.Image), MethodType.Getter)]
-public static class PotionImageArtPatch
-{
+    public static bool IsCritical => false;
+
+    public static ModPatchTarget[] GetTargets() => new ModPatchTarget[]
+    {
+        new(typeof(PotionModel), nameof(PotionModel.Image), MethodType.Getter),
+    };
+
     private static void Postfix(PotionModel __instance, ref Texture2D __result)
     {
         ImageTexture? art = PotionArt.For(__instance);

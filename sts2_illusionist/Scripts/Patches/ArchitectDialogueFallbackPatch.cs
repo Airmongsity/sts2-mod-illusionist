@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Ancients;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Characters;
+using STS2RitsuLib.Patching.Models;
 using IllusionistCharacter = Illusionist.Scripts.Characters.Illusionist;
 
 namespace Illusionist.Scripts.Patches;
@@ -13,15 +13,27 @@ namespace Illusionist.Scripts.Patches;
 /// so <see cref="AncientDialogueSet.GetValidDialogues"/> returns an empty set. Most ancients fall back
 /// to agnostic dialogue, but <c>TheArchitect</c> (the final-boss win sequence) asks with
 /// <c>allowAnyCharacterDialogues: false</c>, gets nothing, and its <c>WinRun()</c> then dereferences a
-/// null <c>Dialogue</c> (<c>Dialogue.EndAttackers</c>) → NullReferenceException that hangs the victory.
+/// null <c>Dialogue</c> → NullReferenceException that hangs the victory.
 ///
 /// When the lookup comes up empty for the Illusionist, reuse Necrobinder's dialogues (consistent with
-/// our asset reuse) so <c>Dialogue</c> is non-null and the win proceeds. Only triggers on the truly
-/// empty case, so it doesn't disturb ancients that already resolve agnostic dialogue.
+/// our asset reuse) so <c>Dialogue</c> is non-null and the win proceeds. RitsuLib ships its own
+/// Architect guard, but it is gated behind a debug-compatibility setting that is off by default, and
+/// it injects empty lines rather than real dialogue — ours is nicer until we write real
+/// <c>ancients.json</c> dialogue for the Illusionist.
 /// </summary>
-[HarmonyPatch(typeof(AncientDialogueSet), nameof(AncientDialogueSet.GetValidDialogues))]
-public static class ArchitectDialogueFallbackPatch
+public sealed class ArchitectDialogueFallbackPatch : IPatchMethod
 {
+    public static string PatchId => "illusionist_architect_dialogue_fallback";
+
+    public static string Description => "Fall back to Necrobinder ancient dialogue so TheArchitect's WinRun can't NRE";
+
+    public static bool IsCritical => false;
+
+    public static ModPatchTarget[] GetTargets() => new ModPatchTarget[]
+    {
+        new(typeof(AncientDialogueSet), nameof(AncientDialogueSet.GetValidDialogues)),
+    };
+
     private static void Postfix(AncientDialogueSet __instance, ModelId characterId, int charVisits, int totalVisits, ref IEnumerable<AncientDialogue> __result)
     {
         if (characterId != ModelDb.Character<IllusionistCharacter>().Id)

@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -21,6 +22,7 @@ namespace Illusionist.Scripts.Cards;
 /// Toxic at end of turn (transmute stack), and a held Toxic costs 5 (blockable) HP. The chosen
 /// draw-pile card is left untouched.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SUMMON_ILLUSIONIST")]
 public sealed class SummonIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

@@ -9,6 +9,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.ValueProps;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -17,6 +18,8 @@ namespace Illusionist.Scripts.Cards;
 /// Necrobinder's — so deck-transform effects (event "transform a card", New Leaf, etc.) target the
 /// Illusionist's cards.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "ILLUSIONIST_STRIKE_ILLUSIONIST")]
+[RegisterCharacterStarterCard(typeof(Characters.Illusionist), 4)]
 public sealed class IllusionistStrikeIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

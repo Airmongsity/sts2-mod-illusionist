@@ -11,12 +11,14 @@ using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Potions;
 
 /// <summary>
 /// 预见药剂 (ForesightIllusionist Draught) — Uncommon, combat-only. Draw 2 cards and Retain your hand this
 /// turn (via the engine's RetainHandPower — the same mechanism as Stable Serum / 稳定血清).
 /// </summary>
+[RegisterPotion(typeof(IllusionistPotionPool), FullPublicEntry = "FORESIGHT_DRAUGHT")]
 public sealed class ForesightDraught : PotionModel
 {
     public override PotionRarity Rarity => PotionRarity.Uncommon;

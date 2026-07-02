@@ -9,12 +9,14 @@ using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 恍惚 (DazeIllusionist) — 1 cost Skill, Common (upgraded: draw 3 instead of 2).
 /// Draw 2 cards. 先机 (First Move): if this is the first card you play this turn, draw 1 extra card.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "DAZE_ILLUSIONIST")]
 public sealed class DazeIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

@@ -11,6 +11,7 @@ using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -18,6 +19,7 @@ namespace Illusionist.Scripts.Cards;
 /// Gain 5 Block. If you have no mirror clones (复制品), gain 5 extra Block AND Copy 2 (so it doubles
 /// as a Mirror opener). Upgraded: +3 to both Block values (5 -> 8, 5 -> 8).
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "LAST_STAND_ILLUSIONIST")]
 public sealed class LastStandIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

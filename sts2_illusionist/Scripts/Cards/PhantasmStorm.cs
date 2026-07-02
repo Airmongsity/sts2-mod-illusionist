@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -19,6 +20,8 @@ namespace Illusionist.Scripts.Cards;
 /// Deal X damage to ALL enemies per mirror image. Copy 3. If no mirrors, Copy 2 more.
 /// Upgraded: 9 → 13 damage per mirror.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "PHANTASM_STORM_ILLUSIONIST")]
+[RegisterDustyTomeCard(typeof(Characters.Illusionist))]
 public sealed class PhantasmStormIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

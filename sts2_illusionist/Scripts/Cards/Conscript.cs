@@ -11,6 +11,7 @@ using Illusionist.Scripts;
 using Illusionist.Scripts.Monsters;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -18,6 +19,7 @@ namespace Illusionist.Scripts.Cards;
 /// Copy 4 (create four mirror images, each with its own cosmetic clone), then lose 2 Strength
 /// and 2 Dexterity until the end of this turn (restored automatically — the temporary down-powers).
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "CONSCRIPT_ILLUSIONIST")]
 public sealed class ConscriptIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

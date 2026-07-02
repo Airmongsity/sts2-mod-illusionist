@@ -9,12 +9,14 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 炫目 (DazzleIllusionist) — 2 cost Power, Uncommon (upgraded: 1 cost).
 /// At the start of each turn, gain Block equal to your current number of mirror clones (复制品).
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "DAZZLE_ILLUSIONIST")]
 public sealed class DazzleIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

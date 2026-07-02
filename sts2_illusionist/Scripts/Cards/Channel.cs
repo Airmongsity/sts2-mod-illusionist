@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -20,6 +21,7 @@ namespace Illusionist.Scripts.Cards;
 /// energy cost 0, and the spent energy is read at play time via
 /// <see cref="CardModel.ResolveEnergyXValue"/>.</para>
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "CHANNEL_ILLUSIONIST")]
 public sealed class ChannelIllusionist : CardModel
 {
     /// <summary>Flat damage added on top of X (both normal and upgraded).</summary>

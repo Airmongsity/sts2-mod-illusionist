@@ -11,12 +11,14 @@ using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Relics;
 
 /// <summary>
 /// 棱镜碎片 (Prism Shard) — Common. Whenever a mirror image is created beside you, gain 1 Block.
 /// Hooks <c>AfterCreatureAddedToCombat</c> and filters to our own <see cref="MirrorClone"/> pets.
 /// </summary>
+[RegisterRelic(typeof(IllusionistRelicPool), FullPublicEntry = "PRISM_SHARD")]
 public sealed class PrismShard : RelicModel
 {
     public override RelicRarity Rarity => RelicRarity.Common;

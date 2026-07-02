@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts.Monsters;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -14,6 +15,7 @@ namespace Illusionist.Scripts.Cards;
 /// Destroy all mirror images, then gain +1 energy per turn. Stacks with each play.
 /// Friendship power pattern.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "EXTRACT_ILLUSIONIST")]
 public sealed class ExtractIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

@@ -8,6 +8,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.ValueProps;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -15,6 +16,7 @@ namespace Illusionist.Scripts.Cards;
 /// Block value is set dynamically by 预警 (Forewarn) based on the enemy's attack intent.
 /// When Forewarn is upgraded, Prescience gains +10 extra Block.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "PRESCIENCE_ILLUSIONIST")]
 public sealed class PrescienceIllusionist : CardModel
 {
     public override int MaxUpgradeLevel => 0;

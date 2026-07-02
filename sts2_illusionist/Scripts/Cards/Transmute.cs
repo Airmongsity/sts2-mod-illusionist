@@ -13,6 +13,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -20,6 +21,7 @@ namespace Illusionist.Scripts.Cards;
 /// Look at 3 random cards from your exhaust pile, choose one, then 幻化 a card in your hand into a
 /// copy of it (carrying that card's upgrades/enchantments). Upgraded: pick from 5. Exhausts itself.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "TRANSMUTE_ILLUSIONIST")]
 public sealed class TransmuteIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

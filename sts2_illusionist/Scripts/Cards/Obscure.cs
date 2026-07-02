@@ -11,6 +11,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.ValueProps;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -18,6 +19,7 @@ namespace Illusionist.Scripts.Cards;
 /// Gain 5 Block and draw 2 cards; if any enemy intends to attack, gain 7 extra Block. Upgraded:
 /// +2 to both Block values (5 -> 7, 7 -> 9).
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "OBSCURE_ILLUSIONIST")]
 public sealed class ObscureIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

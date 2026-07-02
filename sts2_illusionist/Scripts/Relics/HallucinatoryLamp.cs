@@ -9,6 +9,7 @@ using MegaCrit.Sts2.Core.Models;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Relics;
 
 /// <summary>
@@ -19,6 +20,9 @@ namespace Illusionist.Scripts.Relics;
 /// No art yet: the icon reuses Bound Phylactery's sprite as a placeholder (RelicModel icons
 /// resolve to blank/"missing" safely, but reusing an existing sprite shows a real icon).
 /// </summary>
+[RegisterRelic(typeof(IllusionistRelicPool), FullPublicEntry = "HALLUCINATORY_LAMP")]
+[RegisterCharacterStarterRelic(typeof(Characters.Illusionist))]
+[RegisterTouchOfOrobasRefinement(typeof(AncientLamp))]
 public sealed class HallucinatoryLamp : RelicModel
 {
     public override RelicRarity Rarity => RelicRarity.Starter;

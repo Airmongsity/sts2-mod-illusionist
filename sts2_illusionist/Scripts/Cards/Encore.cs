@@ -8,6 +8,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -16,6 +17,7 @@ namespace Illusionist.Scripts.Cards;
 /// recursion engine for the intent/control suite: it lets you replay CounterIllusionist, ForesightIllusionist, ReversalIllusionist
 /// and Catalyze every turn instead of once. Upgraded Innate so the engine is online from turn 1.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "ENCORE_ILLUSIONIST")]
 public sealed class EncoreIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

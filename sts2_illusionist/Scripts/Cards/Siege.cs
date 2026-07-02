@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -19,6 +20,7 @@ namespace Illusionist.Scripts.Cards;
 /// For each mirror clone (复制品) you have, deal 8 damage to ALL enemies once.
 /// Upgraded: 9 damage.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SIEGE_ILLUSIONIST")]
 public sealed class SiegeIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

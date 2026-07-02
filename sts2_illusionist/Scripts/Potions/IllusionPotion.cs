@@ -10,11 +10,13 @@ using MegaCrit.Sts2.Core.Models;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Potions;
 
 /// <summary>
 /// 幻象药水 (Illusion Potion) — Common, combat-only. Copy 1 (gain a mirror image).
 /// </summary>
+[RegisterPotion(typeof(IllusionistPotionPool), FullPublicEntry = "ILLUSION_POTION")]
 public sealed class IllusionPotion : PotionModel
 {
     public override PotionRarity Rarity => PotionRarity.Common;

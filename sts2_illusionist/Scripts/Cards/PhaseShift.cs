@@ -9,6 +9,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -16,6 +17,7 @@ namespace Illusionist.Scripts.Cards;
 /// Apply Phase Shift: the next time you would take unblocked damage, your mirror images are NOT
 /// destroyed (the charge is consumed instead). Provides no Block.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "PHASE_SHIFT_ILLUSIONIST")]
 public sealed class PhaseShiftIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

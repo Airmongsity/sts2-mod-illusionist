@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Models;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Relics;
 
 /// <summary>
@@ -17,6 +18,7 @@ namespace Illusionist.Scripts.Relics;
 /// combat, your mirror images survive. Implemented by granting one <see cref="PhaseShiftPower"/>
 /// charge at combat start (the same charge 虚实转换/Phase Shift uses).
 /// </summary>
+[RegisterRelic(typeof(IllusionistRelicPool), FullPublicEntry = "UNBREAKABLE_MIRROR")]
 public sealed class UnbreakableMirror : RelicModel
 {
     public override RelicRarity Rarity => RelicRarity.Uncommon;

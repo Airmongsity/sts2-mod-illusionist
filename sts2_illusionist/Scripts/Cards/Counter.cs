@@ -11,6 +11,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 using MegaCrit.Sts2.Core.ValueProps;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -19,6 +20,7 @@ namespace Illusionist.Scripts.Cards;
 /// telegraph you "counter" makes the card hit harder forever after (the Ironclad Thrash / Rampage
 /// self-growing pattern). Reflecting a big boss swing snowballs it into a heavy repeatable hit.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "COUNTER_ILLUSIONIST")]
 public sealed class CounterIllusionist : CardModel
 {
     // Accumulated growth, tracked separately so it can be re-applied if the card's vars are rebuilt

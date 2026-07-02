@@ -14,6 +14,7 @@ using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Relics;
 
 /// <summary>
@@ -21,6 +22,7 @@ namespace Illusionist.Scripts.Relics;
 /// turn, Copy 1. Rewards the careful blocking the mirror engine already demands. A per-turn flag
 /// (reset at turn start, set when unblocked damage lands on the owner) drives the check.
 /// </summary>
+[RegisterRelic(typeof(IllusionistRelicPool), FullPublicEntry = "PRISTINE_MIRROR")]
 public sealed class PristineMirror : RelicModel
 {
     public override RelicRarity Rarity => RelicRarity.Rare;

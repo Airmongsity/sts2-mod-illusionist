@@ -8,6 +8,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.ValueProps;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -15,6 +16,7 @@ namespace Illusionist.Scripts.Cards;
 /// Gain 3 Block, then put a copy of this card into the discard pile whose Replay count is one
 /// higher than this card's (so each generation plays an extra time and snowballs).
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "ECHO_ILLUSIONIST")]
 public sealed class EchoIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

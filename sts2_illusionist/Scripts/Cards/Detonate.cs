@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -19,6 +20,7 @@ namespace Illusionist.Scripts.Cards;
 /// Destroy all mirror clones; for each one destroyed, deal 12 damage to ALL enemies once.
 /// Upgraded: 15 damage.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "DETONATE_ILLUSIONIST")]
 public sealed class DetonateIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Models.Powers;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -19,6 +20,7 @@ namespace Illusionist.Scripts.Cards;
 /// what. The self-Frail (block gained -25%) is a soft tax you can dodge by building your Block FIRST,
 /// then playing RekindleIllusionist.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "REKINDLE_ILLUSIONIST")]
 public sealed class RekindleIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

@@ -6,6 +6,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -14,6 +15,7 @@ namespace Illusionist.Scripts.Cards;
 /// 10th transform. Instanced — playing it twice gives two independent effects.
 /// (Pattern follows base-game Orbit.)
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "MOMENTUM_ILLUSIONIST")]
 public sealed class MomentumIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

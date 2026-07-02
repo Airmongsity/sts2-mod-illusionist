@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -18,6 +19,7 @@ namespace Illusionist.Scripts.Cards;
 /// this card's upgrades/enchantments/temporary effects). The defense backbone of the 幻化 system:
 /// turn a dead card into more Block, and with FluxweaveIllusionist draw a card for the reshape.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "MIRROR_WARD_ILLUSIONIST")]
 public sealed class MirrorWardIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

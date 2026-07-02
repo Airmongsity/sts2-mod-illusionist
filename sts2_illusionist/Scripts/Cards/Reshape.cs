@@ -8,6 +8,7 @@ using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -19,6 +20,7 @@ namespace Illusionist.Scripts.Cards;
 /// Necrobinder's Transfigure does) rather than applying an enchantment, so it never clobbers an
 /// enchantment the chosen card may already carry.</para>
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "RESHAPE_ILLUSIONIST")]
 public sealed class ReshapeIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

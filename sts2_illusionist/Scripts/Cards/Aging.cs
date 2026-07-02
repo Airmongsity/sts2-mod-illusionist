@@ -13,6 +13,7 @@ using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 using MegaCrit.Sts2.Core.MonsterMoves.MonsterMoveStateMachine;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -21,6 +22,7 @@ namespace Illusionist.Scripts.Cards;
 /// If the target enemy's intent this turn consists ONLY of Attack and/or Defend,
 /// advance it to next turn's intent, discarding the current one.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "AGING_ILLUSIONIST")]
 public sealed class AgingIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

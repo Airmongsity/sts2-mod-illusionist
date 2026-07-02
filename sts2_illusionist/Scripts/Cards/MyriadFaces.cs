@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -22,6 +23,7 @@ namespace Illusionist.Scripts.Cards;
 /// reshape draws, refilling for even more. The 熄灭油灯 are the cost: the more you reshape, the more
 /// (Retain, Unplayable) lamps clog your hand next turns — until 点灯 (Kindle) relights them.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "MYRIAD_FACES_ILLUSIONIST")]
 public sealed class MyriadFacesIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

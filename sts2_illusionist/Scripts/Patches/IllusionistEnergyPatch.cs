@@ -4,15 +4,16 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Combat;
+using STS2RitsuLib.Patching.Models;
 
 namespace Illusionist.Scripts.Patches;
 
 /// <summary>
-/// Replace the borrowed Necrobinder energy orb with the Illusionist's own (<c>illusionist_energy_icon.webp</c>)
-/// in the two remaining spots: the card cost orb (top-left of each card) and the in-combat energy
-/// counter (bottom-left). Both getters/nodes take a <see cref="Texture2D"/>, so we substitute the
-/// runtime-loaded icon. The icon is shipped as an imported texture, so it loads via
-/// <see cref="ResourceLoader"/>. Only the Illusionist's cards / player are affected.
+/// Replace the borrowed Necrobinder energy orb with the Illusionist's own (<c>illusionist_energy_icon.webp</c>).
+/// The pool now declares <c>Text/BigEnergyIconPath</c> (RitsuLib applies those to descriptions and
+/// tooltips); these two patches cover the remaining spots: the card cost orb (kept as a belt-and-braces
+/// override until Phase 2 confirms RitsuLib covers raw <see cref="CardModel"/>s) and the in-combat
+/// energy counter scene, which is still Necrobinder's via the placeholder profile.
 /// </summary>
 public static class IllusionistEnergy
 {
@@ -46,12 +47,22 @@ public static class IllusionistEnergy
 }
 
 /// <summary>Card cost orb (top-left of each card).</summary>
-[HarmonyPatch(typeof(CardModel), nameof(CardModel.EnergyIcon), MethodType.Getter)]
-public static class IllusionistCardEnergyIconPatch
+public sealed class IllusionistCardEnergyIconPatch : IPatchMethod
 {
+    public static string PatchId => "illusionist_card_energy_icon";
+
+    public static string Description => "Use the Illusionist energy orb on Illusionist cards' cost orb";
+
+    public static bool IsCritical => false;
+
+    public static ModPatchTarget[] GetTargets() => new ModPatchTarget[]
+    {
+        new(typeof(CardModel), nameof(CardModel.EnergyIcon), MethodType.Getter),
+    };
+
     private static void Postfix(CardModel __instance, ref Texture2D __result)
     {
-        if (__instance.Pool is not global::Illusionist.Scripts.IllusionistCardPool)
+        if (__instance.Pool is not IllusionistCardPool)
         {
             return;
         }
@@ -67,9 +78,19 @@ public static class IllusionistCardEnergyIconPatch
 /// In-combat energy counter (bottom-left). Sets the base orb layer to our icon and hides the borrowed
 /// Necrobinder rotating layers + fire VFX, leaving the number label intact.
 /// </summary>
-[HarmonyPatch(typeof(NEnergyCounter), "_Ready")]
-public static class IllusionistEnergyCounterPatch
+public sealed class IllusionistEnergyCounterPatch : IPatchMethod
 {
+    public static string PatchId => "illusionist_energy_counter";
+
+    public static string Description => "Reskin the borrowed Necrobinder combat energy counter";
+
+    public static bool IsCritical => false;
+
+    public static ModPatchTarget[] GetTargets() => new ModPatchTarget[]
+    {
+        new(typeof(NEnergyCounter), "_Ready"),
+    };
+
     private static void Postfix(NEnergyCounter __instance)
     {
         if (AccessTools.Field(typeof(NEnergyCounter), "_player").GetValue(__instance) is not Player player

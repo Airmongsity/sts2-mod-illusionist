@@ -10,12 +10,14 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.Models.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 预见 (ForesightIllusionist) — 1 cost Skill, Uncommon (upgraded: Retain).
 /// Choose up to 8 cards from your draw pile and place them on top in any order.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "FORESIGHT_ILLUSIONIST")]
 public sealed class ForesightIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

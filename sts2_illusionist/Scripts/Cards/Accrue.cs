@@ -11,6 +11,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.ValueProps;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -18,6 +19,7 @@ namespace Illusionist.Scripts.Cards;
 /// Innate. Retain. At the start of your turn, if this is in your hand, DOUBLE its damage.
 /// Upgraded: base damage becomes 5.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "ACCRUE_ILLUSIONIST")]
 public sealed class AccrueIllusionist : CardModel
 {
     private decimal _doubledAmount;

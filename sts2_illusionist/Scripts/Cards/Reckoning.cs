@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.ValueProps;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -20,6 +21,7 @@ namespace Illusionist.Scripts.Cards;
 /// (反击/致盲/抗衡/预见), manipulators (逆转/虚晃/催化), 挑衅, and 破坏. This is what mirror/transmute
 /// decks can't match: its scaling comes purely from playing intent cards.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "RECKONING_ILLUSIONIST")]
 public sealed class ReckoningIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

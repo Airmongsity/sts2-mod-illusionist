@@ -16,6 +16,11 @@ const SKIP_EXTENSIONS := [".import", ".uid"]
 # script runs a `--import` pass first so these .ctex files exist under res://.godot/imported/.
 const IMPORTED_TEXTURES := [
 	"res://illusionist/art/illusionist_energy_icon.webp", # in-text energy icon ([img] in descriptions)
+	# Referenced through the RitsuLib CharacterAssetProfile / hand-written .tscn scenes, all of which
+	# load via ResourceLoader — so these must ship imported (.ctex), not as raw bytes.
+	"res://illusionist/art/avatar-s.png",              # top-bar / HUD icon texture
+	"res://illusionist/art/avatar-m.png",              # character-select portrait
+	"res://illusionist/art/illusionist_background.png", # character-select backdrop
 ]
 
 # Spine atlases whose texture PAGES must all be imported (spine-godot loads them via ResourceLoader).

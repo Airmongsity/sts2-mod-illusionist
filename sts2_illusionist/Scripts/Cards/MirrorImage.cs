@@ -10,6 +10,7 @@ using Illusionist.Scripts;
 using Illusionist.Scripts.Monsters;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -17,6 +18,7 @@ namespace Illusionist.Scripts.Cards;
 /// Copy 1 (create a mirror): while a mirror is present, the first card you play each turn is
 /// replayed once. Taking unblocked damage shatters all mirrors. No drawback.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "MIRROR_IMAGE_ILLUSIONIST")]
 public sealed class MirrorImageIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

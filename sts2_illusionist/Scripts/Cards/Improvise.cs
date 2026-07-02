@@ -9,6 +9,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -18,6 +19,7 @@ namespace Illusionist.Scripts.Cards;
 /// target, but it's free (cheats out expensive transmuted cards) and, as your first play, it's copied
 /// by your mirror images.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "IMPROVISE_ILLUSIONIST")]
 public sealed class ImproviseIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

@@ -15,6 +15,7 @@ using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 using MegaCrit.Sts2.Core.MonsterMoves.MonsterMoveStateMachine;
 using MegaCrit.Sts2.Core.ValueProps;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -24,6 +25,7 @@ namespace Illusionist.Scripts.Cards;
 /// non-attack intents on the same move stay in the telegraph, and the enemy's later turns are
 /// untouched (its move sequence continues normally after).
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "REVERSAL_ILLUSIONIST")]
 public sealed class ReversalIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

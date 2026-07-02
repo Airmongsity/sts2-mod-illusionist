@@ -9,12 +9,14 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 万花筒 (KaleidoscopeIllusionist) — 1 cost Power, Rare (upgraded: 0 cost).
 /// Every 3 cards you play, Copy 1 (create a mirror image) and deal 6 damage to ALL enemies.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "KALEIDOSCOPE_ILLUSIONIST")]
 public sealed class KaleidoscopeIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

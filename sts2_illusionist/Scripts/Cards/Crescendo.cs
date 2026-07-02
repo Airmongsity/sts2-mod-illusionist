@@ -9,6 +9,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.Models.Powers;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -16,6 +17,7 @@ namespace Illusionist.Scripts.Cards;
 /// Lose 4 Strength immediately, then gain 2 Strength at the start of each turn (net positive after
 /// 2 turns). Pairs with the Illusionist's other Strength manipulation.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "CRESCENDO_ILLUSIONIST")]
 public sealed class CrescendoIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

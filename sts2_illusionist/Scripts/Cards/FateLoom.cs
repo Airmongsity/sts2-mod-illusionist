@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.ValueProps;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -17,6 +18,7 @@ namespace Illusionist.Scripts.Cards;
 /// Gain 8 Block, then put a chosen card from your discard pile on top of your draw pile
 /// (top-deck control). Upgraded: gain 10 Block.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "FATE_LOOM_ILLUSIONIST")]
 public sealed class FateLoomIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

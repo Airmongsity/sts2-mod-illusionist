@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -22,6 +23,7 @@ namespace Illusionist.Scripts.Cards;
 /// <see cref="Illusionist.Scripts.Transmutation.NotifyTransformed"/>, which feeds
 /// <see cref="TransformCountPower"/>.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "METAMORPHOSIS_ILLUSIONIST")]
 public sealed class MetamorphosisIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Godot;
-using HarmonyLib;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
@@ -10,17 +9,17 @@ using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
+using STS2RitsuLib.Patching.Models;
 using Illusionist.Scripts.Monsters;
 
 namespace Illusionist.Scripts.Patches;
 
 /// <summary>
-/// Give mirror clones the Illusionist's own static image, at 75% opacity, instead of the borrowed
-/// Necrobinder Spine body. Same mechanism as the player's combat body
-/// (<see cref="IllusionistCombatBodyPatch"/>) — hide the Spine, overlay a translucent sprite.
+/// Give mirror clones the Illusionist's own Spine body, at reduced opacity, instead of the borrowed
+/// Necrobinder body. Same mechanism as the player's combat body (the character template's
+/// <c>TryCreateCreatureVisuals</c>) — hide the Spine, overlay a translucent sprite.
 /// </summary>
-[HarmonyPatch(typeof(MonsterModel), nameof(MonsterModel.CreateVisuals))]
-public static class IllusionistMirrorVisualPatch
+public sealed class IllusionistMirrorVisualPatch : IPatchMethod
 {
     /// <summary>On-screen height of a clone (matches the player body). Tune to taste.</summary>
     private const float TargetHeightPx = 300f;
@@ -30,6 +29,17 @@ public static class IllusionistMirrorVisualPatch
 
     /// <summary>Clone opacity (0..1).</summary>
     private const float Alpha = 0.60f;
+
+    public static string PatchId => "illusionist_mirror_visuals";
+
+    public static string Description => "Translucent Illusionist Spine body for mirror clones";
+
+    public static bool IsCritical => false;
+
+    public static ModPatchTarget[] GetTargets() => new ModPatchTarget[]
+    {
+        new(typeof(MonsterModel), nameof(MonsterModel.CreateVisuals)),
+    };
 
     private static void Postfix(MonsterModel __instance, NCreatureVisuals __result)
     {
@@ -63,8 +73,7 @@ public static class IllusionistMirrorVisualPatch
 /// you", never overlapping far away. Each clone keeps its sampled spot (cached per creature) so
 /// existing clones don't jump when a new one is summoned.
 /// </summary>
-[HarmonyPatch(typeof(NCombatRoom), nameof(NCombatRoom.AddCreature))]
-public static class IllusionistMirrorRingPatch
+public sealed class IllusionistMirrorRingPatch : IPatchMethod
 {
     // Ring shape, in the ally container's pixels. Tune to taste.
     private const float RingInnerPx = 70f;   // never closer than this to the player
@@ -74,6 +83,17 @@ public static class IllusionistMirrorRingPatch
 
     private static readonly ConditionalWeakTable<Creature, object> _offsets = new();
     private static readonly Random _rng = new();
+
+    public static string PatchId => "illusionist_mirror_ring";
+
+    public static string Description => "Lay mirror clones out in a ring around their owner";
+
+    public static bool IsCritical => false;
+
+    public static ModPatchTarget[] GetTargets() => new ModPatchTarget[]
+    {
+        new(typeof(NCombatRoom), nameof(NCombatRoom.AddCreature)),
+    };
 
     private static void Postfix(NCombatRoom __instance, Creature creature)
     {

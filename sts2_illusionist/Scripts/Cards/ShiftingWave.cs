@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -21,6 +22,7 @@ namespace Illusionist.Scripts.Cards;
 /// Reverts one tier at turn start. Both morph and revert count as 变化 (transform)
 /// for Fluxweave/Momentum via Transmutation.NotifyTransformed.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SHIFTING_WAVE_ILLUSIONIST")]
 public sealed class ShiftingWaveIllusionist : CardModel
 {
     private const decimal MorphDamage = 3m;

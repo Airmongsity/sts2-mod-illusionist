@@ -9,12 +9,14 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 记忆 (MemoryIllusionist) — 2 cost Power, Uncommon (upgraded: 1 cost).
 /// Apply MemoryIllusionist: whenever a mirror clone is destroyed, draw 2 cards and gain 1 energy.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "MEMORY_ILLUSIONIST")]
 public sealed class MemoryIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

@@ -1,15 +1,15 @@
 {
-  "ILLUSIONIST.title": "幻术师",
-  "ILLUSIONIST.titleObject": "幻术师",
-  "ILLUSIONIST.description": "操弄镜像与幻象的诡术师。复制可召唤镜像，重放你每回合的第一张牌，并在你受到未格挡的伤害时破碎；解读并反制敌人的意图；随心幻化你自己的牌。",
-  "ILLUSIONIST.pronounSubject": "她",
-  "ILLUSIONIST.pronounObject": "她",
-  "ILLUSIONIST.pronounPossessive": "她的",
-  "ILLUSIONIST.possessiveAdjective": "她的",
-  "ILLUSIONIST.cardsModifierTitle": "幻术师",
-  "ILLUSIONIST.cardsModifierDescription": "将幻术师的牌加入卡池。",
-  "ILLUSIONIST.eventDeathPrevention": "幻术师隐入镜中，拒绝消逝。",
-  "ILLUSIONIST.goldMonologue": "何必只取一面财富的倒影？我要将每一道流光尽数收入囊中。",
-  "ILLUSIONIST.aromaPrinciple": "混沌不过是另一重幻象——而幻象，皆听命于我。",
-  "ILLUSIONIST.unlockText": "初始即解锁。"
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.title": "幻术师",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.titleObject": "幻术师",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.description": "操弄镜像与幻象的诡术师。复制可召唤镜像，重放你每回合的第一张牌，并在你受到未格挡的伤害时破碎；解读并反制敌人的意图；随心幻化你自己的牌。",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.pronounSubject": "她",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.pronounObject": "她",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.pronounPossessive": "她的",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.possessiveAdjective": "她的",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.cardsModifierTitle": "幻术师",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.cardsModifierDescription": "将幻术师的牌加入卡池。",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.eventDeathPrevention": "幻术师隐入镜中，拒绝消逝。",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.goldMonologue": "何必只取一面财富的倒影？我要将每一道流光尽数收入囊中。",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.aromaPrinciple": "混沌不过是另一重幻象——而幻象，皆听命于我。",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.unlockText": "初始即解锁。"
 }

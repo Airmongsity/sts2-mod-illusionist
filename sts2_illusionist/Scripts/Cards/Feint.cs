@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -18,6 +19,7 @@ namespace Illusionist.Scripts.Cards;
 /// control piece for the Intent system; once upgraded, Retain lets you bank it until a foe telegraphs
 /// a big hit, then cancel the swing entirely.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "FEINT_ILLUSIONIST")]
 public sealed class FeintIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

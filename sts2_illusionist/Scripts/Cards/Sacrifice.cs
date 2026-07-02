@@ -14,6 +14,7 @@ using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -21,6 +22,7 @@ namespace Illusionist.Scripts.Cards;
 /// Gain 2 energy and draw 2 cards. If you have any mirror images, destroy one of them.
 /// Upgraded: draw 4 cards instead of 2.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SACRIFICE_ILLUSIONIST")]
 public sealed class SacrificeIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();

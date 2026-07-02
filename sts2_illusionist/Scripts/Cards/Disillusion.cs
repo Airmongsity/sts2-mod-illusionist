@@ -12,6 +12,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using Illusionist.Scripts;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -20,6 +21,7 @@ namespace Illusionist.Scripts.Cards;
 /// in the Lamp's energy/draw now; if unplayed it reverts to the original card at the start of your next
 /// turn.
 /// </summary>
+[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "DISILLUSION_ILLUSIONIST")]
 public sealed class DisillusionIllusionist : CardModel
 {
     public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
