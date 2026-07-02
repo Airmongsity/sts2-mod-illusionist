@@ -25,8 +25,8 @@ public sealed class FlickerIllusionist : CardModel
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(7m, ValueProp.Move),
-        new BlockVar(6m, ValueProp.Move),
+        new DamageVar(6m, ValueProp.Move),
+        new BlockVar(5m, ValueProp.Move),
     };
 
     public FlickerIllusionist()
@@ -61,7 +61,7 @@ public sealed class FlickerIllusionist : CardModel
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Damage.UpgradeValueBy(2m);
-        base.DynamicVars.Block.UpgradeValueBy(2m);
+        base.DynamicVars.Damage.UpgradeValueBy(1m);
+        base.DynamicVars.Block.UpgradeValueBy(1m);
     }
 }

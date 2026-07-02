@@ -29,7 +29,7 @@ public sealed class ObscureIllusionist : CardModel
     {
         new BlockVar(5m, ValueProp.Move),
         new CardsVar(2),
-        new BlockVar("ExtraBlock", 7m, ValueProp.Move),
+        new BlockVar("ExtraBlock", 4m, ValueProp.Move),
     };
 
     public ObscureIllusionist()

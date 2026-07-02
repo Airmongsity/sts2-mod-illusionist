@@ -16,7 +16,7 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 幻形波 (ShiftingWaveIllusionist) — 1 cost Attack, Common.
-/// Deal 6 damage and gain 6 Block. Then 幻化 every ShiftingWave in all piles
+/// Deal 6 damage and gain 6 Block, then Exhaust. Then 幻化 every ShiftingWave in all piles
 /// — each copy gets one morph tier (+3/+3, Riposte/Wither pattern) and shows +N.
 /// Reverts one tier at turn start. Both morph and revert count as 变化 (transform)
 /// for Fluxweave/Momentum via Transmutation.NotifyTransformed.
@@ -32,6 +32,8 @@ public sealed class ShiftingWaveIllusionist : CardModel
 
     public override bool GainsBlock => true;
 
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
+
     public override string Title => _morphLevel > 0 ? $"{base.Title}+{_morphLevel}" : base.Title;
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
@@ -41,7 +43,7 @@ public sealed class ShiftingWaveIllusionist : CardModel
     };
 
     public ShiftingWaveIllusionist()
-        : base(1, CardType.Attack, CardRarity.Common, TargetType.AnyEnemy)
+        : base(1, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
 
@@ -101,7 +103,9 @@ public sealed class ShiftingWaveIllusionist : CardModel
         foreach (PileType pt in piles)
         {
             CardPile pile = pt.GetPile(base.Owner);
-            foreach (CardModel card in pile.Cards)
+            // Snapshot the live pile: the async card-play flow can move cards between piles while
+            // we iterate, and enumerating pile.Cards directly throws "Collection was modified".
+            foreach (CardModel card in pile.Cards.ToList())
             {
                 if (card is ShiftingWaveIllusionist)
                     yield return card;

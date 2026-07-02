@@ -47,9 +47,14 @@ public sealed class MomentumPower : PowerModel
         if (d.Counter >= 10)
         {
             d.Counter = 0;
+            var player = base.Owner.Player;
+            if (player == null)
+            {
+                return;
+            }
             Flash();
-            await CardPileCmd.Draw(new ThrowingPlayerChoiceContext(), 1, base.Owner.Player);
-            await PlayerCmd.GainEnergy(1, base.Owner.Player);
+            await CardPileCmd.Draw(new ThrowingPlayerChoiceContext(), 1, player);
+            await PlayerCmd.GainEnergy(1, player);
             InvokeDisplayAmountChanged();
         }
     }
