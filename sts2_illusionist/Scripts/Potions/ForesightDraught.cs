@@ -18,8 +18,8 @@ namespace Illusionist.Scripts.Potions;
 /// 预见药剂 (ForesightIllusionist Draught) — Uncommon, combat-only. Draw 2 cards and Retain your hand this
 /// turn (via the engine's RetainHandPower — the same mechanism as Stable Serum / 稳定血清).
 /// </summary>
-[RegisterPotion(typeof(IllusionistPotionPool), FullPublicEntry = "FORESIGHT_DRAUGHT")]
-public sealed class ForesightDraught : PotionModel
+[RegisterPotion(typeof(IllusionistPotionPool))]
+public sealed class ForesightDraught : IllusionistPotion
 {
     public override PotionRarity Rarity => PotionRarity.Uncommon;
 
@@ -27,7 +27,7 @@ public sealed class ForesightDraught : PotionModel
 
     public override TargetType TargetType => TargetType.AnyPlayer;
 
-    public override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { HoverTipFactory.FromKeyword(CardKeyword.Retain) };
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { HoverTipFactory.FromKeyword(CardKeyword.Retain) };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[] { new CardsVar(2) };
 

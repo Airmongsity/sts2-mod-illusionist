@@ -56,13 +56,6 @@ public static class Entry
             patcher.RegisterPatch<IllusionistRestSitePatch>();
             patcher.RegisterPatch<IllusionistShopPatch>();
 
-            // Runtime-decoded art (replaced by content templates in Phase 2 of the migration).
-            patcher.RegisterPatch<IllusionistCardEnergyIconPatch>();
-            patcher.RegisterPatch<CardPortraitPatch>();
-            patcher.RegisterPatch<PowerArtPatch>();
-            patcher.RegisterPatch<RelicIconPathPatch>();
-            patcher.RegisterPatch<PotionImageArtPatch>();
-
             // Every patch above is non-critical: failures are logged per patch and skipped.
             patcher.PatchAll();
         }

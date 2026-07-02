@@ -21,12 +21,11 @@ namespace Illusionist.Scripts.Cards;
 /// in the Lamp's energy/draw now; if unplayed it reverts to the original card at the start of your next
 /// turn.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "DISILLUSION_ILLUSIONIST")]
-public sealed class DisillusionIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "DISILLUSION")]
+public sealed class DisillusionIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.TransmuteIllusionist,
         HoverTipFactory.FromCard<DimLampIllusionist>(),

@@ -6,6 +6,7 @@ using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Models;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Enchantments;
 
 /// <summary>
@@ -14,6 +15,7 @@ namespace Illusionist.Scripts.Enchantments;
 /// turn. Uses the engine's per-card <see cref="EnchantmentModel.EnchantPlayCount"/> hook (the same
 /// one the Spiral enchantment uses for plain Replay).
 /// </summary>
+[RegisterEnchantment]
 public sealed class FirstMoveReplay : EnchantmentModel
 {
     // The player explicitly chooses which card to enchant, so allow it on anything.

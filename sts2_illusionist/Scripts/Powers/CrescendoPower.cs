@@ -6,13 +6,15 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
 /// 渐强 (CrescendoIllusionist) power. At the start of each of your turns, gain Strength equal to this power's
 /// stacks (1 per CrescendoIllusionist played). Stacks add, so multiple Crescendos ramp faster.
 /// </summary>
-public sealed class CrescendoPower : PowerModel
+[RegisterPower]
+public sealed class CrescendoPower : IllusionistPower
 {
     public override PowerType Type => PowerType.Buff;
 

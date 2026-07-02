@@ -13,8 +13,8 @@ namespace Illusionist.Scripts.Relics;
 /// Implemented via the cost-modify hook: while no first-in-series card has been played this turn,
 /// every card in hand shows 1 cheaper (down to 0); once you play one, the discount ends.
 /// </summary>
-[RegisterRelic(typeof(IllusionistRelicPool), FullPublicEntry = "HEAD_START")]
-public sealed class HeadStart : RelicModel
+[RegisterRelic(typeof(IllusionistRelicPool))]
+public sealed class HeadStart : IllusionistRelic
 {
     public override RelicRarity Rarity => RelicRarity.Common;
 

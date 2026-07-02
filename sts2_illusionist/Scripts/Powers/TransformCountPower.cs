@@ -4,6 +4,7 @@ using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
@@ -18,7 +19,8 @@ namespace Illusionist.Scripts.Powers;
 /// in the EARLY phase, BEFORE <see cref="TransmutePower"/>'s LATE-phase revert runs, so those reverts
 /// correctly tally toward the new turn.</para>
 /// </summary>
-public sealed class TransformCountPower : PowerModel
+[RegisterPower]
+public sealed class TransformCountPower : IllusionistPower
 {
     private sealed class Data
     {

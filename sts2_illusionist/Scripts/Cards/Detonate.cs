@@ -20,12 +20,11 @@ namespace Illusionist.Scripts.Cards;
 /// Destroy all mirror clones; for each one destroyed, deal 12 damage to ALL enemies once.
 /// Upgraded: 15 damage.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "DETONATE_ILLUSIONIST")]
-public sealed class DetonateIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "DETONATE")]
+public sealed class DetonateIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

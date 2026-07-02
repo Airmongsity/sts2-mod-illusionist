@@ -17,13 +17,12 @@ namespace Illusionist.Scripts.Cards;
 /// Apply Phase Shift: the next time you would take unblocked damage, your mirror images are NOT
 /// destroyed (the charge is consumed instead). Provides no Block.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "PHASE_SHIFT_ILLUSIONIST")]
-public sealed class PhaseShiftIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "PHASE_SHIFT")]
+public sealed class PhaseShiftIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     // This card references mirror images (镜像) — surface that tip.
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
 
     public PhaseShiftIllusionist()
         : base(1, CardType.Power, CardRarity.Common, TargetType.Self)

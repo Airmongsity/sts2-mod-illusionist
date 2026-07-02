@@ -15,10 +15,9 @@ namespace Illusionist.Scripts.Cards;
 /// Destroy all mirror images, then gain +1 energy per turn. Stacks with each play.
 /// Friendship power pattern.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "EXTRACT_ILLUSIONIST")]
-public sealed class ExtractIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "EXTRACT")]
+public sealed class ExtractIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public ExtractIllusionist()
         : base(1, CardType.Power, CardRarity.Uncommon, TargetType.Self)

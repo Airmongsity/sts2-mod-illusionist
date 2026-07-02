@@ -16,12 +16,11 @@ namespace Illusionist.Scripts.Cards;
 /// 万花筒 (KaleidoscopeIllusionist) — 1 cost Power, Rare (upgraded: 0 cost).
 /// Every 3 cards you play, Copy 1 (create a mirror image) and deal 6 damage to ALL enemies.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "KALEIDOSCOPE_ILLUSIONIST")]
-public sealed class KaleidoscopeIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "KALEIDOSCOPE")]
+public sealed class KaleidoscopeIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.Copy, IllusionHoverTips.CopyToken };
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.Copy, IllusionHoverTips.CopyToken };
 
     public KaleidoscopeIllusionist()
         : base(1, CardType.Power, CardRarity.Rare, TargetType.Self)

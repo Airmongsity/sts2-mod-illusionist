@@ -5,6 +5,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
@@ -13,7 +14,8 @@ namespace Illusionist.Scripts.Powers;
 /// exhaust (via AfterCardExhausted) counts toward a 0–9 counter; on the 10th tick
 /// draws 1 + gains 1 energy and resets. Pattern follows the base-game Orbit power.
 /// </summary>
-public sealed class MomentumPower : PowerModel
+[RegisterPower]
+public sealed class MomentumPower : IllusionistPower
 {
     public override PowerType Type => PowerType.Buff;
     public override PowerStackType StackType => PowerStackType.Counter;
@@ -33,9 +35,10 @@ public sealed class MomentumPower : PowerModel
         return Task.CompletedTask;
     }
 
-    internal async Task OnTransform()
+    internal Task OnTransform()
     {
         Tick();
+        return Task.CompletedTask;
     }
 
     private async void Tick()

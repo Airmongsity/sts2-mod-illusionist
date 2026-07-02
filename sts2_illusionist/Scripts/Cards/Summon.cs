@@ -22,12 +22,11 @@ namespace Illusionist.Scripts.Cards;
 /// Toxic at end of turn (transmute stack), and a held Toxic costs 5 (blockable) HP. The chosen
 /// draw-pile card is left untouched.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SUMMON_ILLUSIONIST")]
-public sealed class SummonIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "SUMMON")]
+public sealed class SummonIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.TransmuteIllusionist,
         HoverTipFactory.FromCard<MegaCrit.Sts2.Core.Models.Cards.Toxic>(),
@@ -50,7 +49,7 @@ public sealed class SummonIllusionist : CardModel
         // 1) Choose a non-Power card from the draw pile.
         CardModel? chosen = (await CardSelectCmd.FromCombatPile(
             choiceContext, drawPile, owner,
-            new CardSelectorPrefs(new LocString("cards", "SUMMON_ILLUSIONIST.selectionScreenPrompt"), 1),
+            new CardSelectorPrefs(new LocString("cards", "ILLUSIONIST_CARD_SUMMON.selectionScreenPrompt"), 1),
             c => c.Type != CardType.Power)).FirstOrDefault();
         if (chosen == null)
         {

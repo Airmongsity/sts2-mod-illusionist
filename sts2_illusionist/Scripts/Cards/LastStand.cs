@@ -19,17 +19,16 @@ namespace Illusionist.Scripts.Cards;
 /// Gain 5 Block. If you have no mirror clones (复制品), gain 5 extra Block AND Copy 2 (so it doubles
 /// as a Mirror opener). Upgraded: +3 to both Block values (5 -> 8, 5 -> 8).
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "LAST_STAND_ILLUSIONIST")]
-public sealed class LastStandIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "LAST_STAND")]
+public sealed class LastStandIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Retain, CardKeyword.Exhaust };
 
     // Block tip comes from GainsBlock; add the Copy action + mirror-image (复制品) tips it references.
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.Copy,
         IllusionHoverTips.CopyToken,

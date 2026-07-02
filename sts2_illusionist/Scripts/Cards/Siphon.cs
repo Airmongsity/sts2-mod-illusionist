@@ -17,12 +17,11 @@ namespace Illusionist.Scripts.Cards;
 /// 汲取 (SiphonIllusionist) — 2 cost Skill, Rare (upgraded: 1 cost).
 /// Destroy all mirror clones; for each one destroyed, gain 1 Strength and 1 Dexterity.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SIPHON_ILLUSIONIST")]
-public sealed class SiphonIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "SIPHON")]
+public sealed class SiphonIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.CopyToken,
         HoverTipFactory.FromPower<StrengthPower>(),

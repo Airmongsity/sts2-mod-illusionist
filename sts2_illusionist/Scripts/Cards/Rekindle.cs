@@ -20,14 +20,13 @@ namespace Illusionist.Scripts.Cards;
 /// what. The self-Frail (block gained -25%) is a soft tax you can dodge by building your Block FIRST,
 /// then playing RekindleIllusionist.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "REKINDLE_ILLUSIONIST")]
-public sealed class RekindleIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "REKINDLE")]
+public sealed class RekindleIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     // Copy is our own mechanic (no engine tooltip), so attach the Copy / 复制品 tips explicitly,
     // plus Frail for the self-debuff (dropped from the hover set once upgraded removes it).
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => IsUpgraded
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => IsUpgraded
         ? new IHoverTip[] { IllusionHoverTips.Copy, IllusionHoverTips.CopyToken }
         : new IHoverTip[] { HoverTipFactory.FromPower<FrailPower>(), IllusionHoverTips.Copy, IllusionHoverTips.CopyToken };
 

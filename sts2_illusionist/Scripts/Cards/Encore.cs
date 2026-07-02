@@ -17,12 +17,11 @@ namespace Illusionist.Scripts.Cards;
 /// recursion engine for the intent/control suite: it lets you replay CounterIllusionist, ForesightIllusionist, ReversalIllusionist
 /// and Catalyze every turn instead of once. Upgraded Innate so the engine is online from turn 1.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "ENCORE_ILLUSIONIST")]
-public sealed class EncoreIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "ENCORE")]
+public sealed class EncoreIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         HoverTipFactory.FromKeyword(CardKeyword.Retain),
     };

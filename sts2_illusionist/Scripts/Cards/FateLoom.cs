@@ -18,10 +18,9 @@ namespace Illusionist.Scripts.Cards;
 /// Gain 8 Block, then put a chosen card from your discard pile on top of your draw pile
 /// (top-deck control). Upgraded: gain 10 Block.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "FATE_LOOM_ILLUSIONIST")]
-public sealed class FateLoomIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "FATE_LOOM")]
+public sealed class FateLoomIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
 

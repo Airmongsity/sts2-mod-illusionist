@@ -20,17 +20,17 @@ namespace Illusionist.Scripts.Relics;
 /// No art yet: the icon reuses Bound Phylactery's sprite as a placeholder (RelicModel icons
 /// resolve to blank/"missing" safely, but reusing an existing sprite shows a real icon).
 /// </summary>
-[RegisterRelic(typeof(IllusionistRelicPool), FullPublicEntry = "HALLUCINATORY_LAMP")]
+[RegisterRelic(typeof(IllusionistRelicPool))]
 [RegisterCharacterStarterRelic(typeof(Characters.Illusionist))]
 [RegisterTouchOfOrobasRefinement(typeof(AncientLamp))]
-public sealed class HallucinatoryLamp : RelicModel
+public sealed class HallucinatoryLamp : IllusionistRelic
 {
     public override RelicRarity Rarity => RelicRarity.Starter;
 
     // Reuse Bound Phylactery's art as a placeholder until the Lamp has its own.
     protected override string IconBaseName => "boundphylactery";
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.Copy,
         IllusionHoverTips.CopyToken,

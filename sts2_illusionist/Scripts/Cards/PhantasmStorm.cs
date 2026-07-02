@@ -20,13 +20,12 @@ namespace Illusionist.Scripts.Cards;
 /// Deal X damage to ALL enemies per mirror image. Copy 3. If no mirrors, Copy 2 more.
 /// Upgraded: 9 → 13 damage per mirror.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "PHANTASM_STORM_ILLUSIONIST")]
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "PHANTASM_STORM")]
 [RegisterDustyTomeCard(typeof(Characters.Illusionist))]
-public sealed class PhantasmStormIllusionist : CardModel
+public sealed class PhantasmStormIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.Copy,
         IllusionHoverTips.CopyToken,

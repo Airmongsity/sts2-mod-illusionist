@@ -29,10 +29,10 @@ namespace Illusionist.Scripts.Cards;
 /// real campfire upgrade is untouched (fake-upgrade and true-upgrade coexist). The revert runs in
 /// <see cref="AfterPlayerTurnStart"/>; every combat card receives that hook in any pile.</para>
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "RIPOSTE_ILLUSIONIST")]
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "RIPOSTE")]
 [RegisterCharacterStarterCard(typeof(Characters.Illusionist))]
 [RegisterArchaicToothTranscendence(typeof(SabotageIllusionist))]
-public sealed class RiposteIllusionist : CardModel
+public sealed class RiposteIllusionist : IllusionistCard
 {
     /// <summary>Per play-morph tier: extra base damage and extra "intends to attack" bonus.</summary>
     private const decimal MorphDamage = 2m;
@@ -40,12 +40,11 @@ public sealed class RiposteIllusionist : CardModel
 
     private int _morphLevel;
 
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     // Show the play-morph tier in the title (on top of any real "+" campfire upgrade).
     public override string Title => _morphLevel > 0 ? $"{base.Title}+{_morphLevel}" : base.Title;
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         Illusionist.Scripts.IllusionHoverTips.TransmuteIllusionist,
     };

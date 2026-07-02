@@ -23,12 +23,11 @@ namespace Illusionist.Scripts.Cards;
 /// reshape draws, refilling for even more. The 熄灭油灯 are the cost: the more you reshape, the more
 /// (Retain, Unplayable) lamps clog your hand next turns — until 点灯 (Kindle) relights them.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "MYRIAD_FACES_ILLUSIONIST")]
-public sealed class MyriadFacesIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "MYRIAD_FACES")]
+public sealed class MyriadFacesIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.TransmuteIllusionist,
     };
@@ -45,7 +44,7 @@ public sealed class MyriadFacesIllusionist : CardModel
         // Pick the template to copy (any card; it stays unchanged — only the others are reshaped).
         List<CardModel> picked = (await CardSelectCmd.FromHand(
             choiceContext, owner,
-            new CardSelectorPrefs(new LocString("cards", "MYRIAD_FACES_ILLUSIONIST.selectionScreenPrompt"), 1),
+            new CardSelectorPrefs(new LocString("cards", "ILLUSIONIST_CARD_MYRIAD_FACES.selectionScreenPrompt"), 1),
             null,
             this)).ToList();
         if (picked.Count == 0)

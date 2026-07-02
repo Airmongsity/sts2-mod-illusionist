@@ -20,15 +20,14 @@ namespace Illusionist.Scripts.Cards;
 /// Apply 2 Vulnerable to ALL enemies. (Renamed from "Expose" — that name collides with a
 /// base-game card's model ID and crashes the game on startup.)
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "UNVEIL_ILLUSIONIST")]
-public sealed class UnveilIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "UNVEIL")]
+public sealed class UnveilIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
 
     // Mirrors base-game Bash: a card that applies a power adds that power's hover-tip explicitly.
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { HoverTipFactory.FromPower<VulnerablePower>() };
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { HoverTipFactory.FromPower<VulnerablePower>() };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

@@ -15,10 +15,9 @@ namespace Illusionist.Scripts.Cards;
 /// 10th transform. Instanced — playing it twice gives two independent effects.
 /// (Pattern follows base-game Orbit.)
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "MOMENTUM_ILLUSIONIST")]
-public sealed class MomentumIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "MOMENTUM")]
+public sealed class MomentumIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public MomentumIllusionist()
         : base(1, CardType.Power, CardRarity.Uncommon, TargetType.Self)

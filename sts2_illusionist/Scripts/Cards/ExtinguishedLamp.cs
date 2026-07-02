@@ -5,6 +5,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
@@ -13,11 +14,11 @@ namespace Illusionist.Scripts.Cards;
 /// a Dim Lamp. When played directly it does nothing — you want to transmute it, not play it bare.
 /// Not upgradeable (like Wither).
 /// </summary>
-public sealed class ExtinguishedLampIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "EXTINGUISHED_LAMP")]
+public sealed class ExtinguishedLampIllusionist : IllusionistCard
 {
     public override int MaxUpgradeLevel => 0;
 
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[]
     {

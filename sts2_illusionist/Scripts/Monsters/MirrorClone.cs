@@ -16,6 +16,7 @@ using MegaCrit.Sts2.Core.MonsterMoves.MonsterMoveStateMachine;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using Illusionist.Scripts.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Monsters;
 
 /// <summary>
@@ -28,6 +29,7 @@ namespace Illusionist.Scripts.Monsters;
 /// SummonIllusionist/despawn are best-effort (try/catch): if the engine can't spawn or kill the clone, the
 /// worst case is "no clone appears / a clone lingers", never a crash that breaks the run.
 /// </summary>
+[RegisterMonster]
 public sealed class MirrorClone : MonsterModel
 {
     public override int MinInitialHp => 1;
@@ -36,7 +38,7 @@ public sealed class MirrorClone : MonsterModel
 
     // The base MonsterModel.Title looks up "MIRROR_CLONE.name" in the "monsters" loc table, which
     // we don't ship — that threw a LocException on every name lookup. Point at a key we do define.
-    public override LocString Title => new LocString("cards", "MIRROR_IMAGE_ILLUSIONIST.title");
+    public override LocString Title => new LocString("cards", "ILLUSIONIST_CARD_MIRROR_IMAGE.title");
 
     // Reuse the reskinned player's own (Necrobinder) visuals so the clone looks like a copy of you.
     protected override string VisualsPath => SceneHelper.GetScenePath("creature_visuals/necrobinder");

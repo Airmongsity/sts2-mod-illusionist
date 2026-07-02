@@ -16,14 +16,13 @@ namespace Illusionist.Scripts.Cards;
 /// 炫目 (DazzleIllusionist) — 2 cost Power, Uncommon (upgraded: 1 cost).
 /// At the start of each turn, gain Block equal to your current number of mirror clones (复制品).
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "DAZZLE_ILLUSIONIST")]
-public sealed class DazzleIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "DAZZLE")]
+public sealed class DazzleIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     // This power grants Block at the start of each turn (not on play), so don't flag GainsBlock —
     // add the Block tip explicitly, plus the mirror-image (复制品) tip it references.
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         HoverTipFactory.Static(StaticHoverTip.Block),
         IllusionHoverTips.CopyToken,

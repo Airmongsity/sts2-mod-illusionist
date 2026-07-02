@@ -20,12 +20,11 @@ namespace Illusionist.Scripts.Cards;
 /// Deal 22 damage. 先机 (First Move): if this is the first card you play this turn, gain 1 energy.
 /// Upgraded: 30 damage.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "HEAVY_SLASH_ILLUSIONIST")]
-public sealed class HeavySlashIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "HEAVY_SLASH")]
+public sealed class HeavySlashIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.FirstMove,
     };

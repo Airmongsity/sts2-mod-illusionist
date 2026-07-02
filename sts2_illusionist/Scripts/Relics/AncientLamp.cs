@@ -23,8 +23,8 @@ namespace Illusionist.Scripts.Relics;
 /// the relic pool (Entry.cs) — Starter rarity keeps it out of reward rolls, but a pool membership
 /// is required or the non-virtual RelicModel.Pool lookup throws when its description renders.
 /// </summary>
-[RegisterRelic(typeof(IllusionistRelicPool), FullPublicEntry = "ANCIENT_LAMP")]
-public sealed class AncientLamp : RelicModel
+[RegisterRelic(typeof(IllusionistRelicPool))]
+public sealed class AncientLamp : IllusionistRelic
 {
     // Starter rarity, like the base ancient upgrade PhylacteryUnbound: it replaces the starter relic.
     public override RelicRarity Rarity => RelicRarity.Starter;
@@ -32,7 +32,7 @@ public sealed class AncientLamp : RelicModel
     // Placeholder art until Lamp Unbound has its own.
     protected override string IconBaseName => "boundphylactery";
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.Copy,
         IllusionHoverTips.CopyToken,

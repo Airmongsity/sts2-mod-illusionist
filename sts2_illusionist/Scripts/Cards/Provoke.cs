@@ -29,12 +29,11 @@ namespace Illusionist.Scripts.Cards;
 /// incoming hit bigger (which you then neutralize). Conditioning it on an attack intent ties the card
 /// to the enemy's 意图 — so it reads as, and counts as, an intent card.</para>
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "PROVOKE_ILLUSIONIST")]
-public sealed class ProvokeIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "PROVOKE")]
+public sealed class ProvokeIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         HoverTipFactory.FromPower<StrengthPower>(),
         HoverTipFactory.FromPower<DexterityPower>(),

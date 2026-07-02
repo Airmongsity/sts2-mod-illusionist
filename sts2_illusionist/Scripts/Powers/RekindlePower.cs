@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
@@ -15,7 +16,8 @@ namespace Illusionist.Scripts.Powers;
 /// lands at the start of next turn — AFTER any unblocked damage this turn would have shattered your
 /// mirrors — it's a guaranteed rebuild from 0, the reliable restart button after a shatter.
 /// </summary>
-public sealed class RekindlePower : PowerModel
+[RegisterPower]
+public sealed class RekindlePower : IllusionistPower
 {
     public override PowerType Type => PowerType.Buff;
 

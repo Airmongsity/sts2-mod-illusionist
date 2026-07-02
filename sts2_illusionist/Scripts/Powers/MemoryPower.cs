@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
@@ -14,7 +15,8 @@ namespace Illusionist.Scripts.Powers;
 /// consumed by 引爆/汲取), draw 2 cards and gain 1 energy. Self-contained via the AfterDeath hook,
 /// which fires once per clone death.
 /// </summary>
-public sealed class MemoryPower : PowerModel
+[RegisterPower]
+public sealed class MemoryPower : IllusionistPower
 {
     public override PowerType Type => PowerType.Buff;
 

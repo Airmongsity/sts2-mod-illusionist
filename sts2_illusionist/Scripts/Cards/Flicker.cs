@@ -18,10 +18,9 @@ namespace Illusionist.Scripts.Cards;
 /// Deal 7 damage to ALL enemies, then gain 6 Block for each enemy that intends to attack. Upgraded:
 /// +2 to both (9 damage, 8 Block).
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "FLICKER_ILLUSIONIST")]
-public sealed class FlickerIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "FLICKER")]
+public sealed class FlickerIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
 

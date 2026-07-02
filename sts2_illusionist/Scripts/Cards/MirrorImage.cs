@@ -18,15 +18,14 @@ namespace Illusionist.Scripts.Cards;
 /// Copy 1 (create a mirror): while a mirror is present, the first card you play each turn is
 /// replayed once. Taking unblocked damage shatters all mirrors. No drawback.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "MIRROR_IMAGE_ILLUSIONIST")]
-public sealed class MirrorImageIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "MIRROR_IMAGE")]
+public sealed class MirrorImageIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     // 复制 (Copy) is our own mechanic, not an engine keyword, so it gets no automatic tooltip —
     // attach them explicitly (like Forge/铸造 has): the Copy action plus the mirror-image entity
     // (复制品) it creates, so the card explains both what "Copy 1" does and how the copy behaves.
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.Copy, IllusionHoverTips.CopyToken };
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.Copy, IllusionHoverTips.CopyToken };
 
     public MirrorImageIllusionist()
         : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)

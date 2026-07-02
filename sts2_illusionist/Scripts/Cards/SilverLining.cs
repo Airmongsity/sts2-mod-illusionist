@@ -16,10 +16,9 @@ namespace Illusionist.Scripts.Cards;
 /// Gain 1 energy. If the targeted enemy has a negative effect (a debuff, or any power with a negative
 /// amount), gain 1 more energy — rewarding the intent/debuff suite (Weak/Vulnerable/Frail you apply).
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SILVER_LINING_ILLUSIONIST")]
-public sealed class SilverLiningIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "SILVER_LINING")]
+public sealed class SilverLiningIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public SilverLiningIllusionist()
         : base(0, CardType.Skill, CardRarity.Common, TargetType.AnyEnemy)

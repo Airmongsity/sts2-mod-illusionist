@@ -21,14 +21,13 @@ namespace Illusionist.Scripts.Cards;
 /// Look at 3 random cards from your exhaust pile, choose one, then 幻化 a card in your hand into a
 /// copy of it (carrying that card's upgrades/enchantments). Upgraded: pick from 5. Exhausts itself.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "TRANSMUTE_ILLUSIONIST")]
-public sealed class TransmuteIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "TRANSMUTE")]
+public sealed class TransmuteIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.TransmuteIllusionist,
     };
@@ -59,7 +58,7 @@ public sealed class TransmuteIllusionist : CardModel
 
         CardModel? chosen = (await CardSelectCmd.FromSimpleGrid(
             choiceContext, choices, owner,
-            new CardSelectorPrefs(new LocString("cards", "TRANSMUTE_ILLUSIONIST.selectionScreenPrompt"), 1))).FirstOrDefault();
+            new CardSelectorPrefs(new LocString("cards", "ILLUSIONIST_CARD_TRANSMUTE.selectionScreenPrompt"), 1))).FirstOrDefault();
         if (chosen == null)
         {
             return;

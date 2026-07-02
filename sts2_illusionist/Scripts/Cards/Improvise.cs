@@ -19,12 +19,11 @@ namespace Illusionist.Scripts.Cards;
 /// target, but it's free (cheats out expensive transmuted cards) and, as your first play, it's copied
 /// by your mirror images.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "IMPROVISE_ILLUSIONIST")]
-public sealed class ImproviseIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "IMPROVISE")]
+public sealed class ImproviseIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.TransmuteIllusionist,
     };

@@ -17,13 +17,12 @@ namespace Illusionist.Scripts.Cards;
 /// Lose 4 Strength immediately, then gain 2 Strength at the start of each turn (net positive after
 /// 2 turns). Pairs with the Illusionist's other Strength manipulation.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "CRESCENDO_ILLUSIONIST")]
-public sealed class CrescendoIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "CRESCENDO")]
+public sealed class CrescendoIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     // References Strength — surface its tip (base-game Bash pattern).
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { HoverTipFactory.FromPower<StrengthPower>() };
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { HoverTipFactory.FromPower<StrengthPower>() };
 
     public CrescendoIllusionist()
         : base(1, CardType.Power, CardRarity.Uncommon, TargetType.Self)

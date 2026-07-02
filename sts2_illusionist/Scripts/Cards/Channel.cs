@@ -21,8 +21,8 @@ namespace Illusionist.Scripts.Cards;
 /// energy cost 0, and the spent energy is read at play time via
 /// <see cref="CardModel.ResolveEnergyXValue"/>.</para>
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "CHANNEL_ILLUSIONIST")]
-public sealed class ChannelIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "CHANNEL")]
+public sealed class ChannelIllusionist : IllusionistCard
 {
     /// <summary>Flat damage added on top of X (both normal and upgraded).</summary>
     private const int BaseBonus = 6;
@@ -30,7 +30,6 @@ public sealed class ChannelIllusionist : CardModel
     /// <summary>Additional flat damage added on top of X when upgraded.</summary>
     private const int UpgradeBonus = 3;
 
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     protected override bool HasEnergyCostX => true;
 

@@ -18,11 +18,10 @@ namespace Illusionist.Scripts.Cards;
 /// Necrobinder's — so deck-transform effects (event "transform a card", New Leaf, etc.) target the
 /// Illusionist's cards.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "ILLUSIONIST_STRIKE_ILLUSIONIST")]
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "ILLUSIONIST_STRIKE")]
 [RegisterCharacterStarterCard(typeof(Characters.Illusionist), 4)]
-public sealed class IllusionistStrikeIllusionist : CardModel
+public sealed class IllusionistStrikeIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     // The Strike tag is how the game/relics identify a starter Strike (Leafy Poultice, Hellraiser, …).
     protected override HashSet<CardTag> CanonicalTags => new HashSet<CardTag> { CardTag.Strike };

@@ -18,15 +18,15 @@ namespace Illusionist.Scripts.Relics;
 /// combat, your mirror images survive. Implemented by granting one <see cref="PhaseShiftPower"/>
 /// charge at combat start (the same charge 虚实转换/Phase Shift uses).
 /// </summary>
-[RegisterRelic(typeof(IllusionistRelicPool), FullPublicEntry = "UNBREAKABLE_MIRROR")]
-public sealed class UnbreakableMirror : RelicModel
+[RegisterRelic(typeof(IllusionistRelicPool))]
+public sealed class UnbreakableMirror : IllusionistRelic
 {
     public override RelicRarity Rarity => RelicRarity.Uncommon;
 
     // Placeholder art until Unbreakable Mirror has its own.
     protected override string IconBaseName => "funerarymask";
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
 
     public override async Task BeforeCombatStart()
     {

@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
@@ -14,7 +15,8 @@ namespace Illusionist.Scripts.Powers;
 /// of mirror clones (复制品) MULTIPLIED by this power's stacks (one per 炫目 played) — so 4 Dazzles with
 /// 7 mirrors = 28 Block. Power-sourced (Unpowered), unmodified by Dexterity.
 /// </summary>
-public sealed class DazzlePower : PowerModel
+[RegisterPower]
+public sealed class DazzlePower : IllusionistPower
 {
     public override PowerType Type => PowerType.Buff;
 

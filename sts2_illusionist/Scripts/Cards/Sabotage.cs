@@ -23,14 +23,13 @@ namespace Illusionist.Scripts.Cards;
 /// card (chain another swing this turn). Upgraded: 17 damage / 23 Block. Its description mentions
 /// 意图, so it also fuels intent-flow outputs like 清算 (Reckoning).
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SABOTAGE_ILLUSIONIST")]
-public sealed class SabotageIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "SABOTAGE")]
+public sealed class SabotageIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.TransmuteIllusionist,
     };

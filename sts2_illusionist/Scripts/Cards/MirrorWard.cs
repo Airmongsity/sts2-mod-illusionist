@@ -19,14 +19,13 @@ namespace Illusionist.Scripts.Cards;
 /// this card's upgrades/enchantments/temporary effects). The defense backbone of the 幻化 system:
 /// turn a dead card into more Block, and with FluxweaveIllusionist draw a card for the reshape.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "MIRROR_WARD_ILLUSIONIST")]
-public sealed class MirrorWardIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "MIRROR_WARD")]
+public sealed class MirrorWardIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.TransmuteIllusionist,
     };

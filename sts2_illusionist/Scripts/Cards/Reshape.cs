@@ -20,14 +20,13 @@ namespace Illusionist.Scripts.Cards;
 /// Necrobinder's Transfigure does) rather than applying an enchantment, so it never clobbers an
 /// enchantment the chosen card may already carry.</para>
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "RESHAPE_ILLUSIONIST")]
-public sealed class ReshapeIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "RESHAPE")]
+public sealed class ReshapeIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         HoverTipFactory.Static(StaticHoverTip.ReplayStatic),
     };

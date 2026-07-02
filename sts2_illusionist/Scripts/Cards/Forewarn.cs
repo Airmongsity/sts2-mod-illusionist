@@ -19,12 +19,11 @@ namespace Illusionist.Scripts.Cards;
 /// Target an enemy and put a 先见 (Prescience) into your hand whose [gold]Block[/gold]
 /// equals the target's current attack-intent damage. When upgraded, +10 extra Block.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "FOREWARN_ILLUSIONIST")]
-public sealed class ForewarnIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "FOREWARN")]
+public sealed class ForewarnIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         HoverTipFactory.FromCard<PrescienceIllusionist>(),
     };

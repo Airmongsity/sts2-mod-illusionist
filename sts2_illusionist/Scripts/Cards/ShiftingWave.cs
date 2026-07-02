@@ -22,15 +22,14 @@ namespace Illusionist.Scripts.Cards;
 /// Reverts one tier at turn start. Both morph and revert count as 变化 (transform)
 /// for Fluxweave/Momentum via Transmutation.NotifyTransformed.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SHIFTING_WAVE_ILLUSIONIST")]
-public sealed class ShiftingWaveIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "SHIFTING_WAVE")]
+public sealed class ShiftingWaveIllusionist : IllusionistCard
 {
     private const decimal MorphDamage = 3m;
     private const decimal MorphBlock = 3m;
 
     private int _morphLevel;
 
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
 

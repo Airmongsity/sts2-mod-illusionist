@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
@@ -21,7 +22,8 @@ namespace Illusionist.Scripts.Powers;
 /// its OWN counter that ticks independently, so the effect stacks. Mirrors <c>PanachePower</c>'s
 /// "every N cards" counter pattern (CounterIllusionist stack type + a visible CardsPlayed DynamicVar).</para>
 /// </summary>
-public sealed class KaleidoscopePower : PowerModel
+[RegisterPower]
+public sealed class KaleidoscopePower : IllusionistPower
 {
     private const int Threshold = 5;
 

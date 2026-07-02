@@ -19,10 +19,9 @@ namespace Illusionist.Scripts.Cards;
 /// control piece for the Intent system; once upgraded, Retain lets you bank it until a foe telegraphs
 /// a big hit, then cancel the swing entirely.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "FEINT_ILLUSIONIST")]
-public sealed class FeintIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "FEINT")]
+public sealed class FeintIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public FeintIllusionist()
         : base(3, CardType.Attack, CardRarity.Rare, TargetType.AnyEnemy)

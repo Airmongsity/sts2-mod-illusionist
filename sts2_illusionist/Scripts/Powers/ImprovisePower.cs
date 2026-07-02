@@ -6,6 +6,7 @@ using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
@@ -17,7 +18,8 @@ namespace Illusionist.Scripts.Powers;
 /// copied by your mirror images. The per-turn count is bumped BEFORE the auto-play so a transmute
 /// triggered by an auto-played card consumes a charge (and can chain) rather than looping unbounded.
 /// </summary>
-public sealed class ImprovisePower : PowerModel
+[RegisterPower]
+public sealed class ImprovisePower : IllusionistPower
 {
     private sealed class Data
     {

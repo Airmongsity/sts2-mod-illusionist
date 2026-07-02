@@ -19,14 +19,13 @@ namespace Illusionist.Scripts.Cards;
 /// Deal 7 damage. 先机 (First Move): if this is the first card you play this turn, gain 7 Block.
 /// Upgraded: 9 damage / 9 Block.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "AMBUSH_ILLUSIONIST")]
-public sealed class AmbushIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "AMBUSH")]
+public sealed class AmbushIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.FirstMove };
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.FirstMove };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

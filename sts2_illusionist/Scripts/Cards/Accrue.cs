@@ -19,12 +19,11 @@ namespace Illusionist.Scripts.Cards;
 /// Innate. Retain. At the start of your turn, if this is in your hand, DOUBLE its damage.
 /// Upgraded: base damage becomes 5.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "ACCRUE_ILLUSIONIST")]
-public sealed class AccrueIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "ACCRUE")]
+public sealed class AccrueIllusionist : IllusionistCard
 {
     private decimal _doubledAmount;
 
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[]
     {

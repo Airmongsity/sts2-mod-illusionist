@@ -22,8 +22,8 @@ namespace Illusionist.Scripts.Relics;
 /// turn, Copy 1. Rewards the careful blocking the mirror engine already demands. A per-turn flag
 /// (reset at turn start, set when unblocked damage lands on the owner) drives the check.
 /// </summary>
-[RegisterRelic(typeof(IllusionistRelicPool), FullPublicEntry = "PRISTINE_MIRROR")]
-public sealed class PristineMirror : RelicModel
+[RegisterRelic(typeof(IllusionistRelicPool))]
+public sealed class PristineMirror : IllusionistRelic
 {
     public override RelicRarity Rarity => RelicRarity.Rare;
 
@@ -32,7 +32,7 @@ public sealed class PristineMirror : RelicModel
 
     private bool _tookUnblockedDamageThisTurn;
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.Copy,
         IllusionHoverTips.CopyToken,

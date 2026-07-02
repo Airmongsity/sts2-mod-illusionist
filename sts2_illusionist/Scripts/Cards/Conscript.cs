@@ -19,14 +19,13 @@ namespace Illusionist.Scripts.Cards;
 /// Copy 4 (create four mirror images, each with its own cosmetic clone), then lose 2 Strength
 /// and 2 Dexterity until the end of this turn (restored automatically — the temporary down-powers).
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "CONSCRIPT_ILLUSIONIST")]
-public sealed class ConscriptIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "CONSCRIPT")]
+public sealed class ConscriptIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.Copy,
         IllusionHoverTips.CopyToken,

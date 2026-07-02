@@ -21,10 +21,9 @@ namespace Illusionist.Scripts.Cards;
 /// (反击/致盲/抗衡/预见), manipulators (逆转/虚晃/催化), 挑衅, and 破坏. This is what mirror/transmute
 /// decks can't match: its scaling comes purely from playing intent cards.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "RECKONING_ILLUSIONIST")]
-public sealed class ReckoningIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "RECKONING")]
+public sealed class ReckoningIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

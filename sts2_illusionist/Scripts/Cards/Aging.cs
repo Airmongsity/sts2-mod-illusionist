@@ -22,10 +22,9 @@ namespace Illusionist.Scripts.Cards;
 /// If the target enemy's intent this turn consists ONLY of Attack and/or Defend,
 /// advance it to next turn's intent, discarding the current one.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "AGING_ILLUSIONIST")]
-public sealed class AgingIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "AGING")]
+public sealed class AgingIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Retain };
 

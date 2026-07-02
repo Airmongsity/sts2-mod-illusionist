@@ -16,11 +16,10 @@ namespace Illusionist.Scripts.Cards;
 /// (upgraded: 8). Its own card so it belongs to <see cref="IllusionistCardPool"/> rather than the
 /// Necrobinder's (so deck-transform effects target the Illusionist's cards).
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "ILLUSIONIST_DEFEND_ILLUSIONIST")]
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "ILLUSIONIST_DEFEND")]
 [RegisterCharacterStarterCard(typeof(Characters.Illusionist), 4)]
-public sealed class IllusionistDefendIllusionist : CardModel
+public sealed class IllusionistDefendIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
 

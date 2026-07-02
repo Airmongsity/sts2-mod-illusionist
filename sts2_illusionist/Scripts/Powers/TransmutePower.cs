@@ -13,6 +13,7 @@ using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
@@ -34,7 +35,8 @@ namespace Illusionist.Scripts.Powers;
 /// chain. So transmuting e.g. 彼岸咆哮, then exhausting the new form, reverts it to 彼岸咆哮 in the
 /// exhaust pile at the start of your next turn — and its "while in exhaust pile" effect keeps firing.
 /// </summary>
-public sealed class TransmutePower : PowerModel
+[RegisterPower]
+public sealed class TransmutePower : IllusionistPower
 {
     /// <summary>One transmuted card and the stack of forms it will revert through (last = newest).</summary>
     private sealed class Chain

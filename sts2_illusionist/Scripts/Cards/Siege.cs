@@ -20,12 +20,11 @@ namespace Illusionist.Scripts.Cards;
 /// For each mirror clone (复制品) you have, deal 8 damage to ALL enemies once.
 /// Upgraded: 9 damage.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SIEGE_ILLUSIONIST")]
-public sealed class SiegeIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "SIEGE")]
+public sealed class SiegeIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

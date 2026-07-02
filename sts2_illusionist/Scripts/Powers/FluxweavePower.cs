@@ -5,6 +5,7 @@ using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
@@ -19,7 +20,8 @@ namespace Illusionist.Scripts.Powers;
 /// (<see cref="DisplayAmount"/>) shows which card of the current 2-card cycle that copy is on (0 → 1
 /// → draw → 0). <see cref="PowerModel.Amount"/> is the per-trigger draw count (1).</para>
 /// </summary>
-public sealed class FluxweavePower : PowerModel
+[RegisterPower]
+public sealed class FluxweavePower : IllusionistPower
 {
     private const int CardsPerDraw = 2;
 

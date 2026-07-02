@@ -22,12 +22,11 @@ namespace Illusionist.Scripts.Cards;
 /// Gain 2 energy and draw 2 cards. If you have any mirror images, destroy one of them.
 /// Upgraded: draw 4 cards instead of 2.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SACRIFICE_ILLUSIONIST")]
-public sealed class SacrificeIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "SACRIFICE")]
+public sealed class SacrificeIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.CopyToken,
     };

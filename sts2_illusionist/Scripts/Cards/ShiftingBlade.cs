@@ -20,12 +20,11 @@ namespace Illusionist.Scripts.Cards;
 /// this card's upgrades/enchantments/temporary effects). The attack backbone of the 幻化 system: turn
 /// a dead card into more damage, and with FluxweaveIllusionist draw a card for the reshape.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "SHIFTING_BLADE_ILLUSIONIST")]
-public sealed class ShiftingBladeIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "SHIFTING_BLADE")]
+public sealed class ShiftingBladeIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.TransmuteIllusionist,
     };

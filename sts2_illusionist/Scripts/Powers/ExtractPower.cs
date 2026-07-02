@@ -4,13 +4,15 @@ using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
 /// 萃取 (ExtractPower) — per-turn energy boost. Friendship pattern:
 /// overrides ModifyMaxEnergy to increase max energy by Amount.
 /// </summary>
-public sealed class ExtractPower : PowerModel
+[RegisterPower]
+public sealed class ExtractPower : IllusionistPower
 {
     public override PowerType Type => PowerType.Buff;
     public override PowerStackType StackType => PowerStackType.Counter;

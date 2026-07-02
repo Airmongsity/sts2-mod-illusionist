@@ -25,12 +25,11 @@ namespace Illusionist.Scripts.Cards;
 /// non-attack intents on the same move stay in the telegraph, and the enemy's later turns are
 /// untouched (its move sequence continues normally after).
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "REVERSAL_ILLUSIONIST")]
-public sealed class ReversalIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "REVERSAL")]
+public sealed class ReversalIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         HoverTipFactory.Static(StaticHoverTip.Block),
     };

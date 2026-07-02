@@ -11,6 +11,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
@@ -24,7 +25,8 @@ namespace Illusionist.Scripts.Powers;
 /// Presence-based (<see cref="PowerStackType.Single"/>): a second EncoreIllusionist does nothing extra, so we
 /// hide the count.
 /// </summary>
-public sealed class EncorePower : PowerModel
+[RegisterPower]
+public sealed class EncorePower : IllusionistPower
 {
     public override PowerType Type => PowerType.Buff;
 

@@ -19,10 +19,9 @@ namespace Illusionist.Scripts.Cards;
 /// Gain 5 Block and draw 2 cards; if any enemy intends to attack, gain 7 extra Block. Upgraded:
 /// +2 to both Block values (5 -> 7, 7 -> 9).
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "OBSCURE_ILLUSIONIST")]
-public sealed class ObscureIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "OBSCURE")]
+public sealed class ObscureIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
 

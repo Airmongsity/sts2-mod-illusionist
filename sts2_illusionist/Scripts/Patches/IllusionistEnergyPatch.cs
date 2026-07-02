@@ -10,10 +10,9 @@ namespace Illusionist.Scripts.Patches;
 
 /// <summary>
 /// Replace the borrowed Necrobinder energy orb with the Illusionist's own (<c>illusionist_energy_icon.webp</c>).
-/// The pool now declares <c>Text/BigEnergyIconPath</c> (RitsuLib applies those to descriptions and
-/// tooltips); these two patches cover the remaining spots: the card cost orb (kept as a belt-and-braces
-/// override until Phase 2 confirms RitsuLib covers raw <see cref="CardModel"/>s) and the in-combat
-/// energy counter scene, which is still Necrobinder's via the placeholder profile.
+/// The pool declares <c>Text/BigEnergyIconPath</c> (RitsuLib applies those to card cost orbs,
+/// descriptions and tooltips); this patch covers the one remaining spot — the in-combat energy
+/// counter scene, which is still Necrobinder's via the placeholder profile.
 /// </summary>
 public static class IllusionistEnergy
 {
@@ -43,34 +42,6 @@ public static class IllusionistEnergy
             Log.Error($"[illusionist] Energy: orb texture not found: {OrbPath}");
         }
         return _orb;
-    }
-}
-
-/// <summary>Card cost orb (top-left of each card).</summary>
-public sealed class IllusionistCardEnergyIconPatch : IPatchMethod
-{
-    public static string PatchId => "illusionist_card_energy_icon";
-
-    public static string Description => "Use the Illusionist energy orb on Illusionist cards' cost orb";
-
-    public static bool IsCritical => false;
-
-    public static ModPatchTarget[] GetTargets() => new ModPatchTarget[]
-    {
-        new(typeof(CardModel), nameof(CardModel.EnergyIcon), MethodType.Getter),
-    };
-
-    private static void Postfix(CardModel __instance, ref Texture2D __result)
-    {
-        if (__instance.Pool is not IllusionistCardPool)
-        {
-            return;
-        }
-        Texture2D? orb = IllusionistEnergy.Orb();
-        if (orb != null)
-        {
-            __result = orb;
-        }
     }
 }
 

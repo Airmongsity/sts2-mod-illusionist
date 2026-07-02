@@ -16,8 +16,8 @@ namespace Illusionist.Scripts.Potions;
 /// <summary>
 /// 幻象药水 (Illusion Potion) — Common, combat-only. Copy 1 (gain a mirror image).
 /// </summary>
-[RegisterPotion(typeof(IllusionistPotionPool), FullPublicEntry = "ILLUSION_POTION")]
-public sealed class IllusionPotion : PotionModel
+[RegisterPotion(typeof(IllusionistPotionPool))]
+public sealed class IllusionPotion : IllusionistPotion
 {
     public override PotionRarity Rarity => PotionRarity.Common;
 
@@ -25,7 +25,7 @@ public sealed class IllusionPotion : PotionModel
 
     public override TargetType TargetType => TargetType.AnyPlayer;
 
-    public override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.Copy,
         IllusionHoverTips.CopyToken,

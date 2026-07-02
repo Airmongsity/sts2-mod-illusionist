@@ -22,15 +22,14 @@ namespace Illusionist.Scripts.Cards;
 /// Deal 5 damage; if the enemy intends to attack, apply 1 Weak and gain 5 Block — a reactive
 /// attack that punishes (and partly defends against) an incoming swing. Upgraded: 8 damage.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "BLIND_ILLUSIONIST")]
-public sealed class BlindIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "BLIND")]
+public sealed class BlindIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
 
     // Weak power needs its hover-tip added explicitly (base-game Bash pattern).
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { HoverTipFactory.FromPower<WeakPower>() };
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { HoverTipFactory.FromPower<WeakPower>() };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

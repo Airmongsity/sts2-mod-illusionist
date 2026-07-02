@@ -17,10 +17,9 @@ namespace Illusionist.Scripts.Cards;
 /// 预见 (ForesightIllusionist) — 1 cost Skill, Uncommon (upgraded: Retain).
 /// Choose up to 8 cards from your draw pile and place them on top in any order.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "FORESIGHT_ILLUSIONIST")]
-public sealed class ForesightIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "FORESIGHT")]
+public sealed class ForesightIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public ForesightIllusionist()
         : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
@@ -37,7 +36,7 @@ public sealed class ForesightIllusionist : CardModel
         List<CardModel> selected = (await CardSelectCmd.FromCombatPile(
             choiceContext, drawPile, base.Owner,
             new CardSelectorPrefs(
-                new LocString("cards", "FORESIGHT_ILLUSIONIST.selectionScreenPrompt"),
+                new LocString("cards", "ILLUSIONIST_CARD_FORESIGHT.selectionScreenPrompt"),
                 pickCount))).ToList();
 
         if (selected.Count == 0) return;

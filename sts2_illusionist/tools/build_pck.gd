@@ -36,6 +36,11 @@ const SPINE_ATLASES := [
 # not via FileAccess. The raw files are still packed too (harmless).
 const IMPORTED_DIRS := [
 	"res://illusionist/art/relics",
+	# Card portraits / power icons / potion images are now declared through RitsuLib asset
+	# profiles (IllusionistArtPaths), which load via ResourceLoader — so they must ship imported.
+	"res://illusionist/art/cards",
+	"res://illusionist/art/powers",
+	"res://illusionist/art/potions",
 ]
 
 func _initialize() -> void:

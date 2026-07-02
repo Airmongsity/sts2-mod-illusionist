@@ -17,12 +17,11 @@ namespace Illusionist.Scripts.Cards;
 /// while active, for every 2 cards you transform or transmute, draw 1 card. Turns reshaping your
 /// hand into a self-sustaining draw engine. Multiple copies settle separately.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "FLUXWEAVE_ILLUSIONIST")]
-public sealed class FluxweaveIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "FLUXWEAVE")]
+public sealed class FluxweaveIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.TransmuteIllusionist,
     };

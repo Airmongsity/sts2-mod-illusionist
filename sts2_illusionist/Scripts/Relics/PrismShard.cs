@@ -18,15 +18,15 @@ namespace Illusionist.Scripts.Relics;
 /// 棱镜碎片 (Prism Shard) — Common. Whenever a mirror image is created beside you, gain 1 Block.
 /// Hooks <c>AfterCreatureAddedToCombat</c> and filters to our own <see cref="MirrorClone"/> pets.
 /// </summary>
-[RegisterRelic(typeof(IllusionistRelicPool), FullPublicEntry = "PRISM_SHARD")]
-public sealed class PrismShard : RelicModel
+[RegisterRelic(typeof(IllusionistRelicPool))]
+public sealed class PrismShard : IllusionistRelic
 {
     public override RelicRarity Rarity => RelicRarity.Common;
 
     // Placeholder art (reuses a base Necrobinder relic sprite) until the Shard has its own.
     protected override string IconBaseName => "ivorytile";
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.CopyToken };
 
     public override async Task AfterCreatureAddedToCombat(Creature creature)
     {

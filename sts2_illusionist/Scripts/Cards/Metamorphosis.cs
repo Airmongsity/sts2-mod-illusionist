@@ -23,12 +23,11 @@ namespace Illusionist.Scripts.Cards;
 /// <see cref="Illusionist.Scripts.Transmutation.NotifyTransformed"/>, which feeds
 /// <see cref="TransformCountPower"/>.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "METAMORPHOSIS_ILLUSIONIST")]
-public sealed class MetamorphosisIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "METAMORPHOSIS")]
+public sealed class MetamorphosisIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         Illusionist.Scripts.IllusionHoverTips.TransmuteIllusionist,
     };

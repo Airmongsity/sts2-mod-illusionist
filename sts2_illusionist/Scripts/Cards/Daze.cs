@@ -16,12 +16,11 @@ namespace Illusionist.Scripts.Cards;
 /// 恍惚 (DazeIllusionist) — 1 cost Skill, Common (upgraded: draw 3 instead of 2).
 /// Draw 2 cards. 先机 (First Move): if this is the first card you play this turn, draw 1 extra card.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "DAZE_ILLUSIONIST")]
-public sealed class DazeIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "DAZE")]
+public sealed class DazeIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[] { IllusionHoverTips.FirstMove };
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { IllusionHoverTips.FirstMove };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

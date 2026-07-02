@@ -21,16 +21,15 @@ namespace Illusionist.Scripts.Cards;
 /// Gain 6 Block and apply 1 Weak (虚弱: the enemy deals 25% less attack damage). If you have no
 /// mirror images, also Copy 1 (so it doubles as your opener for the Mirror system). Upgraded: 8 Block / 2 Weak.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "DISRUPT_ILLUSIONIST")]
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "DISRUPT")]
 [RegisterCharacterStarterCard(typeof(Characters.Illusionist))]
-public sealed class DisruptIllusionist : CardModel
+public sealed class DisruptIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
 
     // Block tip comes from GainsBlock; Weak + Copy/the mirror token need their tips added explicitly.
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         HoverTipFactory.FromPower<WeakPower>(),
         IllusionHoverTips.Copy,

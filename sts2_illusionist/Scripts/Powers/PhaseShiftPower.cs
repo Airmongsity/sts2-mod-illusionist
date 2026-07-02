@@ -1,6 +1,7 @@
 using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.Models;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
@@ -9,7 +10,8 @@ namespace Illusionist.Scripts.Powers;
 /// for this in AfterDamageReceived and consumes one charge instead of shattering. Pure marker:
 /// it has no hooks of its own; all the logic lives in MirrorImagePower.
 /// </summary>
-public sealed class PhaseShiftPower : PowerModel
+[RegisterPower]
+public sealed class PhaseShiftPower : IllusionistPower
 {
     public override PowerType Type => PowerType.Buff;
 

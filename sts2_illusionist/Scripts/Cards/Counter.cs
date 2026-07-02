@@ -20,14 +20,13 @@ namespace Illusionist.Scripts.Cards;
 /// telegraph you "counter" makes the card hit harder forever after (the Ironclad Thrash / Rampage
 /// self-growing pattern). Reflecting a big boss swing snowballs it into a heavy repeatable hit.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "COUNTER_ILLUSIONIST")]
-public sealed class CounterIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "COUNTER")]
+public sealed class CounterIllusionist : IllusionistCard
 {
     // Accumulated growth, tracked separately so it can be re-applied if the card's vars are rebuilt
     // (e.g. on downgrade), exactly like the base game's Thrash.
     private decimal _extraDamage;
 
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

@@ -20,14 +20,13 @@ namespace Illusionist.Scripts.Cards;
 /// into a 暗淡油灯 (Dim Lamp). Each Lamp reverts at the start of your next turn (transmute stack),
 /// so play them this turn.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "KINDLE_ILLUSIONIST")]
-public sealed class KindleIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "KINDLE")]
+public sealed class KindleIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.TransmuteIllusionist,
         HoverTipFactory.FromCard<DimLampIllusionist>(),

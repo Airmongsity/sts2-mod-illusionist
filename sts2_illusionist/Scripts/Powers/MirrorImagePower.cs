@@ -13,6 +13,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts.Monsters;
 
+using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
@@ -24,7 +25,8 @@ namespace Illusionist.Scripts.Powers;
 /// of turn, Exhaust so a played one doesn't pile up in your discard. When you take unblocked damage, all
 /// mirrors shatter (the power is removed entirely).
 /// </summary>
-public sealed class MirrorImagePower : PowerModel
+[RegisterPower]
+public sealed class MirrorImagePower : IllusionistPower
 {
     public override PowerType Type => PowerType.Buff;
 

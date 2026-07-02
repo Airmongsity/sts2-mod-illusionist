@@ -16,10 +16,9 @@ namespace Illusionist.Scripts.Cards;
 /// Gain 3 Block, then put a copy of this card into the discard pile whose Replay count is one
 /// higher than this card's (so each generation plays an extra time and snowballs).
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "ECHO_ILLUSIONIST")]
-public sealed class EchoIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "ECHO")]
+public sealed class EchoIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override bool GainsBlock => true;
 

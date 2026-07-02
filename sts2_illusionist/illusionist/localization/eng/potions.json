@@ -1,6 +1,6 @@
 {
-  "ILLUSION_POTION.title": "Illusion Potion",
-  "ILLUSION_POTION.description": "[gold]Copy[/gold] 1.",
-  "FORESIGHT_DRAUGHT.title": "Foresight Draught",
-  "FORESIGHT_DRAUGHT.description": "Draw {Cards} cards.\n[gold]Retain[/gold] your hand this turn."
+  "ILLUSIONIST_POTION_ILLUSION_POTION.title": "Illusion Potion",
+  "ILLUSIONIST_POTION_ILLUSION_POTION.description": "[gold]Copy[/gold] 1.",
+  "ILLUSIONIST_POTION_FORESIGHT_DRAUGHT.title": "Foresight Draught",
+  "ILLUSIONIST_POTION_FORESIGHT_DRAUGHT.description": "Draw {Cards} cards.\n[gold]Retain[/gold] your hand this turn."
 }

@@ -28,14 +28,13 @@ namespace Illusionist.Scripts.Cards;
 /// venom morph into a Toxic. That Toxic reverts into a Phantom Venom at the start of your next turn, so
 /// the card cycles back while the played copy is consumed.</para>
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), FullPublicEntry = "PHANTOM_VENOM_ILLUSIONIST")]
-public sealed class PhantomVenomIllusionist : CardModel
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "PHANTOM_VENOM")]
+public sealed class PhantomVenomIllusionist : IllusionistCard
 {
-    public override CardPoolModel Pool => ModelDb.CardPool<IllusionistCardPool>();
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
 
-    protected override IEnumerable<IHoverTip> ExtraHoverTips => new IHoverTip[]
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         IllusionHoverTips.TransmuteIllusionist,
         HoverTipFactory.FromCard<MegaCrit.Sts2.Core.Models.Cards.Toxic>(),
