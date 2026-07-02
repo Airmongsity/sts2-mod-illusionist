@@ -1,0 +1,10 @@
+{
+  "ILLUSIONIST_KEYWORD_COPY.title": "复制",
+  "ILLUSIONIST_KEYWORD_COPY.description": "创建一个镜像。",
+  "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.title": "镜像",
+  "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.description": "当镜像在场时，你每回合打出的第一张牌每有一个镜像便将一张它自身的0费[gold]虚无[/gold][gold]消耗[/gold]复制品添加到你的手牌。当你受到未格挡的伤害时所有镜像死亡。",
+  "ILLUSIONIST_KEYWORD_FIRST_MOVE.title": "先机",
+  "ILLUSIONIST_KEYWORD_FIRST_MOVE.description": "仅当这是你本回合打出的第一张牌时，才会触发。",
+  "ILLUSIONIST_KEYWORD_TRANSMUTE.title": "幻化",
+  "ILLUSIONIST_KEYWORD_TRANSMUTE.description": "[gold]变化[/gold]一张牌，你的下个回合开始时，将这张牌[gold]变化[/gold]为前一次[gold]变化[/gold]前的结果。"
+}

@@ -1,0 +1,10 @@
+{
+  "ILLUSIONIST_KEYWORD_COPY.title": "Copy",
+  "ILLUSIONIST_KEYWORD_COPY.description": "Create a mirror image.",
+  "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.title": "Mirror Image",
+  "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.description": "While you have mirror images, the first card you play each turn adds a 0-cost [gold]Ethereal[/gold] [gold]Exhaust[/gold] copy of itself to your hand for each mirror image. When you take unblocked damage, all mirror images die.",
+  "ILLUSIONIST_KEYWORD_FIRST_MOVE.title": "First Move",
+  "ILLUSIONIST_KEYWORD_FIRST_MOVE.description": "Triggers only if this is the first card you play this turn.",
+  "ILLUSIONIST_KEYWORD_TRANSMUTE.title": "Transmute",
+  "ILLUSIONIST_KEYWORD_TRANSMUTE.description": "[gold]Transform[/gold] a card. At the start of your next turn, [gold]transform[/gold] it into what it was before that [gold]transform[/gold]."
+}
