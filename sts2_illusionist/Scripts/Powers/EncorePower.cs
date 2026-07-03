@@ -15,22 +15,21 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
-/// 返场 (EncoreIllusionist) power. At the end of your turn, pull ONE random [gold]Retain[/gold] card out of
-/// your discard pile and back into your hand. Since you only play your held control cards (CounterIllusionist,
+/// 返场 (EncoreIllusionist) power. At the end of your turn, pull <see cref="PowerModel.Amount"/> random
+/// [gold]Retain[/gold] cards out of your discard pile and back into your hand — one per stack, i.e. one
+/// for each 返场 you've played this combat. Since you only play your held control cards (CounterIllusionist,
 /// ForesightIllusionist, ReversalIllusionist, Catalyze) once they're worth it — and playing them sends them to discard —
-/// this recurs the intent suite one card at a time: enough to keep the engine turning, slow enough
-/// that it can't loop the whole suite in a single turn. Returning a single card also reliably gives
-/// you a first card to lead with, which re-arms the mirror replay.
+/// this recurs the intent suite, and stacking 返场 recurs more of it per turn.
 ///
-/// Presence-based (<see cref="PowerStackType.Single"/>): a second EncoreIllusionist does nothing extra, so we
-/// hide the count.
+/// Stacks (<see cref="PowerStackType.Counter"/>): each EncoreIllusionist adds one to the per-turn return
+/// count, shown on the power counter.
 /// </summary>
 [RegisterPower]
 public sealed class EncorePower : IllusionistPower
 {
     public override PowerType Type => PowerType.Buff;
 
-    public override PowerStackType StackType => PowerStackType.Single;
+    public override PowerStackType StackType => PowerStackType.Counter;
 
     public override async Task AfterSideTurnEnd(PlayerChoiceContext choiceContext, CombatSide side, IEnumerable<Creature> participants)
     {
@@ -46,30 +45,36 @@ public sealed class EncorePower : IllusionistPower
             return;
         }
 
-        CardPile hand = PileType.Hand.GetPile(player);
-        if (hand.Cards.Count >= CardPile.MaxCardsInHand)
+        // Return one random Retain card per stack (base.Amount): each 返场 played adds 1. Re-read the
+        // piles each iteration since Add mutates hand/discard, and stop early if hand is full or the
+        // discard runs out of Retain cards.
+        for (int i = 0; i < base.Amount; i++)
         {
-            return;
-        }
+            CardPile hand = PileType.Hand.GetPile(player);
+            if (hand.Cards.Count >= CardPile.MaxCardsInHand)
+            {
+                break;
+            }
 
-        CardPile discard = PileType.Discard.GetPile(player);
-        List<CardModel> retainCards = discard.Cards
-            .Where(c => c.Keywords.Contains(CardKeyword.Retain))
-            .ToList();
-        if (retainCards.Count == 0)
-        {
-            return;
-        }
+            CardPile discard = PileType.Discard.GetPile(player);
+            List<CardModel> retainCards = discard.Cards
+                .Where(c => c.Keywords.Contains(CardKeyword.Retain))
+                .ToList();
+            if (retainCards.Count == 0)
+            {
+                break;
+            }
 
-        // Pick one at random via the seeded combat-card-selection RNG (deterministic for replays).
-        CardModel? chosen = player.RunState.Rng.CombatCardSelection.NextItem(retainCards);
-        if (chosen == null)
-        {
-            return;
-        }
+            // Pick one at random via the seeded combat-card-selection RNG (deterministic for replays).
+            CardModel? chosen = player.RunState.Rng.CombatCardSelection.NextItem(retainCards);
+            if (chosen == null)
+            {
+                break;
+            }
 
-        // Relocate the chosen Retain card from discard back to hand (same Add that re-piles a card).
-        await CardPileCmd.Add(chosen, PileType.Hand);
-        Log.Info($"[illusionist] EncoreIllusionist: returned Retain card '{chosen.Id.Entry}' from discard to hand.");
+            // Relocate the chosen Retain card from discard back to hand (same Add that re-piles a card).
+            await CardPileCmd.Add(chosen, PileType.Hand);
+            Log.Info($"[illusionist] EncoreIllusionist: returned Retain card '{chosen.Id.Entry}' from discard to hand.");
+        }
     }
 }

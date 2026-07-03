@@ -12,10 +12,11 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 返场 (EncoreIllusionist) — 2 cost Power, Uncommon (upgraded: gains Innate).
-/// At the end of your turn, return all Retain cards from your discard pile to your hand. The
-/// recursion engine for the intent/control suite: it lets you replay CounterIllusionist, ForesightIllusionist, ReversalIllusionist
-/// and Catalyze every turn instead of once. Upgraded Innate so the engine is online from turn 1.
+/// 返场 (EncoreIllusionist) — 1 cost Power, Uncommon (upgraded: gains Innate).
+/// At the end of your turn, return one random Retain card from your discard pile to your hand for each
+/// 返场 you've played this combat (the power stacks — see <see cref="EncorePower"/>). The recursion
+/// engine for the intent/control suite: it lets you replay CounterIllusionist, ForesightIllusionist, ReversalIllusionist and
+/// Catalyze — more of them per turn the more copies you play. Upgraded Innate so it's online from turn 1.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "ENCORE")]
 public sealed class EncoreIllusionist : IllusionistCard

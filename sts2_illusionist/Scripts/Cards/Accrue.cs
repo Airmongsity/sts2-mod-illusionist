@@ -15,33 +15,33 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 积蓄 (AccrueIllusionist) — 2 cost Attack, Uncommon. Deal 10 damage. Retain.
-/// At the start of your turn, if this is in your hand, its damage grows by a flat Bonus (8; +2 when
-/// upgraded). The growth ACCUMULATES turn over turn (10 -> 18 -> 26 -> ...) — the "accrue" fantasy:
-/// a Retain attack that snowballs the longer you hold it. No 幻化 involved, just a flat add.
-/// Upgraded: gains Innate, base damage 10 -> 14, and the per-turn Bonus 8 -> 10.
+/// 积蓄 (AccrueIllusionist) — 0 cost Attack, Uncommon. Deal 2 damage. Retain, Exhaust.
+/// At the start of your turn, if this is in your hand, its damage DOUBLES (2 -> 4 -> 8 -> 16 -> ...).
+/// The "charge then fire" finisher: it costs nothing to play and Retains so it keeps doubling in hand,
+/// then Exhausts when you finally unleash it for one big free hit.
+/// Upgraded: gains Innate (drawn turn 1, so it starts doubling immediately).
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "ACCRUE")]
 public sealed class AccrueIllusionist : IllusionistCard
 {
-    // Total flat damage added at runtime by the turn-start growth; restored if the card is downgraded
+    // Total damage added at runtime by the turn-start doubling; restored if the card is downgraded
     // (a downgrade recomputes DynamicVars from canonical, which would otherwise drop the growth).
     private decimal _accrued;
 
-    // Retain always; Innate is added only on upgrade (see OnUpgrade).
+    // Retain + Exhaust always; Innate is added only on upgrade (see OnUpgrade).
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[]
     {
         CardKeyword.Retain,
+        CardKeyword.Exhaust,
     };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(10m, ValueProp.Move),
-        new DynamicVar("Bonus", 8m),
+        new DamageVar(2m, ValueProp.Move),
     };
 
     public AccrueIllusionist()
-        : base(2, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
+        : base(0, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
 
@@ -60,17 +60,15 @@ public sealed class AccrueIllusionist : IllusionistCard
         if (player != base.Owner) return Task.CompletedTask;
         if (!IsInHand()) return Task.CompletedTask;
 
-        decimal bonus = base.DynamicVars["Bonus"].BaseValue;
-        _accrued += bonus;
-        base.DynamicVars.Damage.BaseValue += bonus;
+        // Doubling adds "current value" again; track that so a downgrade can restore the growth.
+        _accrued += base.DynamicVars.Damage.BaseValue;
+        base.DynamicVars.Damage.BaseValue *= 2;
         CardCmd.Preview(this);
         return Task.CompletedTask;
     }
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Damage.UpgradeValueBy(4m);   // 10 -> 14
-        base.DynamicVars["Bonus"].UpgradeValueBy(2m); // 8 -> 10
         AddKeyword(CardKeyword.Innate);
     }
 

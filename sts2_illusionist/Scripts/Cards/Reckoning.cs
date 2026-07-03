@@ -14,7 +14,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 清算 (Reckoning) — 2 cost Attack, Rare. The intent system's output port: deal 16 damage, plus 8
+/// 清算 (Reckoning) — 2 cost Attack, Uncommon. The intent system's output port: deal 16 damage, plus 8
 /// more for each intent card you've played this combat (upgraded: 22 damage, +11 each). "Intent card" is
 /// defined by TEXT — any card whose description mentions an enemy's 意图 (intent), see
 /// <see cref="Illusionist.Scripts.IntentCards"/> — so the whole intent system feeds it: reactive cards
