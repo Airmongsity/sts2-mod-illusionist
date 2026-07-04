@@ -19,18 +19,20 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 逆转 (Reversal) — 1 cost Skill, Exhaust (upgraded: Retain). Reclassified as an [gold]Ancient[/gold]
-/// (先古卡) card so it is NOT offered in the normal card pool / rewards: the game's reward, merchant,
-/// combat-generation and uniform-selection paths all exclude CardRarity.Ancient (see CardFactory).
-/// It stays registered to the pool for visuals + ID, but the rarity keeps it out of acquisition —
-/// Mirror Image's first-card echo scaled this card's "delete an attack" effect without limit, which
-/// couldn't be balanced.
+/// 逆转 (Reversal) — 1 cost Skill, Exhaust (upgraded: Retain). Effectively REMOVED for now:
+/// reclassified as an [gold]Event[/gold] card (what StS2 surfaces in-game as "Ancient / 先古" — the
+/// trash_heap category, e.g. Caltrops) AND registered to the non-reward <see cref="IllusionistTokenPool"/>.
+/// Two reasons for both: the reward/merchant/combat-gen paths never roll Event, but the Uniform
+/// card-selection path (CardFactory) excludes Basic/Ancient — NOT Event — so the pool move is what
+/// actually guarantees it's unobtainable (we don't wire trash_heap). Retired because Mirror Image's
+/// first-card echo scaled this card's "delete an attack" effect without limit, which couldn't be
+/// balanced. Kept as a live model (file + loc retained) in case it's reworked later.
 /// If the target intends to attack, CHANGE that attack into intending to gain Block equal to the
 /// damage it would have dealt — this turn's attack is discarded and replaced by a defend. Any
 /// non-attack intents on the same move stay in the telegraph, and the enemy's later turns are
 /// untouched (its move sequence continues normally after).
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "REVERSAL")]
+[RegisterCard(typeof(IllusionistTokenPool), StableEntryStem = "REVERSAL")]
 public sealed class ReversalIllusionist : IllusionistCard
 {
     public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { CardKeyword.Exhaust };
@@ -41,7 +43,7 @@ public sealed class ReversalIllusionist : IllusionistCard
     };
 
     public ReversalIllusionist()
-        : base(1, CardType.Skill, CardRarity.Ancient, TargetType.AnyEnemy)
+        : base(1, CardType.Skill, CardRarity.Event, TargetType.AnyEnemy)
     {
     }
 
