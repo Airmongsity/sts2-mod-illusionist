@@ -52,7 +52,7 @@ public sealed class DetonateIllusionist : IllusionistCard
         }
 
         // One 12-damage hit to all enemies per destroyed clone.
-        await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this)
+        await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this, cardPlay)
             .TargetingAllOpponents(combat)
             .WithHitCount(clones)
             .WithHitFx("vfx/vfx_attack_slash")

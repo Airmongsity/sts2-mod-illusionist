@@ -19,7 +19,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 逆转 (Reversal) — 2 cost Skill, Uncommon (upgraded: Retain).
+/// 逆转 (Reversal) — 1 cost Skill, Uncommon, Exhaust (upgraded: Retain).
 /// If the target intends to attack, CHANGE that attack into intending to gain Block equal to the
 /// damage it would have dealt — this turn's attack is discarded and replaced by a defend. Any
 /// non-attack intents on the same move stay in the telegraph, and the enemy's later turns are
@@ -28,6 +28,7 @@ namespace Illusionist.Scripts.Cards;
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "REVERSAL")]
 public sealed class ReversalIllusionist : IllusionistCard
 {
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { CardKeyword.Exhaust };
 
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {

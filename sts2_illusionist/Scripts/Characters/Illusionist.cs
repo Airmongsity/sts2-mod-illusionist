@@ -40,10 +40,14 @@ public sealed class Illusionist : ModCharacterTemplate<IllusionistCardPool, Illu
     // Everything not listed in AssetProfile falls back to Necrobinder's assets.
     public override string? PlaceholderCharacterId => "necrobinder";
 
+    // IconPath feeds CharacterModel.Icon (the top-bar combat portrait). RitsuLib's
+    // CharacterIconRuntimeFactoryPatch accepts EITHER a .tscn scene (instantiated as-is) OR a plain
+    // texture, which it auto-wraps in a full-rect TextureRect (CreateCharacterIconFromTexture). We hand
+    // it the texture and let RitsuLib build the node — no hand-written icon scene to keep sized.
     public override CharacterAssetProfile AssetProfile => new(
         Ui: new CharacterUiAssetSet(
             IconTexturePath: "res://illusionist/art/avatar-s.png",
-            IconPath: "res://illusionist/scenes/illusionist_icon.tscn",
+            IconPath: "res://illusionist/art/avatar-s.png",
             CharacterSelectBgPath: "res://illusionist/scenes/char_select_bg_illusionist.tscn",
             CharacterSelectIconPath: "res://illusionist/art/avatar-m.png"));
 

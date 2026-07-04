@@ -118,6 +118,8 @@
   "ILLUSIONIST_CARD_ACCRUE.description": "Deal {Damage:diff()} damage.\nAt the start of your turn, if this card is in your hand, its damage doubles.",
   "ILLUSIONIST_CARD_CURTAIN_CALL.title": "Curtain Call",
   "ILLUSIONIST_CARD_CURTAIN_CALL.description": "Can only be played if no enemy's intent includes an attack.\nDeal {Damage:diff()} damage to ALL enemies.",
+  "ILLUSIONIST_CARD_HALL_OF_MIRRORS.title": "Hall of Mirrors",
+  "ILLUSIONIST_CARD_HALL_OF_MIRRORS.description": "Exhaust your hand. For every 2 cards exhausted, [gold]Copy[/gold] 1.{IfUpgraded:show:\nIf you exhausted 9 cards, gain 1 [gold]Intangible[/gold].}",
   "ILLUSIONIST_CARD_SACRIFICE.title": "Sacrifice",
   "ILLUSIONIST_CARD_SACRIFICE.description": "Gain 1 [img]res://illusionist/art/illusionist_energy_icon_text.webp[/img].\nDraw {Cards:diff()} card(s).\nIf you have a [gold]mirror image[/gold], destroy one.",
   "ILLUSIONIST_CARD_EXTRACT.title": "Extract",

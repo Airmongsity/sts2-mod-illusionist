@@ -15,7 +15,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 预警 (ForewarnIllusionist) — 2 cost Skill, Rare (upgraded: Innate).
+/// 预警 (ForewarnIllusionist) — 2 cost Skill, Rare (upgraded: +10 Block).
 /// Target an enemy and put a 先见 (Prescience) into your hand whose [gold]Block[/gold]
 /// equals the target's current attack-intent damage. When upgraded, +10 extra Block.
 /// </summary>
@@ -47,11 +47,6 @@ public sealed class ForewarnIllusionist : IllusionistCard
 
         CardPileAddResult result = await CardPileCmd.AddGeneratedCardToCombat(card, PileType.Hand, base.Owner);
         CardCmd.PreviewCardPileAdd(result, 1.8f);
-    }
-
-    protected override void OnUpgrade()
-    {
-        AddKeyword(CardKeyword.Innate);
     }
 
     private int GetIncomingAttackDamage(Creature target)

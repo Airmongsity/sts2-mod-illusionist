@@ -47,7 +47,7 @@ public sealed class FlickerIllusionist : IllusionistCard
         // still counts the blow you braced against.
         int attackers = combat.Enemies.Count(e => e.IsAlive && e.Monster != null && e.Monster.IntendsToAttack);
 
-        await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this)
+        await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this, cardPlay)
             .TargetingAllOpponents(combat)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);

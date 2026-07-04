@@ -48,7 +48,7 @@ public sealed class ChannelIllusionist : IllusionistCard
         int damage = x + BaseBonus + (base.IsUpgraded ? UpgradeBonus : 0);
         if (damage > 0)
         {
-            await DamageCmd.Attack(damage).FromCard(this).Targeting(target)
+            await DamageCmd.Attack(damage).FromCard(this, cardPlay).Targeting(target)
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
         }

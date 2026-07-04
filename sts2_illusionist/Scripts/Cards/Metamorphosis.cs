@@ -48,7 +48,7 @@ public sealed class MetamorphosisIllusionist : IllusionistCard
         int transformedThisTurn = base.Owner.Creature.GetPower<TransformCountPower>()?.CountThisTurn ?? 0;
         decimal damage = base.DynamicVars.Damage.BaseValue + base.DynamicVars["Bonus"].BaseValue * transformedThisTurn;
 
-        await DamageCmd.Attack(damage).FromCard(this).Targeting(target)
+        await DamageCmd.Attack(damage).FromCard(this, cardPlay).Targeting(target)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
     }

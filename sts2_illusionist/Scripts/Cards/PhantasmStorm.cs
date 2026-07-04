@@ -44,7 +44,7 @@ public sealed class PhantasmStormIllusionist : IllusionistCard
         {
             int mirrors = MirrorClone.CountAlive(base.Owner);
             decimal damage = base.DynamicVars.Damage.BaseValue * (mirrors > 0 ? mirrors : 1);
-            await DamageCmd.Attack(damage).FromCard(this)
+            await DamageCmd.Attack(damage).FromCard(this, cardPlay)
                 .TargetingAllOpponents(combat)
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);

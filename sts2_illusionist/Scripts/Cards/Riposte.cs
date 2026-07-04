@@ -69,7 +69,7 @@ public sealed class RiposteIllusionist : IllusionistCard
             damage += base.DynamicVars["Bonus"].BaseValue;
         }
 
-        await DamageCmd.Attack(damage).FromCard(this).Targeting(target)
+        await DamageCmd.Attack(damage).FromCard(this, cardPlay).Targeting(target)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
 

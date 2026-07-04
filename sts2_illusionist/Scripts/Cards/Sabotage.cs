@@ -78,7 +78,7 @@ public sealed class SabotageIllusionist : IllusionistCard
             {
                 continue;
             }
-            await DamageCmd.Attack(damage).FromCard(this).Targeting(enemy)
+            await DamageCmd.Attack(damage).FromCard(this, cardPlay).Targeting(enemy)
                 .WithHitFx("vfx/vfx_attack_slash")
                 .Execute(choiceContext);
         }

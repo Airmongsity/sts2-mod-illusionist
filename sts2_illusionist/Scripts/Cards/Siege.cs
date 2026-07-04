@@ -51,7 +51,7 @@ public sealed class SiegeIllusionist : IllusionistCard
         }
 
         // One 3-damage hit to all enemies per mirror clone (clones are NOT consumed).
-        await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this)
+        await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this, cardPlay)
             .TargetingAllOpponents(combat)
             .WithHitCount(clones)
             .WithHitFx("vfx/vfx_attack_slash")

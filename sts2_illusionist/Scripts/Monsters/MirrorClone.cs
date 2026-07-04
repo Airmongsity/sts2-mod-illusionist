@@ -219,4 +219,62 @@ public sealed class MirrorClone : MonsterModel
 
         return count;
     }
+
+    /// <summary>
+    /// Destroy ONE mirror the player owns: kill a single cosmetic clone AND drop
+    /// <see cref="MirrorImagePower"/> by one stack (removing it entirely if that was the last mirror),
+    /// so the clones and the replay power stay in lockstep — otherwise the destroyed mirror's echo
+    /// would keep firing. Returns how many were destroyed (0 or 1).
+    /// </summary>
+    public static async Task<int> ConsumeOne(Player? player)
+    {
+        if (player == null)
+        {
+            return 0;
+        }
+
+        ICombatState? combat = player.Creature.CombatState;
+        if (combat == null)
+        {
+            return 0;
+        }
+
+        Creature? clone = combat.Allies
+            .FirstOrDefault(c => c.Monster is MirrorClone && c.PetOwner == player && c.IsAlive);
+        MirrorImagePower? power = player.Creature.GetPower<MirrorImagePower>();
+
+        // Nothing to destroy — neither a cosmetic clone nor a power stack.
+        if (clone == null && power == null)
+        {
+            return 0;
+        }
+
+        try
+        {
+            if (clone != null)
+            {
+                await CreatureCmd.Kill(clone, force: true);
+            }
+
+            if (power != null)
+            {
+                if (power.Amount > 1m)
+                {
+                    await PowerCmd.Decrement(power);
+                }
+                else
+                {
+                    await PowerCmd.Remove(power);
+                }
+            }
+
+            Log.Info("[illusionist] MirrorClone: consumed 1 clone.");
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"[illusionist] MirrorClone consume-one failed: {ex}");
+        }
+
+        return 1;
+    }
 }

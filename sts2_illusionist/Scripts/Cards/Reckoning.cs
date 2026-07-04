@@ -44,7 +44,7 @@ public sealed class ReckoningIllusionist : IllusionistCard
         int intentCards = IntentCards.PlayedThisCombat(base.Owner);
         decimal damage = base.DynamicVars.Damage.BaseValue + base.DynamicVars["Bonus"].BaseValue * intentCards;
 
-        await DamageCmd.Attack(damage).FromCard(this).Targeting(cardPlay.Target)
+        await DamageCmd.Attack(damage).FromCard(this, cardPlay).Targeting(cardPlay.Target)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
     }

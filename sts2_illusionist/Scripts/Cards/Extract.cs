@@ -11,7 +11,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 萃取 (ExtractIllusionist) — 1 cost Power, Uncommon (upgraded: Retain).
+/// 萃取 (ExtractIllusionist) — 1 cost Power, Uncommon (upgraded: 0 cost).
 /// Destroy all mirror images, then gain +1 energy per turn. Stacks with each play.
 /// Friendship power pattern.
 /// </summary>
@@ -26,13 +26,15 @@ public sealed class ExtractIllusionist : IllusionistCard
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await MirrorClone.ShatterAll(base.Owner);
+        // Destroy ALL mirrors — clones AND the replay power (ShatterAll only removes the cosmetic
+        // clones and would leave the echo firing).
+        await MirrorClone.ConsumeAll(base.Owner);
 
         await PowerCmd.Apply<ExtractPower>(choiceContext, base.Owner.Creature, 1, base.Owner.Creature, this);
     }
 
     protected override void OnUpgrade()
     {
-        AddKeyword(CardKeyword.Retain);
+        base.EnergyCost.UpgradeBy(-1);
     }
 }

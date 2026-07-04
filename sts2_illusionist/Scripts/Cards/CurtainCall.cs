@@ -13,21 +13,19 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 谢幕 (CurtainCallIllusionist) — 0 cost Attack, Rare. Retain. Deal 50 damage to ALL enemies, but can
+/// 谢幕 (CurtainCallIllusionist) — 0 cost Attack, Rare. Deal 40 damage to ALL enemies, but can
 /// only be played while NO enemy's intent includes an attack — the intent-control payoff (à la Grand
 /// Finale): pacify every attacker (Provoke / Blind / Counter / …) then take the stage. The gate is an
 /// <see cref="IsPlayable"/> override → CanPlay reports UnplayableReason.BlockedByCardLogic, so the card
-/// greys out until the board is safe; Retain lets you hold it until then.
-/// Upgraded: 65 damage.
+/// greys out until the board is safe.
+/// Upgraded: 55 damage.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "CURTAIN_CALL")]
 public sealed class CurtainCallIllusionist : IllusionistCard
 {
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Retain };
-
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(50m, ValueProp.Move),
+        new DamageVar(40m, ValueProp.Move),
     };
 
     public CurtainCallIllusionist()
@@ -59,7 +57,7 @@ public sealed class CurtainCallIllusionist : IllusionistCard
             return;
         }
 
-        await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this)
+        await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this, cardPlay)
             .TargetingAllOpponents(combat)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
@@ -67,6 +65,6 @@ public sealed class CurtainCallIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Damage.UpgradeValueBy(15m); // 50 -> 65
+        base.DynamicVars.Damage.UpgradeValueBy(15m); // 40 -> 55
     }
 }

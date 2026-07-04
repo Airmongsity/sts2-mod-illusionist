@@ -17,7 +17,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 催化 (AgingIllusionist) — 1 cost Skill, Uncommon, Retain (upgraded: 0 cost).
+/// 催化 (AgingIllusionist) — 1 cost Skill, Uncommon (upgraded: 0 cost).
 /// Double your damage this turn (via DoubleDamagePower, same as Shadow Step).
 /// If the target enemy's intent this turn consists ONLY of Attack and/or Defend,
 /// advance it to next turn's intent, discarding the current one.
@@ -25,9 +25,6 @@ namespace Illusionist.Scripts.Cards;
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "AGING")]
 public sealed class AgingIllusionist : IllusionistCard
 {
-
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Retain };
-
     public AgingIllusionist()
         : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
     {

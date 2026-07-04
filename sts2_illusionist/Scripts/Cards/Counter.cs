@@ -56,7 +56,7 @@ public sealed class CounterIllusionist : IllusionistCard
         // Snapshot the enemy's attack intent BEFORE dealing damage (so a lethal hit doesn't matter).
         int intentDamage = GetIncomingAttackDamage(target);
 
-        await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this).Targeting(target)
+        await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this, cardPlay).Targeting(target)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
 

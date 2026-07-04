@@ -32,6 +32,6 @@
     </Reference>
     <!-- Base library (compile-time). Runtime copy is the STS2-RitsuLib mod itself
          (Workshop item 3747602295), declared in mod_manifest.json dependencies. -->
-    <PackageReference Include="STS2.RitsuLib" Version="0.4.46" />
+    <PackageReference Include="STS2.RitsuLib" Version="0.4.48" />
   </ItemGroup>
 </Project>
