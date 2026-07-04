@@ -19,7 +19,12 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 逆转 (Reversal) — 1 cost Skill, Uncommon, Exhaust (upgraded: Retain).
+/// 逆转 (Reversal) — 1 cost Skill, Exhaust (upgraded: Retain). Reclassified as an [gold]Ancient[/gold]
+/// (先古卡) card so it is NOT offered in the normal card pool / rewards: the game's reward, merchant,
+/// combat-generation and uniform-selection paths all exclude CardRarity.Ancient (see CardFactory).
+/// It stays registered to the pool for visuals + ID, but the rarity keeps it out of acquisition —
+/// Mirror Image's first-card echo scaled this card's "delete an attack" effect without limit, which
+/// couldn't be balanced.
 /// If the target intends to attack, CHANGE that attack into intending to gain Block equal to the
 /// damage it would have dealt — this turn's attack is discarded and replaced by a defend. Any
 /// non-attack intents on the same move stay in the telegraph, and the enemy's later turns are
@@ -36,7 +41,7 @@ public sealed class ReversalIllusionist : IllusionistCard
     };
 
     public ReversalIllusionist()
-        : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
+        : base(1, CardType.Skill, CardRarity.Ancient, TargetType.AnyEnemy)
     {
     }
 

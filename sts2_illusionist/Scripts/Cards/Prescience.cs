@@ -16,7 +16,7 @@ namespace Illusionist.Scripts.Cards;
 /// Block value is set dynamically by 预警 (Forewarn) based on the enemy's attack intent.
 /// When Forewarn is upgraded, Prescience gains +10 extra Block.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "PRESCIENCE")]
+[RegisterCard(typeof(IllusionistTokenPool), StableEntryStem = "PRESCIENCE")]
 public sealed class PrescienceIllusionist : IllusionistCard
 {
     public override int MaxUpgradeLevel => 0;

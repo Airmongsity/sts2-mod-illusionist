@@ -14,7 +14,7 @@ namespace Illusionist.Scripts.Cards;
 /// a Dim Lamp. When played directly it does nothing — you want to transmute it, not play it bare.
 /// Not upgradeable (like Wither).
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "EXTINGUISHED_LAMP")]
+[RegisterCard(typeof(IllusionistTokenPool), StableEntryStem = "EXTINGUISHED_LAMP")]
 public sealed class ExtinguishedLampIllusionist : IllusionistCard
 {
     public override int MaxUpgradeLevel => 0;
