@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
+using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Localization;
@@ -20,14 +21,15 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Monsters;
 
 /// <summary>
-/// 镜像分身 (Mirror Clone) — a purely COSMETIC 1-HP ally summoned by "Copy 1". It stands beside
-/// the player looking like a second copy of the Illusionist (it reuses the Necrobinder/player
-/// visuals) and never acts on its own (a passive NOTHING_MOVE, just like Osty). All gameplay —
-/// replaying the first card each turn and shattering on unblocked damage — lives in
-/// <see cref="Illusionist.Scripts.Powers.MirrorImagePower"/>; this entity is only the visual.
+/// 镜像分身 (Mirror Clone) — the cosmetic 1-HP ally that stands beside the player, one per mirror. It is
+/// purely decorative now: the count and the effects live in the three per-type powers
+/// (<see cref="GuardMirrorPower"/> / <see cref="BladeMirrorPower"/> / <see cref="ThornMirrorPower"/>), so
+/// the player can read how many of each kind they have. The clone never acts (a passive NOTHING_MOVE);
+/// <see cref="CountAlive"/> reports the total from the powers, and the summon/despawn helpers keep the
+/// clone army roughly in step for flavor.
 ///
-/// SummonIllusionist/despawn are best-effort (try/catch): if the engine can't spawn or kill the clone, the
-/// worst case is "no clone appears / a clone lingers", never a crash that breaks the run.
+/// Summon/despawn are best-effort (try/catch): the worst case is "no clone appears / a clone lingers",
+/// never a crash that breaks the run.
 /// </summary>
 [RegisterMonster]
 public sealed class MirrorClone : MonsterModel
@@ -36,8 +38,7 @@ public sealed class MirrorClone : MonsterModel
 
     public override int MaxInitialHp => 1;
 
-    // The base MonsterModel.Title looks up "MIRROR_CLONE.name" in the "monsters" loc table, which
-    // we don't ship — that threw a LocException on every name lookup. Point at a key we do define.
+    // The base MonsterModel.Title looks up a "monsters" loc table we don't ship; point at a key we define.
     public override LocString Title => new LocString("cards", "ILLUSIONIST_CARD_MIRROR_IMAGE.title");
 
     // Reuse the reskinned player's own (Necrobinder) visuals so the clone looks like a copy of you.
@@ -54,24 +55,9 @@ public sealed class MirrorClone : MonsterModel
         return new MonsterMoveStateMachine(new MonsterState[] { idle }, idle);
     }
 
-    /// <summary>SummonIllusionist one mirror clone beside the player (best-effort).</summary>
-    public static async Task SummonIllusionist(Player player)
-    {
-        try
-        {
-            Creature clone = await PlayerCmd.AddPet<MirrorClone>(player);
-            SyncFacingToPlayer(clone, player);
-            Log.Info("[illusionist] MirrorClone: summoned a clone.");
-        }
-        catch (Exception ex)
-        {
-            Log.Error($"[illusionist] MirrorClone summon failed: {ex}");
-        }
-    }
-
     /// <summary>
-    /// 复制 N (Copy N): apply N stacks of <see cref="MirrorImagePower"/> and summon N cosmetic
-    /// clones beside the player. The shared primitive used by every "Copy N" card and relic.
+    /// 复制 N (Copy N): for each mirror, roll a random type (守/刃/棘), apply one stack of that type's
+    /// power, and summon one cosmetic clone. The shared primitive behind every "Copy N" card and relic.
     /// </summary>
     public static async Task Copy(Player player, int count, PlayerChoiceContext choiceContext)
     {
@@ -80,21 +66,72 @@ public sealed class MirrorClone : MonsterModel
             return;
         }
 
-        await PowerCmd.Apply<MirrorImagePower>(choiceContext, player.Creature, count, player.Creature, null);
         for (int i = 0; i < count; i++)
         {
-            await SummonIllusionist(player);
+            await MirrorRoster.ApplyRandom(player, choiceContext);
+            await SummonClone(player);
         }
     }
 
     /// <summary>
-    /// Make a freshly-summoned clone face the same way the player currently faces (best-effort).
-    /// In "surrounded" encounters (帝皇蝎/Kaiser Crab) <c>SurroundedPower</c> flips the player and
-    /// its EXISTING pets' body scale to face the back-attacking enemy. A clone summoned mid-combat
-    /// starts at the default facing and is only re-synced if the facing later changes — so if the
-    /// player keeps facing the same direction, the new clone would stay turned the wrong way. We
-    /// mirror the sign of the player's body scale onto the new clone to keep them aligned. This is
-    /// encounter-agnostic: in a normal fight both already face right, so nothing flips.
+    /// 相位循环 (Phase Shift): cycle the three COMMON mirror types — all Blade → Thorn, all Thorn → Guard,
+    /// all Guard → Blade. Uncommon/Rare mirrors are left untouched. The total mirror count (and the clones)
+    /// is unchanged; only the Common kinds rotate.
+    /// </summary>
+    public static async Task RotateTypes(Player? player, PlayerChoiceContext choiceContext)
+    {
+        if (player == null)
+        {
+            return;
+        }
+
+        Creature owner = player.Creature;
+        int guard = (int)(owner.GetPower<GuardMirrorPower>()?.Amount ?? 0m);
+        int blade = (int)(owner.GetPower<BladeMirrorPower>()?.Amount ?? 0m);
+        int thorn = (int)(owner.GetPower<ThornMirrorPower>()?.Amount ?? 0m);
+        if (guard == 0 && blade == 0 && thorn == 0)
+        {
+            return;
+        }
+
+        // Remove ONLY the three Common type powers; Uncommon/Rare mirrors (and their clones) stay put.
+        await RemovePowerIfPresent(owner.GetPower<GuardMirrorPower>());
+        await RemovePowerIfPresent(owner.GetPower<BladeMirrorPower>());
+        await RemovePowerIfPresent(owner.GetPower<ThornMirrorPower>());
+
+        // Blade → Thorn, Thorn → Guard, Guard → Blade.
+        if (thorn > 0)
+        {
+            await PowerCmd.Apply<GuardMirrorPower>(choiceContext, owner, thorn, owner, null);
+        }
+        if (guard > 0)
+        {
+            await PowerCmd.Apply<BladeMirrorPower>(choiceContext, owner, guard, owner, null);
+        }
+        if (blade > 0)
+        {
+            await PowerCmd.Apply<ThornMirrorPower>(choiceContext, owner, blade, owner, null);
+        }
+    }
+
+    /// <summary>Summon one cosmetic clone beside the player (best-effort).</summary>
+    private static async Task SummonClone(Player player)
+    {
+        try
+        {
+            Creature clone = await PlayerCmd.AddPet<MirrorClone>(player);
+            SyncFacingToPlayer(clone, player);
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"[illusionist] MirrorClone summon failed: {ex}");
+        }
+    }
+
+    /// <summary>
+    /// Make a freshly-summoned clone face the same way the player currently faces (best-effort). In
+    /// "surrounded" encounters SurroundedPower flips the player and its EXISTING pets; a clone summoned
+    /// mid-combat starts at the default facing, so we mirror the sign of the player's body scale onto it.
     /// </summary>
     private static void SyncFacingToPlayer(Creature clone, Player player)
     {
@@ -124,7 +161,10 @@ public sealed class MirrorClone : MonsterModel
         }
     }
 
-    /// <summary>How many mirror clones (复制品) the player currently has alive. Non-destructive.</summary>
+    /// <summary>
+    /// How many mirrors the player has — the authoritative total, read from the three type powers (the
+    /// count the payoff cards scale by). Non-destructive.
+    /// </summary>
     public static int CountAlive(Player? player)
     {
         if (player == null)
@@ -132,23 +172,12 @@ public sealed class MirrorClone : MonsterModel
             return 0;
         }
 
-        ICombatState? combat = player.Creature.CombatState;
-        if (combat == null)
-        {
-            return 0;
-        }
-
-        return combat.Allies.Count(c => c.Monster is MirrorClone && c.PetOwner == player && c.IsAlive);
+        return player.Creature.Powers.OfType<MirrorTypePower>().Sum(p => (int)p.Amount);
     }
 
-    /// <summary>Remove every mirror clone the player owns (called when the mirrors shatter).</summary>
-    public static async Task ShatterAll(Player? player)
+    /// <summary>Kill every cosmetic clone the player owns (visual cleanup; does NOT touch the powers).</summary>
+    private static async Task KillAllClones(Player player)
     {
-        if (player == null)
-        {
-            return;
-        }
-
         ICombatState? combat = player.Creature.CombatState;
         if (combat == null)
         {
@@ -163,10 +192,53 @@ public sealed class MirrorClone : MonsterModel
             return;
         }
 
+        await CreatureCmd.Kill(clones, force: true);
+    }
+
+    /// <summary>Kill one cosmetic clone (visual only; the caller adjusts the powers).</summary>
+    public static async Task ShatterOneClone(Player? player)
+    {
+        if (player == null)
+        {
+            return;
+        }
+
+        ICombatState? combat = player.Creature.CombatState;
+        if (combat == null)
+        {
+            return;
+        }
+
+        Creature? clone = combat.Allies
+            .FirstOrDefault(c => c.Monster is MirrorClone && c.PetOwner == player && c.IsAlive);
+        if (clone == null)
+        {
+            return;
+        }
+
         try
         {
-            await CreatureCmd.Kill(clones, force: true);
-            Log.Info($"[illusionist] MirrorClone: shattered {clones.Count} clone(s).");
+            await CreatureCmd.Kill(clone, force: true);
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"[illusionist] MirrorClone shatter-one failed: {ex}");
+        }
+    }
+
+    /// <summary>Remove every mirror the player has (all clones + all three type powers).</summary>
+    public static async Task ShatterAll(Player? player)
+    {
+        if (player == null)
+        {
+            return;
+        }
+
+        try
+        {
+            await KillAllClones(player);
+            await RemoveAllPowers(player);
+            Log.Info("[illusionist] MirrorClone: shattered all mirrors.");
         }
         catch (Exception ex)
         {
@@ -175,9 +247,8 @@ public sealed class MirrorClone : MonsterModel
     }
 
     /// <summary>
-    /// Spend every mirror the player has: kill all clone entities AND remove the Mirror Image
-    /// power (so the replay buff ends too), returning how many clones were destroyed — the
-    /// "复制品" count that payoff cards (引爆/汲取) scale their effect by.
+    /// Spend every mirror the player has: remove all three type powers AND kill all cosmetic clones,
+    /// returning how many mirrors there were — the count the "复制品" payoff cards (引爆/汲取) scale by.
     /// </summary>
     public static async Task<int> ConsumeAll(Player? player)
     {
@@ -186,31 +257,12 @@ public sealed class MirrorClone : MonsterModel
             return 0;
         }
 
-        ICombatState? combat = player.Creature.CombatState;
-        if (combat == null)
-        {
-            return 0;
-        }
-
-        List<Creature> clones = combat.Allies
-            .Where(c => c.Monster is MirrorClone && c.PetOwner == player && c.IsAlive)
-            .ToList();
-        int count = clones.Count;
-
+        int count = CountAlive(player);
         try
         {
-            if (clones.Count > 0)
-            {
-                await CreatureCmd.Kill(clones, force: true);
-            }
-
-            MirrorImagePower? power = player.Creature.GetPower<MirrorImagePower>();
-            if (power != null)
-            {
-                await PowerCmd.Remove(power);
-            }
-
-            Log.Info($"[illusionist] MirrorClone: consumed {count} clone(s).");
+            await KillAllClones(player);
+            await RemoveAllPowers(player);
+            Log.Info($"[illusionist] MirrorClone: consumed {count} mirror(s).");
         }
         catch (Exception ex)
         {
@@ -221,54 +273,21 @@ public sealed class MirrorClone : MonsterModel
     }
 
     /// <summary>
-    /// Destroy ONE mirror the player owns: kill a single cosmetic clone AND drop
-    /// <see cref="MirrorImagePower"/> by one stack (removing it entirely if that was the last mirror),
-    /// so the clones and the replay power stay in lockstep — otherwise the destroyed mirror's echo
-    /// would keep firing. Returns how many were destroyed (0 or 1).
+    /// Destroy ONE mirror: kill a single clone AND drop one stack of one type power, keeping the clones
+    /// and the powers in lockstep. Returns 1 if a mirror was destroyed, else 0.
     /// </summary>
     public static async Task<int> ConsumeOne(Player? player)
     {
-        if (player == null)
-        {
-            return 0;
-        }
-
-        ICombatState? combat = player.Creature.CombatState;
-        if (combat == null)
-        {
-            return 0;
-        }
-
-        Creature? clone = combat.Allies
-            .FirstOrDefault(c => c.Monster is MirrorClone && c.PetOwner == player && c.IsAlive);
-        MirrorImagePower? power = player.Creature.GetPower<MirrorImagePower>();
-
-        // Nothing to destroy — neither a cosmetic clone nor a power stack.
-        if (clone == null && power == null)
+        if (player == null || CountAlive(player) <= 0)
         {
             return 0;
         }
 
         try
         {
-            if (clone != null)
-            {
-                await CreatureCmd.Kill(clone, force: true);
-            }
-
-            if (power != null)
-            {
-                if (power.Amount > 1m)
-                {
-                    await PowerCmd.Decrement(power);
-                }
-                else
-                {
-                    await PowerCmd.Remove(power);
-                }
-            }
-
-            Log.Info("[illusionist] MirrorClone: consumed 1 clone.");
+            await ShatterOneClone(player);
+            await DecrementOnePower(player);
+            Log.Info("[illusionist] MirrorClone: consumed 1 mirror.");
         }
         catch (Exception ex)
         {
@@ -276,5 +295,40 @@ public sealed class MirrorClone : MonsterModel
         }
 
         return 1;
+    }
+
+    /// <summary>Remove every mirror type power (all 12 kinds) from the player.</summary>
+    private static async Task RemoveAllPowers(Player player)
+    {
+        foreach (PowerModel power in player.Creature.Powers.OfType<MirrorTypePower>().ToList())
+        {
+            await PowerCmd.Remove(power);
+        }
+    }
+
+    /// <summary>Remove a single power if it exists (no-op on null).</summary>
+    private static async Task RemovePowerIfPresent(PowerModel? power)
+    {
+        if (power != null)
+        {
+            await PowerCmd.Remove(power);
+        }
+    }
+
+    /// <summary>Drop one stack from the first non-empty mirror type power (Guard → Blade → Thorn).</summary>
+    private static async Task DecrementOnePower(Player player)
+    {
+        PowerModel? power = player.Creature.Powers.OfType<MirrorTypePower>().FirstOrDefault(p => p.Amount > 0m);
+        if (power != null)
+        {
+            if (power.Amount > 1m)
+            {
+                await PowerCmd.Decrement(power);
+            }
+            else
+            {
+                await PowerCmd.Remove(power);
+            }
+        }
     }
 }

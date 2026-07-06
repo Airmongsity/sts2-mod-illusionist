@@ -16,9 +16,10 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 围攻 (SiegeIllusionist) — 1 cost Attack, Rare.
-/// For each mirror clone (复制品) you have, deal 8 damage to ALL enemies once.
-/// Upgraded: 9 damage.
+/// 围攻 (SiegeIllusionist) — 1 cost Attack, Uncommon.
+/// For each mirror clone (复制品) you have, deal 10 damage to ALL enemies once (mirrors are NOT consumed).
+/// Against a lone target every hit lands on it, so this is the mirror deck's single-target burst too.
+/// Upgraded: 12 damage.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "SIEGE")]
 public sealed class SiegeIllusionist : IllusionistCard
@@ -28,11 +29,11 @@ public sealed class SiegeIllusionist : IllusionistCard
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(8m, ValueProp.Move),
+        new DamageVar(10m, ValueProp.Move),
     };
 
     public SiegeIllusionist()
-        : base(1, CardType.Attack, CardRarity.Rare, TargetType.AllEnemies)
+        : base(1, CardType.Attack, CardRarity.Uncommon, TargetType.AllEnemies)
     {
     }
 
@@ -50,7 +51,7 @@ public sealed class SiegeIllusionist : IllusionistCard
             return;
         }
 
-        // One 3-damage hit to all enemies per mirror clone (clones are NOT consumed).
+        // One hit to all enemies per mirror clone (clones are NOT consumed).
         await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this, cardPlay)
             .TargetingAllOpponents(combat)
             .WithHitCount(clones)

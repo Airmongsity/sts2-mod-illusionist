@@ -17,10 +17,11 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 幻形波 (ShiftingWaveIllusionist) — 1 cost Attack, Common.
-/// Deal 6 damage and gain 6 Block, then Exhaust. Then 幻化 every ShiftingWave in all piles
+/// Deal 6 damage and gain 6 Block. Then 幻化 every ShiftingWave in all piles
 /// — each copy gets one morph tier (+3/+3, Riposte/Wither pattern) and shows +N.
 /// Reverts one tier at turn start. Both morph and revert count as 变化 (transform)
-/// for Fluxweave/Momentum via Transmutation.NotifyTransformed.
+/// for Fluxweave/Momentum via Transmutation.NotifyTransformed. No longer Exhausts, so
+/// it stays in your deck and keeps snowballing its morph tier each time you replay it.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "SHIFTING_WAVE")]
 public sealed class ShiftingWaveIllusionist : IllusionistCard
@@ -32,8 +33,6 @@ public sealed class ShiftingWaveIllusionist : IllusionistCard
 
 
     public override bool GainsBlock => true;
-
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Exhaust };
 
     public override string Title => _morphLevel > 0 ? $"{base.Title}+{_morphLevel}" : base.Title;
 

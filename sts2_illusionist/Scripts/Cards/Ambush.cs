@@ -15,22 +15,27 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 突袭 (AmbushIllusionist) — 1 cost Attack, Common.
-/// Deal 7 damage. 先机 (First Move): if this is the first card you play this turn, gain 7 Block.
-/// Upgraded: 9 damage / 9 Block.
+/// 突袭 (AmbushIllusionist) — 1 cost Attack, Common. Deal 8 damage, then hand yourself a 先见
+/// (Prescience) worth 8 Block — but delivered in its 熄灭油灯 (Extinguished Lamp) form. Creating it
+/// counts as a 幻化 right now (feeding 嬗变 / 流变 / 恍惚 …), and the Lamp reverts into the block-granting
+/// Prescience at the start of your next turn (a second transform). Upgraded: 10 damage / 10 Block.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "AMBUSH")]
 public sealed class AmbushIllusionist : IllusionistCard
 {
 
-    public override bool GainsBlock => true;
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Transmute };
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.FirstMove };
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
+    {
+        HoverTipFactory.FromCard<PrescienceIllusionist>(),
+        HoverTipFactory.FromCard<ExtinguishedLampIllusionist>(),
+    };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(7m, ValueProp.Move),
-        new BlockVar(7m, ValueProp.Move),
+        new DamageVar(8m, ValueProp.Move),
+        new BlockVar(8m, ValueProp.Move),
     };
 
     public AmbushIllusionist()
@@ -46,11 +51,20 @@ public sealed class AmbushIllusionist : IllusionistCard
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
 
-        // 先机: only the first card played this turn grants the block.
-        if (FirstMove.IsActive(base.Owner.Creature))
-        {
-            await CreatureCmd.GainBlock(base.Owner.Creature, base.DynamicVars.Block, cardPlay);
-        }
+        // Build the 先见 (Prescience) worth this card's Block — that's what the player ultimately gets —
+        // but deliver it as its 熄灭油灯 (Extinguished Lamp) form: a 幻化 product that reverts to the
+        // Prescience at the start of the next turn.
+        CardModel prescience = base.CardScope!.CreateCard<PrescienceIllusionist>(base.Owner);
+        prescience.DynamicVars.Block.BaseValue = base.DynamicVars.Block.BaseValue;
+
+        CardModel lamp = base.CardScope!.CreateCard<ExtinguishedLampIllusionist>(base.Owner);
+        CardPileAddResult result = await CardPileCmd.AddGeneratedCardToCombat(lamp, PileType.Hand, base.Owner);
+        CardCmd.PreviewCardPileAdd(result, 1.8f);
+
+        // Register the Lamp -> Prescience revert (next turn start), and count this delivery as a 幻化 now
+        // so it feeds the transmute payoffs immediately.
+        await Transmutation.RegisterRevert(base.Owner, choiceContext, this, prescience, lamp);
+        await Transmutation.NotifyTransformed(base.Owner, choiceContext, lamp);
     }
 
     protected override void OnUpgrade()

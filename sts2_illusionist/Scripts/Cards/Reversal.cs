@@ -19,20 +19,13 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 逆转 (Reversal) — 1 cost Skill, Exhaust (upgraded: Retain). Effectively REMOVED for now:
-/// reclassified as an [gold]Event[/gold] card (what StS2 surfaces in-game as "Ancient / 先古" — the
-/// trash_heap category, e.g. Caltrops) AND registered to the non-reward <see cref="IllusionistTokenPool"/>.
-/// Two reasons for both: the reward/merchant/combat-gen paths never roll Event, but the Uniform
-/// card-selection path (CardFactory) excludes Basic/Ancient — NOT Event — so the pool move is what
-/// actually guarantees it's unobtainable (we don't wire trash_heap). Retired because Mirror Image's
-/// first-card echo scaled this card's "delete an attack" effect without limit, which couldn't be
-/// balanced. Kept as a live model (file + loc retained) in case it's reworked later.
+/// 逆转 (Reversal) — 2 cost Uncommon Skill, Exhaust (upgraded: 1 cost).
 /// If the target intends to attack, CHANGE that attack into intending to gain Block equal to the
 /// damage it would have dealt — this turn's attack is discarded and replaced by a defend. Any
 /// non-attack intents on the same move stay in the telegraph, and the enemy's later turns are
 /// untouched (its move sequence continues normally after).
 /// </summary>
-[RegisterCard(typeof(IllusionistTokenPool), StableEntryStem = "REVERSAL")]
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "REVERSAL")]
 public sealed class ReversalIllusionist : IllusionistCard
 {
     public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { CardKeyword.Exhaust };
@@ -43,38 +36,13 @@ public sealed class ReversalIllusionist : IllusionistCard
     };
 
     public ReversalIllusionist()
-        : base(1, CardType.Skill, CardRarity.Event, TargetType.AnyEnemy)
+        : base(2, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
 
     protected override void OnUpgrade()
     {
-        AddKeyword(CardKeyword.Retain);
-    }
-
-    /// <summary>
-    /// If this card has Ethereal, replace it with Retain instead.
-    /// Hook fires on every pile change + turn start to catch Ethereal no matter when it's applied.
-    /// </summary>
-    public override Task AfterCardChangedPiles(CardModel card, PileType oldPileType, AbstractModel? clonedBy)
-    {
-        ConvertEtherealToRetain();
-        return Task.CompletedTask;
-    }
-
-    public override Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
-    {
-        ConvertEtherealToRetain();
-        return Task.CompletedTask;
-    }
-
-    private void ConvertEtherealToRetain()
-    {
-        if (Keywords.Contains(CardKeyword.Ethereal))
-        {
-            RemoveKeyword(CardKeyword.Ethereal);
-            AddKeyword(CardKeyword.Retain);
-        }
+        base.EnergyCost.UpgradeBy(-1);
     }
 
     // Not async: the only await lives inside the MoveState lambda below (which runs when the enemy

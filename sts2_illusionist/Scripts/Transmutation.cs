@@ -114,9 +114,23 @@ public static class Transmutation
             await improvise.OnTransmuted(choiceContext, transformedCard);
         }
 
+        // 傀影 (Effigy Mirror): the first transmute each turn plays the top of the draw pile for free.
+        EffigyMirrorPower? effigy = player.Creature.GetPower<EffigyMirrorPower>();
+        if (effigy != null)
+        {
+            await effigy.OnTransmuted(choiceContext);
+        }
+
         foreach (MomentumPower momentum in player.Creature.GetPowerInstances<MomentumPower>())
         {
             await momentum.OnTransform();
+        }
+
+        // 折光 (Refraction): every transform fires a bolt at a random enemy.
+        RefractionPower? refraction = player.Creature.GetPower<RefractionPower>();
+        if (refraction != null)
+        {
+            await refraction.OnTransform(choiceContext);
         }
     }
 

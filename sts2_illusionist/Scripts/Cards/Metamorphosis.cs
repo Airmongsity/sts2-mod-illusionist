@@ -16,8 +16,8 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 嬗变 (Metamorphosis) — 2 cost Attack, Uncommon. The 幻化 system's output port: deal 12 damage, plus 5
-/// extra for EACH card you 变化 (transformed) this turn (upgraded: 16 + 7). "This turn's transforms"
+/// 嬗变 (Metamorphosis) — 2 cost Attack, Uncommon (upgraded: costs 1). The 幻化 system's output port:
+/// deal 12 damage, plus 5 extra for EACH card you 变化 (transformed) this turn. "This turn's transforms"
 /// counts BOTH halves of the system — the turn-start reverts of last turn's transmuted cards AND the
 /// forward transmutes you make this turn — because both run through
 /// <see cref="Illusionist.Scripts.Transmutation.NotifyTransformed"/>, which feeds
@@ -55,7 +55,6 @@ public sealed class MetamorphosisIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Damage.UpgradeValueBy(4m);   // 12 -> 16
-        base.DynamicVars["Bonus"].UpgradeValueBy(4m); // 5 -> 7
+        base.EnergyCost.UpgradeBy(-1); // 2 -> 1
     }
 }

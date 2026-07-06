@@ -15,8 +15,8 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 闪烁 (FlickerIllusionist) — 1 cost Attack, Common.
-/// Deal 7 damage to ALL enemies, then gain 6 Block for each enemy that intends to attack. Upgraded:
-/// +2 to both (9 damage, 8 Block).
+/// Deal 6 damage to ALL enemies, then gain 5 Block for each enemy that intends to attack. Upgraded:
+/// +2 to both (8 damage, 7 Block).
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "FLICKER")]
 public sealed class FlickerIllusionist : IllusionistCard
@@ -62,7 +62,7 @@ public sealed class FlickerIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Damage.UpgradeValueBy(1m);
-        base.DynamicVars.Block.UpgradeValueBy(1m);
+        base.DynamicVars.Damage.UpgradeValueBy(2m);
+        base.DynamicVars.Block.UpgradeValueBy(2m);
     }
 }

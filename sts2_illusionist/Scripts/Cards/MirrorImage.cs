@@ -15,7 +15,7 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 镜像 (Mirror Image) — 1 cost Skill, Uncommon (upgraded: 0 cost).
-/// Copy 1 (create a mirror): while a mirror is present, the first card you play each turn is
+/// Copy 2 (create two mirrors): while a mirror is present, the first card you play each turn is
 /// replayed once. Taking unblocked damage shatters all mirrors. No drawback.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "MIRROR_IMAGE")]
@@ -31,9 +31,8 @@ public sealed class MirrorImageIllusionist : IllusionistCard
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await PowerCmd.Apply<MirrorImagePower>(choiceContext, base.Owner.Creature, 1, base.Owner.Creature, this);
-        // SummonIllusionist the cosmetic clone that stands beside you (visual only; mechanics live in the power).
-        await MirrorClone.SummonIllusionist(base.Owner);
+        // Copy 2: applies MirrorImagePower and summons two random-typed cosmetic clones.
+        await MirrorClone.Copy(base.Owner, 2, choiceContext);
     }
 
     protected override void OnUpgrade()

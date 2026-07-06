@@ -16,10 +16,9 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 幻灭 (DisillusionIllusionist) — 1 cost Skill, Common (upgraded: choose 2 cards instead of 1).
-/// Choose a card in your hand and 幻化 (transmute) it into a 暗淡油灯 (Dim Lamp) until end of turn. Cash
-/// in the Lamp's energy/draw now; if unplayed it reverts to the original card at the start of your next
-/// turn.
+/// 幻灭 (DisillusionIllusionist) — 1 cost Skill, Common (upgraded: 0 cost).
+/// Choose a card in your hand and 幻化 (transmute) it into an 熄灭油灯 (Extinguished Lamp) until end of
+/// turn; if unplayed it reverts to the original card at the start of your next turn.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "DISILLUSION")]
 public sealed class DisillusionIllusionist : IllusionistCard
@@ -29,7 +28,7 @@ public sealed class DisillusionIllusionist : IllusionistCard
 
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
-        HoverTipFactory.FromCard<DimLampIllusionist>(),
+        HoverTipFactory.FromCard<ExtinguishedLampIllusionist>(),
     };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
@@ -47,7 +46,7 @@ public sealed class DisillusionIllusionist : IllusionistCard
         Player owner = base.Owner;
         int count = base.DynamicVars.Cards.IntValue;
 
-        // Pick N (1, upgraded 2) hand cards and 幻化 each into a Dim Lamp (reverts next turn if unplayed).
+        // Pick N (1) hand cards and 幻化 each into an Extinguished Lamp (reverts next turn if unplayed).
         List<CardModel> selected = (await CardSelectCmd.FromHand(
             choiceContext, owner,
             new CardSelectorPrefs(base.SelectionScreenPrompt, count),
@@ -55,11 +54,11 @@ public sealed class DisillusionIllusionist : IllusionistCard
             this)).ToList();
 
         await Transmutation.TransmuteCards(selected, this, choiceContext,
-            original => original.CardScope!.CreateCard<DimLampIllusionist>(original.Owner));
+            original => original.CardScope!.CreateCard<ExtinguishedLampIllusionist>(original.Owner));
     }
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Cards.UpgradeValueBy(1m);
+        base.EnergyCost.UpgradeBy(-1);
     }
 }

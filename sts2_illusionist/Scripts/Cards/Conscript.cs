@@ -38,12 +38,8 @@ public sealed class ConscriptIllusionist : IllusionistCard
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        // Copy 4: four mirrors (power amount 4) plus one cosmetic clone per mirror.
-        await PowerCmd.Apply<MirrorImagePower>(choiceContext, base.Owner.Creature, 4, base.Owner.Creature, this);
-        await MirrorClone.SummonIllusionist(base.Owner);
-        await MirrorClone.SummonIllusionist(base.Owner);
-        await MirrorClone.SummonIllusionist(base.Owner);
-        await MirrorClone.SummonIllusionist(base.Owner);
+        // Copy 4: four random-typed mirrors (each summons a clone + a stack of MirrorImagePower).
+        await MirrorClone.Copy(base.Owner, 4, choiceContext);
         // Cost of the copies: lose 2 Strength and 2 Dexterity, but only until end of this turn
         // (TemporaryStrength/Dexterity down-powers restore the stats at the end of your turn).
         await PowerCmd.Apply<ConscriptStrengthDownPower>(choiceContext, base.Owner.Creature, 2, base.Owner.Creature, this);

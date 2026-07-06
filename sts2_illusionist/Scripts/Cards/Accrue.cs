@@ -15,10 +15,10 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 积蓄 (AccrueIllusionist) — 0 cost Attack, Uncommon. Deal 2 damage. Retain, Exhaust.
-/// At the start of your turn, if this is in your hand, its damage DOUBLES (2 -> 4 -> 8 -> 16 -> ...).
-/// The "charge then fire" finisher: it costs nothing to play and Retains so it keeps doubling in hand,
-/// then Exhausts when you finally unleash it for one big free hit.
+/// 积蓄 (AccrueIllusionist) — 0 cost Attack, Uncommon. Deal 3 damage. Exhaust.
+/// At the start of your turn, if this is in your hand, its damage DOUBLES (3 -> 6 -> 12 -> 24 -> ...).
+/// A "charge then fire" finisher that costs nothing to play and Exhausts when unleashed. No longer
+/// Retains, so it only keeps doubling while it's actually held in hand (e.g. via another Retain source).
 /// Upgraded: gains Innate (drawn turn 1, so it starts doubling immediately).
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "ACCRUE")]
@@ -28,16 +28,15 @@ public sealed class AccrueIllusionist : IllusionistCard
     // (a downgrade recomputes DynamicVars from canonical, which would otherwise drop the growth).
     private decimal _accrued;
 
-    // Retain + Exhaust always; Innate is added only on upgrade (see OnUpgrade).
+    // Exhaust always; Innate is added only on upgrade (see OnUpgrade).
     public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[]
     {
-        CardKeyword.Retain,
         CardKeyword.Exhaust,
     };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(2m, ValueProp.Move),
+        new DamageVar(3m, ValueProp.Move),
     };
 
     public AccrueIllusionist()

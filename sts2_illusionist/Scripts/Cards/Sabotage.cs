@@ -1,15 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
-using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
-using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
-using MegaCrit.Sts2.Core.MonsterMoves.Intents;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
 
@@ -17,11 +14,11 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 破坏 (SabotageIllusionist) — 1 cost Attack, Ancient. Orobas's reward, now an intent-system bridge:
-/// deal 9 damage to ALL enemies and gain 15 Block; each enemy that intends to attack takes extra
-/// damage equal to its attack intent; then 幻化 (transmute) a card in your hand into a copy of this
-/// card (chain another swing this turn). Upgraded: 17 damage / 23 Block. Its description mentions
-/// 意图, so it also fuels intent-flow outputs like 清算 (Reckoning).
+/// 破坏 (SabotageIllusionist) — 1 cost Attack, Ancient. Orobas's reward, now a hand-hoarding burst:
+/// deal 5 damage to a single enemy, plus one extra 5-damage hit for every card left in your hand
+/// (this card is already in the Play pile, so it doesn't count itself). Then gain 15 Block and 幻化
+/// (transmute) a card in your hand into a copy of this card, chaining another swing this turn.
+/// Upgraded: 7 per hit / 23 Block. The old attack-intent bonus was dropped in this redesign.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "SABOTAGE")]
 public sealed class SabotageIllusionist : IllusionistCard
@@ -33,55 +30,28 @@ public sealed class SabotageIllusionist : IllusionistCard
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(9m, ValueProp.Move),
+        new DamageVar(5m, ValueProp.Move),
         new BlockVar(15m, ValueProp.Move),
     };
 
     public SabotageIllusionist()
-        : base(1, CardType.Attack, CardRarity.Ancient, TargetType.AllEnemies)
+        : base(1, CardType.Attack, CardRarity.Ancient, TargetType.AnyEnemy)
     {
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        ICombatState? combat = base.CombatState;
-        if (combat == null)
-        {
-            return;
-        }
+        ArgumentNullException.ThrowIfNull(cardPlay.Target, "cardPlay.Target");
 
-        decimal baseDamage = base.DynamicVars.Damage.BaseValue;
-        IReadOnlyList<Creature> me = new[] { base.Owner.Creature };
+        // Base hit, plus one extra hit of the same damage for each card left in your hand.
+        int handCards = PileType.Hand.GetPile(base.Owner).Cards.Count;
+        int hits = 1 + handCards;
 
-        // Snapshot each enemy and its per-enemy damage (base + its attack-intent total) BEFORE dealing,
-        // so a lethal hit on one enemy doesn't disturb the others' intent reads.
-        List<(Creature enemy, decimal damage)> hits = new();
-        foreach (Creature enemy in combat.HittableEnemies)
-        {
-            decimal bonus = 0m;
-            if (enemy.Monster != null)
-            {
-                foreach (AbstractIntent intent in enemy.Monster.NextMove.Intents)
-                {
-                    if (intent is AttackIntent attack)
-                    {
-                        bonus += attack.GetTotalDamage(me, enemy);
-                    }
-                }
-            }
-            hits.Add((enemy, baseDamage + bonus));
-        }
-
-        foreach ((Creature enemy, decimal damage) in hits)
-        {
-            if (!enemy.IsAlive)
-            {
-                continue;
-            }
-            await DamageCmd.Attack(damage).FromCard(this, cardPlay).Targeting(enemy)
-                .WithHitFx("vfx/vfx_attack_slash")
-                .Execute(choiceContext);
-        }
+        await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this, cardPlay)
+            .Targeting(cardPlay.Target)
+            .WithHitCount(hits)
+            .WithHitFx("vfx/vfx_attack_slash")
+            .Execute(choiceContext);
 
         await CreatureCmd.GainBlock(base.Owner.Creature, base.DynamicVars.Block, cardPlay);
 
@@ -91,7 +61,7 @@ public sealed class SabotageIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Damage.UpgradeValueBy(8m); // 18 -> 26
+        base.DynamicVars.Damage.UpgradeValueBy(2m); // 5 -> 7 per hit
         base.DynamicVars.Block.UpgradeValueBy(8m);  // 15 -> 23
     }
 }

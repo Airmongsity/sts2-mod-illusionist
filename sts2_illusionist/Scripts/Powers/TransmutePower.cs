@@ -116,9 +116,25 @@ public sealed class TransmutePower : IllusionistPower
             return;
         }
 
+        await RevertOneLayer(choiceContext);
+    }
+
+    /// <summary>
+    /// Revert every transmuted card one layer toward its original form, in one atomic batch, and run each
+    /// reverted card through the transmute-payoff choke point (<see cref="Transmutation.NotifyTransformed"/>).
+    /// Called at the owner's turn start and on demand by 揭露 (Unveil).
+    /// </summary>
+    internal async Task RevertOneLayer(PlayerChoiceContext choiceContext)
+    {
+        Player? player = base.Owner.Player;
+        if (player == null)
+        {
+            return;
+        }
+
         Data data = GetInternalData<Data>();
 
-        // Collect this turn's one-layer reverts, then transform them in ONE atomic, fully-awaited
+        // Collect one-layer reverts, then transform them in ONE atomic, fully-awaited
         // batch (the base game's multi-card Transform): all originals are removed and all replacements
         // added together, with a single combined preview animation. Doing it per-card instead let pile
         // state drift between the awaited transforms, leaving some reverted cards out of the draw pile

@@ -1,20 +1,18 @@
 using System.Threading.Tasks;
-using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
-using MegaCrit.Sts2.Core.Models;
-using MegaCrit.Sts2.Core.Models.Powers;
+using Illusionist.Scripts.Monsters;
 
 using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
-/// 渐强 (CrescendoIllusionist) power. At the start of each of your turns, gain Strength equal to this power's
-/// stacks (1 per CrescendoIllusionist played). Stacks add, so multiple Crescendos ramp faster.
+/// 镜涌 (Cascade) power. At the start of each of your turns, Copy mirrors equal to this power's stacks
+/// (1 per 镜涌 played). Stacks add, so multiple copies spawn more mirrors per turn.
 /// </summary>
 [RegisterPower]
-public sealed class CrescendoPower : IllusionistPower
+public sealed class CascadePower : IllusionistPower
 {
     public override PowerType Type => PowerType.Buff;
 
@@ -22,11 +20,12 @@ public sealed class CrescendoPower : IllusionistPower
 
     public override async Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
     {
-        if (base.Owner != player.Creature)
+        if (base.Owner != player.Creature || base.Amount <= 0m)
         {
             return;
         }
 
-        await PowerCmd.Apply<StrengthPower>(choiceContext, base.Owner, base.Amount, base.Owner, null);
+        Flash();
+        await MirrorClone.Copy(player, (int)base.Amount, choiceContext);
     }
 }
