@@ -1,6 +1,6 @@
 {
   "ILLUSIONIST_POWER_MIRROR_IMAGE_POWER.title": "Mirror Image",
-  "ILLUSIONIST_POWER_MIRROR_IMAGE_POWER.description": "One stack per mirror (max 8). Cards you Exhaust are stored into free mirrors; each instance of unblocked damage you take kills the newest-loaded mirror, which plays its stored card at the enemy that broke it (an empty mirror instead deals 2 damage and grants 2 Block).",
+  "ILLUSIONIST_POWER_MIRROR_IMAGE_POWER.description": "One stack per mirror (max 8). Cards you Exhaust are stored into free mirrors; each instance of unblocked damage you take kills the newest-loaded mirror, which plays its stored card at the enemy that broke it (an empty mirror instead deals 2 damage and grants 2 Block). Stored cards are shown in this icon's hover tips.",
   "ILLUSIONIST_POWER_MEMORY_POWER.title": "Memory",
   "ILLUSIONIST_POWER_MEMORY_POWER.description": "Whenever one of your [gold]mirror images[/gold] dies, draw 2 cards and gain 1 [img]res://illusionist/art/illusionist_energy_icon_text.webp[/img].",
   "ILLUSIONIST_POWER_KALEIDOSCOPE_POWER.title": "Kaleidoscope",

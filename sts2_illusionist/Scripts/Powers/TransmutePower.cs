@@ -141,15 +141,41 @@ public sealed class TransmutePower : IllusionistPower
         // (you'd draw fewer than your draw count next turn).
         List<CardTransformation> batch = new List<CardTransformation>();
         List<(Chain chain, CardModel replaced, CardModel previous)> pending = new List<(Chain, CardModel, CardModel)>();
+        // Cards reverted while stored INSIDE a mirror (pile-less): swapped by reference, no pile
+        // transform — but they still count as 变化 and go through NotifyTransformed below.
+        List<CardModel> mirrorReverts = new List<CardModel>();
 
         foreach (Chain chain in data.Chains.ToList())
         {
-            // Only drop the chain if the card was truly REMOVED from combat (no pile at all) or
-            // there's nothing left to unwind. A card in the exhaust pile still has a (non-null) pile,
-            // so it keeps reverting — exactly the 彼岸咆哮 case.
-            if (chain.Current.Pile == null || chain.Predecessors.Count == 0)
+            if (chain.Predecessors.Count == 0)
             {
                 data.Chains.Remove(chain);
+                continue;
+            }
+
+            // Only drop the chain if the card was truly REMOVED from combat (no pile at all) or
+            // there's nothing left to unwind. A card in the exhaust pile still has a (non-null) pile,
+            // so it keeps reverting — exactly the 彼岸咆哮 case. A pile-less card stored inside a
+            // mirror is NOT gone: revert it in place by re-pointing the mirror at its predecessor
+            // (the predecessor stays removed-from-state; the mirror's Release revives it on death).
+            if (chain.Current.Pile == null)
+            {
+                if (MirrorImagePower.IsStored(player, chain.Current))
+                {
+                    CardModel mirrorPrevious = chain.Predecessors[^1];
+                    chain.Predecessors.RemoveAt(chain.Predecessors.Count - 1);
+                    MirrorImagePower.OnCardTransformed(player, chain.Current, mirrorPrevious);
+                    chain.Current = mirrorPrevious;
+                    mirrorReverts.Add(mirrorPrevious);
+                    if (chain.Predecessors.Count == 0)
+                    {
+                        data.Chains.Remove(chain);
+                    }
+                }
+                else
+                {
+                    data.Chains.Remove(chain);
+                }
                 continue;
             }
 
@@ -218,7 +244,13 @@ public sealed class TransmutePower : IllusionistPower
             }
         }
 
-        Log.Info($"[illusionist] TransmuteIllusionist: reverted {batch.Count} card(s) one layer; {data.Chains.Count} chain(s) remain.");
+        // In-mirror reverts are 变化 too (Improvise skips them — a pile-less card can't be played).
+        foreach (CardModel mirrorReverted in mirrorReverts)
+        {
+            await Transmutation.NotifyTransformed(player, choiceContext, mirrorReverted);
+        }
+
+        Log.Info($"[illusionist] TransmuteIllusionist: reverted {batch.Count + mirrorReverts.Count} card(s) one layer ({mirrorReverts.Count} inside mirrors); {data.Chains.Count} chain(s) remain.");
 
         // Nothing left to unwind — remove the power so it doesn't linger as an empty status.
         if (data.Chains.Count == 0)

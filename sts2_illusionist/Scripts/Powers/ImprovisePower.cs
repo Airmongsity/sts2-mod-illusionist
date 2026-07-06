@@ -48,6 +48,12 @@ public sealed class ImprovisePower : IllusionistPower
     /// <summary>Called by <see cref="Illusionist.Scripts.Transmutation"/> on each transmute.</summary>
     public async Task OnTransmuted(PlayerChoiceContext choiceContext, CardModel transformedCard)
     {
+        // A pile-less card (reverted while stored inside a mirror) can't be played — don't burn a charge.
+        if (transformedCard.Pile == null)
+        {
+            return;
+        }
+
         Data data = GetInternalData<Data>();
         if (data.TriggeredThisTurn >= base.Amount)
         {

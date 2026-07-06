@@ -1,6 +1,6 @@
 {
   "ILLUSIONIST_POWER_MIRROR_IMAGE_POWER.title": "镜像",
-  "ILLUSIONIST_POWER_MIRROR_IMAGE_POWER.description": "每层代表一个镜像（上限 8）。你消耗的牌会被存入空闲的镜像；你每受到一次未被格挡的伤害，最后存入牌的镜像死亡，向破坏它的敌人打出所存的牌（空镜像死亡时改为造成 2 点伤害并获得 2 点格挡）。",
+  "ILLUSIONIST_POWER_MIRROR_IMAGE_POWER.description": "每层代表一个镜像（上限 8）。你消耗的牌会被存入空闲的镜像；你每受到一次未被格挡的伤害，最后存入牌的镜像死亡，向破坏它的敌人打出所存的牌（空镜像死亡时改为造成 2 点伤害并获得 2 点格挡）。存储的牌显示在此图标的悬停提示中。",
   "ILLUSIONIST_POWER_MEMORY_POWER.title": "记忆",
   "ILLUSIONIST_POWER_MEMORY_POWER.description": "每当你的一个[gold]镜像[/gold]死亡时，抽 2 张牌并获得 1 [img]res://illusionist/art/illusionist_energy_icon_text.webp[/img]。",
   "ILLUSIONIST_POWER_KALEIDOSCOPE_POWER.title": "万花筒",
