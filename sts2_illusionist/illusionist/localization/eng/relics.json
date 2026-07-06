@@ -9,7 +9,7 @@
   "ILLUSIONIST_RELIC_HEAD_START.description": "The first card you play each turn costs 1 less.",
   "ILLUSIONIST_RELIC_HEAD_START.flavor": "The race is won before the first step.",
   "ILLUSIONIST_RELIC_UNBREAKABLE_MIRROR.title": "Unbreakable Mirror",
-  "ILLUSIONIST_RELIC_UNBREAKABLE_MIRROR.description": "The first time you would take unblocked damage each combat, your [gold]mirror images[/gold] are not destroyed.",
+  "ILLUSIONIST_RELIC_UNBREAKABLE_MIRROR.description": "Whenever one of your [gold]mirror images[/gold] dies, deal 3 damage to ALL enemies.",
   "ILLUSIONIST_RELIC_UNBREAKABLE_MIRROR.flavor": "Crack it all you like — the reflection will not break.",
   "ILLUSIONIST_RELIC_PRISTINE_MIRROR.title": "Pristine Mirror",
   "ILLUSIONIST_RELIC_PRISTINE_MIRROR.description": "At the end of your turn, if you took no unblocked damage that turn, [gold]Copy[/gold] 1.",

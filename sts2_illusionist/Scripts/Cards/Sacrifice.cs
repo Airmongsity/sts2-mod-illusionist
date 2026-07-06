@@ -41,9 +41,8 @@ public sealed class SacrificeIllusionist : IllusionistCard
         int draw = base.DynamicVars.Cards.IntValue;
         await CardPileCmd.Draw(choiceContext, draw, base.Owner);
 
-        // Destroy one mirror if present — the cosmetic clone AND one stack of the replay power,
-        // kept in lockstep so the sacrificed mirror's echo stops firing.
-        await MirrorClone.ConsumeOne(base.Owner);
+        // Destroy one mirror if present — its death fires the stored card / empty burst.
+        await MirrorClone.ConsumeOne(base.Owner, choiceContext);
     }
 
     protected override void OnUpgrade()

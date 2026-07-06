@@ -42,8 +42,9 @@ public sealed class RecastIllusionist : IllusionistCard
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
 
-        // Destroy every mirror (fires shatter payoffs) and remake the same number with fresh types.
-        int destroyed = await MirrorClone.ConsumeAll(base.Owner);
+        // Destroy every mirror (each death fires its stored card / empty burst) and remake the same
+        // number as fresh EMPTY mirrors — dump the bank, then reload from scratch.
+        int destroyed = await MirrorClone.ConsumeAll(base.Owner, choiceContext);
         if (destroyed > 0)
         {
             await MirrorClone.Copy(base.Owner, destroyed, choiceContext);

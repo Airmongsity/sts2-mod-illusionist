@@ -9,7 +9,7 @@
   "ILLUSIONIST_RELIC_HEAD_START.description": "你每回合打出的第一张牌花费降低 1 点。",
   "ILLUSIONIST_RELIC_HEAD_START.flavor": "胜负，在迈出第一步之前便已分晓。",
   "ILLUSIONIST_RELIC_UNBREAKABLE_MIRROR.title": "不碎之镜",
-  "ILLUSIONIST_RELIC_UNBREAKABLE_MIRROR.description": "每场战斗中，你第一次将要受到未格挡的伤害时，你的[gold]镜像[/gold]不会被摧毁。",
+  "ILLUSIONIST_RELIC_UNBREAKABLE_MIRROR.description": "每当你的一个[gold]镜像[/gold]死亡时，对所有敌人造成 3 点伤害。",
   "ILLUSIONIST_RELIC_UNBREAKABLE_MIRROR.flavor": "随你怎么敲——镜中之影不会碎。",
   "ILLUSIONIST_RELIC_PRISTINE_MIRROR.title": "明镜",
   "ILLUSIONIST_RELIC_PRISTINE_MIRROR.description": "你的回合结束时，如果你本回合没有受到未格挡的伤害，[gold]复制[/gold]1。",

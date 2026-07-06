@@ -57,7 +57,7 @@ public sealed class DouseIllusionist : IllusionistCard
         if (take > 0)
         {
             // Partial Fisher-Yates over the mod's deterministic per-run RNG stream.
-            MegaCrit.Sts2.Core.Random.Rng rng = MirrorRoster.RunRng(base.Owner);
+            MegaCrit.Sts2.Core.Random.Rng rng = IllusionistRng.RunRng(base.Owner);
             for (int i = 0; i < take; i++)
             {
                 int j = i + rng.NextInt(pool.Count - i);

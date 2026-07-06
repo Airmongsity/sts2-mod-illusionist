@@ -26,9 +26,8 @@ public sealed class ExtractIllusionist : IllusionistCard
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        // Destroy ALL mirrors — clones AND the replay power (ShatterAll only removes the cosmetic
-        // clones and would leave the echo firing).
-        await MirrorClone.ConsumeAll(base.Owner);
+        // Destroy ALL mirrors, one at a time — each death fires its payoff (stored card / empty burst).
+        await MirrorClone.ConsumeAll(base.Owner, choiceContext);
 
         await PowerCmd.Apply<ExtractPower>(choiceContext, base.Owner.Creature, 1, base.Owner.Creature, this);
     }

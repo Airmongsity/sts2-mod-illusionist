@@ -52,7 +52,7 @@ public sealed class RefractionPower : IllusionistPower
             return;
         }
 
-        Creature target = enemies[MirrorRoster.RunRng(player).NextInt(enemies.Count)];
+        Creature target = enemies[IllusionistRng.RunRng(player).NextInt(enemies.Count)];
         Flash();
         await CreatureCmd.Damage(choiceContext, target, (int)base.Amount, ValueProp.Unpowered | ValueProp.SkipHurtAnim, base.Owner, null, null);
     }

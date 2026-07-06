@@ -2,7 +2,7 @@
   "ILLUSIONIST_KEYWORD_COPY.title": "Copy",
   "ILLUSIONIST_KEYWORD_COPY.description": "Create a mirror image.",
   "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.title": "Mirror Image",
-  "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.description": "A random reflection of you. Mirrors come in many kinds — Common ([gold]Guard[/gold], [gold]Blade[/gold], [gold]Thorn[/gold]) plus rarer kinds that unlock as your board grows this combat. Each kind has its own effect — hover its power icon to read it.",
+  "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.description": "Your phantom doubles (max 8). Cards you Exhaust are stored into free mirrors. Each instance of unblocked damage you take kills the newest-loaded mirror (loaded ones before empty ones): it plays its stored card at the enemy that broke it (else a random enemy), then puts the card into the exhaust pile; a dying empty mirror instead deals 2 damage and grants 2 Block.",
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.title": "First Move",
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.description": "Triggers only if this is the first card you play this turn.",
   "ILLUSIONIST_KEYWORD_TRANSMUTE.title": "Transmute",

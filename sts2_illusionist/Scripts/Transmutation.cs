@@ -71,6 +71,8 @@ public static class Transmutation
             }
 
             revert.RegisterTransmute(original, result.Value.cardAdded);
+            // A stored (in-mirror) card that gets transmuted must keep its mirror pointing at the new form.
+            MirrorImagePower.OnCardTransformed(owner, original, result.Value.cardAdded);
             await NotifyTransformed(owner, choiceContext, result.Value.cardAdded);
             transformed++;
         }
@@ -112,13 +114,6 @@ public static class Transmutation
         if (improvise != null)
         {
             await improvise.OnTransmuted(choiceContext, transformedCard);
-        }
-
-        // 傀影 (Effigy Mirror): the first transmute each turn plays the top of the draw pile for free.
-        EffigyMirrorPower? effigy = player.Creature.GetPower<EffigyMirrorPower>();
-        if (effigy != null)
-        {
-            await effigy.OnTransmuted(choiceContext);
         }
 
         foreach (MomentumPower momentum in player.Creature.GetPowerInstances<MomentumPower>())

@@ -38,8 +38,9 @@ public sealed class DetonateIllusionist : IllusionistCard
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        // Spend every mirror; the number destroyed scales the blast.
-        int clones = await MirrorClone.ConsumeAll(base.Owner);
+        // Spend every mirror one at a time (each death fires its stored card / empty burst first);
+        // the number destroyed scales the blast.
+        int clones = await MirrorClone.ConsumeAll(base.Owner, choiceContext);
         if (clones <= 0)
         {
             return;

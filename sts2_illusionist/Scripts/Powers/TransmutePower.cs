@@ -140,7 +140,7 @@ public sealed class TransmutePower : IllusionistPower
         // state drift between the awaited transforms, leaving some reverted cards out of the draw pile
         // (you'd draw fewer than your draw count next turn).
         List<CardTransformation> batch = new List<CardTransformation>();
-        List<(Chain chain, CardModel previous)> pending = new List<(Chain, CardModel)>();
+        List<(Chain chain, CardModel replaced, CardModel previous)> pending = new List<(Chain, CardModel, CardModel)>();
 
         foreach (Chain chain in data.Chains.ToList())
         {
@@ -173,7 +173,7 @@ public sealed class TransmutePower : IllusionistPower
             previous.HasBeenRemovedFromState = false;
 
             batch.Add(new CardTransformation(chain.Current, previous));
-            pending.Add((chain, previous));
+            pending.Add((chain, chain.Current, previous));
         }
 
         if (batch.Count > 0)
@@ -195,9 +195,12 @@ public sealed class TransmutePower : IllusionistPower
                 Log.Error($"[illusionist] TransmuteIllusionist: batch revert failed: {ex}");
             }
 
-            foreach ((Chain chain, CardModel previous) in pending)
+            foreach ((Chain chain, CardModel replaced, CardModel previous) in pending)
             {
                 chain.Current = previous;
+                // A stored (in-mirror) card that just reverted must keep its mirror pointing at the
+                // new (reverted) form — stored cards participate fully in 幻化回退.
+                MirrorImagePower.OnCardTransformed(player, replaced, previous);
                 if (chain.Predecessors.Count == 0)
                 {
                     data.Chains.Remove(chain);
@@ -209,7 +212,7 @@ public sealed class TransmutePower : IllusionistPower
             // reverted card ("two transforms is two transforms"), and 即兴 auto-plays the first
             // reverted card of the turn at a random enemy. Two transforms is two transforms — every
             // reverted card pings NotifyTransformed, in revert order.
-            foreach ((Chain _, CardModel previous) in pending)
+            foreach ((Chain _, CardModel _, CardModel previous) in pending)
             {
                 await Transmutation.NotifyTransformed(player, choiceContext, previous);
             }

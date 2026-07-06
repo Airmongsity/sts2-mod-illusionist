@@ -2,7 +2,7 @@
   "ILLUSIONIST_KEYWORD_COPY.title": "复制",
   "ILLUSIONIST_KEYWORD_COPY.description": "创建一个镜像。",
   "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.title": "镜像",
-  "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.description": "你的随机幻影分身。镜像有多种类型——普通（[gold]守镜[/gold]、[gold]刃镜[/gold]、[gold]棘镜[/gold]），以及随着本场战斗镜像增多才会解锁的更稀有类型。每种都有独特效果——悬停其能力图标查看。",
+  "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.description": "你的幻影分身（上限 8）。你消耗的牌会被存入空闲的镜像。你每受到一次未被格挡的伤害，最后存入牌的镜像死亡（装有牌的镜像先于空镜像）：向破坏它的敌人（否则随机敌人）打出所存的牌并将其放入消耗牌堆；空镜像死亡时改为造成 2 点伤害并获得 2 点格挡。",
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.title": "先机",
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.description": "仅当这是你本回合打出的第一张牌时，才会触发。",
   "ILLUSIONIST_KEYWORD_TRANSMUTE.title": "幻化",

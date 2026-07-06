@@ -37,7 +37,7 @@ public sealed class SiphonIllusionist : IllusionistCard
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         // Spend every mirror; gain 1 Strength and 1 Dexterity per clone destroyed.
-        int clones = await MirrorClone.ConsumeAll(base.Owner);
+        int clones = await MirrorClone.ConsumeAll(base.Owner, choiceContext);
         if (clones <= 0)
         {
             return;

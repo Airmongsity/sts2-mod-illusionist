@@ -44,10 +44,10 @@ public sealed class SplinterIllusionist : IllusionistCard
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
 
-        // Shatter one of your own mirrors (fires its shatter payoff), if you have any.
+        // Shatter one of your own mirrors (fires its stored card / empty burst), if you have any.
         if (MirrorClone.CountAlive(base.Owner) > 0)
         {
-            await MirrorClone.ConsumeOne(base.Owner);
+            await MirrorClone.ConsumeOne(base.Owner, choiceContext);
         }
     }
 
