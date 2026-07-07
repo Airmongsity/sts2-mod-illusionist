@@ -42,10 +42,12 @@ namespace Illusionist.Scripts.Powers;
 /// <para><b>Cap:</b> at <see cref="Cap"/> mirrors, Copy first bursts the newest-loaded mirror (same as a
 /// damage death, random target) and then creates the fresh empty one.</para>
 ///
-/// Stored cards keep participating in 幻化回退 — a stored transmuted card is pile-less, so
-/// TransmutePower reverts it IN PLACE via <see cref="OnCardTransformed"/> (reference swap, no pile
-/// transform). Cosmetic clone pets (one per mirror) are kept in step by <see cref="MirrorClone"/>;
-/// their deaths feed AfterDeath listeners (记忆, 不碎之镜).
+/// Stored cards keep participating in 幻化回退 — at the owner's turn start TransmutePower briefly
+/// EJECTS a stored transmuted card back into the exhaust pile (<see cref="EjectForRevert"/>), reverts
+/// it through the normal batch (standard preview animation; 即兴 can play it), then RECAPTURES the
+/// reverted form into the same stack slot (<see cref="RecaptureAfterRevert"/>). Cosmetic clone pets
+/// (one per mirror) are kept in step by <see cref="MirrorClone"/>; their deaths feed AfterDeath
+/// listeners (记忆, 不碎之镜).
 /// </summary>
 [RegisterPower]
 public sealed class MirrorImagePower : IllusionistPower
@@ -340,11 +342,77 @@ public sealed class MirrorImagePower : IllusionistPower
         }
     }
 
-    /// <summary>Is this card currently stored inside one of the player's mirrors?</summary>
-    internal static bool IsStored(Player player, CardModel card)
+    /// <summary>
+    /// Temporarily eject a stored card back into the exhaust pile so the turn-start 幻化回退 can
+    /// transform it through the NORMAL batch path — standard transform preview animation, and the
+    /// card is on-pile when NotifyTransformed fires, so 即兴/Improvise can genuinely play it.
+    /// Frees the slot (the mirror is empty during the window); returns the card's stack index so
+    /// <see cref="RecaptureAfterRevert"/> can restore its death-order position, or -1 if the card
+    /// isn't stored.
+    /// </summary>
+    internal static async Task<int> EjectForRevert(Player player, CardModel card)
     {
         MirrorImagePower? power = player.Creature.GetPower<MirrorImagePower>();
-        return power != null && power.GetInternalData<Data>().Loaded.Contains(card);
+        if (power == null)
+        {
+            return -1;
+        }
+
+        Data data = power.GetInternalData<Data>();
+        int index = data.Loaded.IndexOf(card);
+        if (index < 0)
+        {
+            return -1;
+        }
+
+        data.Loaded.RemoveAt(index);
+        data.Empty++;
+        card.HasBeenRemovedFromState = false;
+        if (card.Pile == null)
+        {
+            await CardPileCmd.Add(card, PileType.Exhaust, CardPilePosition.Bottom, null, skipVisuals: true);
+        }
+
+        return index;
+    }
+
+    /// <summary>
+    /// Pull a reverted card back into its mirror after the turn-start unwind (the closing half of
+    /// <see cref="EjectForRevert"/>), re-inserting at its old stack position so death order is
+    /// preserved. Skips — leaving the card wherever it is and the mirror empty — if the card was
+    /// played away (即兴), already re-stored by its own exhaust, or the freed slot got taken.
+    /// </summary>
+    internal static async Task RecaptureAfterRevert(Player player, CardModel card, int slot)
+    {
+        MirrorImagePower? power = player.Creature.GetPower<MirrorImagePower>();
+        if (power == null)
+        {
+            return;
+        }
+
+        Data data = power.GetInternalData<Data>();
+        if (data.Loaded.Contains(card) || data.Empty <= 0)
+        {
+            return;
+        }
+
+        if (card.Pile == null || card.Pile.Type != PileType.Exhaust)
+        {
+            return;
+        }
+
+        try
+        {
+            await CardPileCmd.RemoveFromCombat(card, skipVisuals: true);
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"[illusionist] MirrorImage: recapture failed for '{card.Title}': {ex}");
+            return;
+        }
+
+        data.Empty--;
+        data.Loaded.Insert(Math.Min(slot, data.Loaded.Count), card);
     }
 
     /// <summary>

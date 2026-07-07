@@ -48,7 +48,9 @@ public sealed class ImprovisePower : IllusionistPower
     /// <summary>Called by <see cref="Illusionist.Scripts.Transmutation"/> on each transmute.</summary>
     public async Task OnTransmuted(PlayerChoiceContext choiceContext, CardModel transformedCard)
     {
-        // A pile-less card (reverted while stored inside a mirror) can't be played — don't burn a charge.
+        // Safety net only: mirror-stored cards are EJECTED into the exhaust pile before their revert
+        // notifies (so Improvise plays them normally); a pile-less card should never reach here, but
+        // if one does, skip without burning a charge — AutoPlay can't play a card that isn't in combat.
         if (transformedCard.Pile == null)
         {
             return;

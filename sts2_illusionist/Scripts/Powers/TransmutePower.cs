@@ -141,9 +141,9 @@ public sealed class TransmutePower : IllusionistPower
         // (you'd draw fewer than your draw count next turn).
         List<CardTransformation> batch = new List<CardTransformation>();
         List<(Chain chain, CardModel replaced, CardModel previous)> pending = new List<(Chain, CardModel, CardModel)>();
-        // Cards reverted while stored INSIDE a mirror (pile-less): swapped by reference, no pile
-        // transform — but they still count as 变化 and go through NotifyTransformed below.
-        List<CardModel> mirrorReverts = new List<CardModel>();
+        // Chains whose card was stored INSIDE a mirror: ejected into the exhaust pile for the batch
+        // (standard transform animation; 即兴 can play them at notify time), recaptured afterwards.
+        List<(Chain chain, int slot)> ejected = new List<(Chain, int)>();
 
         foreach (Chain chain in data.Chains.ToList())
         {
@@ -156,27 +156,19 @@ public sealed class TransmutePower : IllusionistPower
             // Only drop the chain if the card was truly REMOVED from combat (no pile at all) or
             // there's nothing left to unwind. A card in the exhaust pile still has a (non-null) pile,
             // so it keeps reverting — exactly the 彼岸咆哮 case. A pile-less card stored inside a
-            // mirror is NOT gone: revert it in place by re-pointing the mirror at its predecessor
-            // (the predecessor stays removed-from-state; the mirror's Release revives it on death).
+            // mirror is NOT gone: eject it back into the exhaust pile so it reverts through the
+            // normal batch below, then recapture the reverted form after the notifies.
             if (chain.Current.Pile == null)
             {
-                if (MirrorImagePower.IsStored(player, chain.Current))
-                {
-                    CardModel mirrorPrevious = chain.Predecessors[^1];
-                    chain.Predecessors.RemoveAt(chain.Predecessors.Count - 1);
-                    MirrorImagePower.OnCardTransformed(player, chain.Current, mirrorPrevious);
-                    chain.Current = mirrorPrevious;
-                    mirrorReverts.Add(mirrorPrevious);
-                    if (chain.Predecessors.Count == 0)
-                    {
-                        data.Chains.Remove(chain);
-                    }
-                }
-                else
+                int slot = await MirrorImagePower.EjectForRevert(player, chain.Current);
+                if (slot < 0)
                 {
                     data.Chains.Remove(chain);
+                    continue;
                 }
-                continue;
+
+                ejected.Add((chain, slot));
+                // Fall through: the card is in the exhaust pile now and takes the normal revert path.
             }
 
             CardModel previous = chain.Predecessors[^1];
@@ -244,13 +236,16 @@ public sealed class TransmutePower : IllusionistPower
             }
         }
 
-        // In-mirror reverts are 变化 too (Improvise skips them — a pile-less card can't be played).
-        foreach (CardModel mirrorReverted in mirrorReverts)
+        // Pull each ejected card back into its mirror at its old stack slot. chain.Current is the
+        // reverted form by now (or the old form, if its transform was dropped). If 即兴 played the
+        // card away — or its own exhaust already re-stored it — recapture no-ops and the mirror
+        // simply stays empty.
+        foreach ((Chain chain, int slot) in ejected)
         {
-            await Transmutation.NotifyTransformed(player, choiceContext, mirrorReverted);
+            await MirrorImagePower.RecaptureAfterRevert(player, chain.Current, slot);
         }
 
-        Log.Info($"[illusionist] TransmuteIllusionist: reverted {batch.Count + mirrorReverts.Count} card(s) one layer ({mirrorReverts.Count} inside mirrors); {data.Chains.Count} chain(s) remain.");
+        Log.Info($"[illusionist] TransmuteIllusionist: reverted {batch.Count} card(s) one layer ({ejected.Count} via mirrors); {data.Chains.Count} chain(s) remain.");
 
         // Nothing left to unwind — remove the power so it doesn't linger as an empty status.
         if (data.Chains.Count == 0)
