@@ -14,8 +14,9 @@ namespace Illusionist.Scripts.Relics;
 
 /// <summary>
 /// 迷幻灯 (Hallucinatory Lamp) — the Illusionist's starter relic.
-/// At the start of each combat, Copy 1 (create a mirror image — see <see cref="MirrorImagePower"/>):
-/// the first card you play each turn is replayed until you take unblocked damage.
+/// At the start of each combat, Copy 2 (two empty mirrors — see <see cref="MirrorImagePower"/>):
+/// one slot for the first-card imprint, one spare as armor/magazine, so the engine has a clip
+/// from turn 1.
 ///
 /// No art yet: the icon reuses Bound Phylactery's sprite as a placeholder (RelicModel icons
 /// resolve to blank/"missing" safely, but reusing an existing sprite shows a real icon).
@@ -36,8 +37,8 @@ public sealed class HallucinatoryLamp : IllusionistRelic
     {
         try
         {
-            await MirrorClone.Copy(base.Owner, 1, new ThrowingPlayerChoiceContext());
-            Log.Info("[illusionist] HallucinatoryLamp: combat start — Copy 1.");
+            await MirrorClone.Copy(base.Owner, 2, new ThrowingPlayerChoiceContext());
+            Log.Info("[illusionist] HallucinatoryLamp: combat start — Copy 2.");
         }
         catch (Exception ex)
         {
