@@ -236,6 +236,17 @@ public sealed class TransmutePower : IllusionistPower
             }
         }
 
+        // Let the center-screen transform preview finish BEFORE pulling the cards back into their
+        // mirrors: NCardTransformVfx (and its shine stage) self-aborts the moment its end card
+        // leaves its pile, so an instant recapture kills the animation. The full sequence is
+        // ~3.2s (pop-in 0.75 + shine ~1.6 + holds 0.8) followed by the card flying INTO the
+        // exhaust pile — which doubles as the "then it's consumed" visual before the silent
+        // recapture. Only pay the wait when a mirror card actually reverted.
+        if (ejected.Count > 0)
+        {
+            await Cmd.Wait(3.5f);
+        }
+
         // Pull each ejected card back into its mirror at its old stack slot. chain.Current is the
         // reverted form by now (or the old form, if its transform was dropped). If 即兴 played the
         // card away — or its own exhaust already re-stored it — recapture no-ops and the mirror
