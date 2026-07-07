@@ -56,8 +56,8 @@ public sealed class MirrorClone : MonsterModel
 
     /// <summary>
     /// 复制 N (Copy N): create N empty mirrors (one <see cref="MirrorImagePower"/> stack + one cosmetic
-    /// clone each). At the cap, each extra Copy first bursts the newest-loaded mirror (see
-    /// <see cref="MirrorImagePower.CreateOne"/>). The shared primitive behind every "Copy N" card/relic.
+    /// clone each). At the cap (<see cref="MirrorImagePower.Cap"/>) extra copies simply do nothing.
+    /// The shared primitive behind every "Copy N" card/relic.
     /// </summary>
     public static async Task Copy(Player player, int count, PlayerChoiceContext choiceContext)
     {
@@ -68,7 +68,11 @@ public sealed class MirrorClone : MonsterModel
 
         for (int i = 0; i < count; i++)
         {
-            await MirrorImagePower.CreateOne(player, choiceContext);
+            if (!await MirrorImagePower.CreateOne(player, choiceContext))
+            {
+                break; // at the cap — no mirror, no clone
+            }
+
             await SummonClone(player);
         }
     }
@@ -166,9 +170,9 @@ public sealed class MirrorClone : MonsterModel
     }
 
     /// <summary>
-    /// Destroy every mirror the player has, ONE AT A TIME (per next-mirror.md: ConsumeAll settles each
-    /// death fully — release/empty-burst included — before the next). Returns how many mirrors died —
-    /// the count the payoff cards (引爆/汲取) scale by.
+    /// Destroy every mirror the player has, ONE AT A TIME. Active destruction is "先打出再摧毁": each
+    /// loaded mirror fires its stored card before shattering (empty mirrors just shatter). Returns how
+    /// many mirrors died — the count the payoff cards (引爆/汲取) scale by.
     /// </summary>
     public static async Task<int> ConsumeAll(Player? player, PlayerChoiceContext choiceContext)
     {
@@ -183,8 +187,7 @@ public sealed class MirrorClone : MonsterModel
             MirrorImagePower? power = player.Creature.GetPower<MirrorImagePower>();
             while (power != null && power.TotalMirrors > 0)
             {
-                await power.KillOne(choiceContext, null);
-                count++;
+                count += await power.ConsumeOne(choiceContext);
                 power = player.Creature.GetPower<MirrorImagePower>();
             }
 
@@ -199,8 +202,8 @@ public sealed class MirrorClone : MonsterModel
     }
 
     /// <summary>
-    /// Destroy ONE mirror (newest-loaded first — same order and payoffs as a damage death, at a random
-    /// enemy). Returns 1 if a mirror was destroyed, else 0.
+    /// Destroy ONE mirror ("先打出再摧毁": a loaded mirror fires its stored card before shattering;
+    /// empty mirrors die first, per the universal death order). Returns 1 if a mirror was destroyed.
     /// </summary>
     public static async Task<int> ConsumeOne(Player? player, PlayerChoiceContext choiceContext)
     {
@@ -217,15 +220,15 @@ public sealed class MirrorClone : MonsterModel
 
         try
         {
-            await power.KillOne(choiceContext, null);
-            Log.Info("[illusionist] MirrorClone: consumed 1 mirror.");
+            int destroyed = await power.ConsumeOne(choiceContext);
+            Log.Info($"[illusionist] MirrorClone: consumed {destroyed} mirror(s).");
+            return destroyed;
         }
         catch (Exception ex)
         {
             Log.Error($"[illusionist] MirrorClone consume-one failed: {ex}");
+            return 0;
         }
-
-        return 1;
     }
 
     /// <summary>

@@ -19,44 +19,43 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
-/// 镜像 (Mirror Image) — THE mirror power, one stack per mirror (replaces the old 12-type roster; see
-/// next-mirror.md). Mirrors are uniform slots that store exhausted cards and fire them back on death:
+/// 镜像 (Mirror Image) — THE mirror power, one stack per mirror. Fifth design (see next-mirror.md):
+/// mirrors are a fragile auto-firing battery of stored cards.
 ///
-/// <para><b>Store:</b> whenever a card of yours is exhausted and a FREE (empty) mirror exists, the card is
-/// stored into that mirror — physically REMOVED from combat (<see cref="CardPileCmd.RemoveFromCombat"/>,
-/// the same take-the-card-away move Thieving Hopper's steal uses), so it vanishes from the exhaust pile
-/// and lives "inside" the mirror. Hovering the 镜像 power icon lists every stored card
-/// (<see cref="ExtraHoverTips"/> via <see cref="HoverTipFactory.FromCard(CardModel)"/>, the SwipePower
-/// stolen-card pattern). No free mirror → the exhaust proceeds normally, never a penalty.</para>
+/// <para><b>Store:</b> whenever a card of yours is exhausted (and a FREE mirror exists, and the card is
+/// playable), it is pulled out of combat and stored into that mirror. Additionally, the first card YOU
+/// (manually — auto-plays don't count) play each turn, if it wasn't exhausted by its play, imprints an
+/// Exhaust-keyword COPY of itself into a free mirror — the engine's built-in fuel line
+/// (<see cref="CanImprintFirstCard"/> filters what may imprint).</para>
 ///
-/// <para><b>Death:</b> each instance of unblocked damage / HP loss / self-damage you take kills ONE mirror
-/// (multi-hit attacks kill one per hit; 0-damage hits kill none). Death order is a LIFO stack: the mirror
-/// that stored its card most recently dies first, and loaded mirrors always die before empty ones. Active
-/// destruction (引爆/汲取/etc.) uses the same order and the same payoffs, one mirror at a time.</para>
+/// <para><b>Volley:</b> at the start of your turn, AFTER the transmute revert
+/// (<see cref="TransmutePower.EnsureTurnStartRevert"/>), every LOADED mirror plays its stored card at a
+/// random enemy, newest first. A card with Exhaust (or a Power — a consumed power can't stay in a
+/// mirror) is spent: it goes to the exhaust pile and the mirror becomes free; other cards return to the
+/// same mirror and fire again next turn. Mirror-fired plays never re-store themselves and never count
+/// as the turn's first card — no loops.</para>
 ///
-/// <para><b>Payoff:</b> a dying LOADED mirror plays its stored card — at the enemy that broke it if there
-/// is one, else at a random enemy — then puts the card (back) into the exhaust pile; a card played this
-/// way is never re-stored by its own exhaust. A dying EMPTY mirror deals <see cref="EmptyDamage"/> to that
-/// enemy and grants <see cref="EmptyBlock"/> Block instead.</para>
+/// <para><b>Death:</b> each instance of unblocked damage / HP loss you take kills ONE mirror — EMPTY
+/// mirrors first (they are the armor), then loaded ones LIFO. Death is a PURE LOSS: no payoff, the
+/// stored card just drops back into the exhaust pile. Active destruction by cards (引爆/碎影/…) is
+/// kinder: a loaded mirror FIRES its stored card first, then shatters
+/// (<see cref="ConsumeOne(PlayerChoiceContext)"/>).</para>
 ///
-/// <para><b>Cap:</b> at <see cref="Cap"/> mirrors, Copy first bursts the newest-loaded mirror (same as a
-/// damage death, random target) and then creates the fresh empty one.</para>
+/// <para><b>Cap:</b> <see cref="Cap"/> mirrors; Copy at the cap simply does nothing.</para>
 ///
 /// Stored cards keep participating in 幻化回退 — at the owner's turn start TransmutePower briefly
 /// EJECTS a stored transmuted card back into the exhaust pile (<see cref="EjectForRevert"/>), reverts
-/// it through the normal batch (standard preview animation; 即兴 can play it), then RECAPTURES the
-/// reverted form into the same stack slot (<see cref="RecaptureAfterRevert"/>). Cosmetic clone pets
-/// (one per mirror) are kept in step by <see cref="MirrorClone"/>; their deaths feed AfterDeath
-/// listeners (记忆, 不碎之镜).
+/// it through the normal batch (standard preview animation), then RECAPTURES the reverted form into the
+/// same stack slot (<see cref="RecaptureAfterRevert"/>) — all before the volley fires. Hovering the
+/// power icon lists every stored card (SwipePower's stolen-card pattern). Cosmetic clone pets (one per
+/// mirror) are kept in step by <see cref="MirrorClone"/>; their deaths feed AfterDeath listeners
+/// (记忆, 不碎之镜).
 /// </summary>
 [RegisterPower]
 public sealed class MirrorImagePower : IllusionistPower
 {
-    /// <summary>Max mirrors on the board; Copy at the cap bursts the newest-loaded mirror first.</summary>
+    /// <summary>Max mirrors on the board; Copy at the cap is a no-op.</summary>
     public const int Cap = 8;
-
-    private const int EmptyDamage = 2;
-    private const int EmptyBlock = 2;
 
     public override PowerType Type => PowerType.Buff;
 
@@ -64,29 +63,37 @@ public sealed class MirrorImagePower : IllusionistPower
 
     private sealed class Data
     {
-        /// <summary>Stored cards in store order — last = stored most recently = dies first.</summary>
+        /// <summary>Stored cards in store order — last = stored most recently = fires first, dies first.</summary>
         public readonly List<CardModel> Loaded = new();
 
-        /// <summary>Mirrors with nothing stored yet. Invariant: Loaded.Count + Empty == Amount.</summary>
+        /// <summary>Mirrors with nothing stored. Invariant: Loaded.Count + Empty == Amount.</summary>
         public int Empty;
     }
 
-    // Cards being fired out of a dying mirror right now: their (re-)exhaust must NOT re-store them.
+    // Cards currently being fired out of a mirror: their (re-)exhaust must NOT re-store them.
     private readonly HashSet<CardModel> _noRestore = new();
 
-    // Serialize deaths: a released card can deal self-damage and trigger another death mid-release.
-    private readonly Queue<Creature?> _pendingDeaths = new();
-    private bool _resolvingDeaths;
+    // Set once the turn's first manual card play has been seen (imprint considered exactly once/turn).
+    private bool _firstCardSeenThisTurn;
 
     protected override object InitInternalData()
     {
         return new Data();
     }
 
+    internal int TotalMirrors
+    {
+        get
+        {
+            Data data = GetInternalData<Data>();
+            return data.Loaded.Count + data.Empty;
+        }
+    }
+
     /// <summary>
-    /// Hovering the power icon lists every stored card (newest first = death order) — the same UI the
-    /// base game uses for Thieving Hopper's stolen card (SwipePower.ExtraHoverTips; routed through
-    /// RitsuLib's AdditionalHoverTips extension point, since ModPowerTemplate seals ExtraHoverTips).
+    /// Hovering the power icon lists every stored card (newest first = fires first, dies first) — the
+    /// same UI the base game uses for Thieving Hopper's stolen card (SwipePower.ExtraHoverTips; routed
+    /// through RitsuLib's AdditionalHoverTips extension point).
     /// </summary>
     protected override IEnumerable<IHoverTip> AdditionalHoverTips
     {
@@ -102,28 +109,19 @@ public sealed class MirrorImagePower : IllusionistPower
         }
     }
 
-    internal int TotalMirrors
-    {
-        get
-        {
-            Data data = GetInternalData<Data>();
-            return data.Loaded.Count + data.Empty;
-        }
-    }
-
     /// <summary>
-    /// Create ONE mirror for <paramref name="player"/> (the shared primitive behind Copy). At the cap,
-    /// first bursts the newest-loaded mirror (per the cap rule), then adds the fresh empty one.
-    /// Does NOT summon the cosmetic clone — <see cref="MirrorClone.Copy"/> handles visuals.
+    /// Create ONE empty mirror for <paramref name="player"/> (the primitive behind Copy). At the cap
+    /// this does nothing. Does NOT summon the cosmetic clone — <see cref="MirrorClone.Copy"/> handles
+    /// visuals (and skips the clone when this returns false).
     /// </summary>
-    internal static async Task CreateOne(Player player, PlayerChoiceContext choiceContext)
+    internal static async Task<bool> CreateOne(Player player, PlayerChoiceContext choiceContext)
     {
         Creature owner = player.Creature;
 
         MirrorImagePower? power = owner.GetPower<MirrorImagePower>();
         if (power != null && power.TotalMirrors >= Cap)
         {
-            await power.KillOne(choiceContext, null);
+            return false;
         }
 
         await PowerCmd.Apply<MirrorImagePower>(choiceContext, owner, 1, owner, null);
@@ -132,12 +130,26 @@ public sealed class MirrorImagePower : IllusionistPower
         {
             power.GetInternalData<Data>().Empty++;
         }
+
+        return true;
+    }
+
+    // ------------------------------------------------------------------ storing
+
+    /// <summary>
+    /// Which cards may imprint a first-card copy into a mirror. Currently everything playable —
+    /// INCLUDING Powers (a power led first thus effectively applies twice). If that warps power
+    /// balance in testing, exclude them here: <c>if (card.Type == CardType.Power) return false;</c>.
+    /// </summary>
+    private static bool CanImprintFirstCard(CardModel card)
+    {
+        return !card.Keywords.Contains(CardKeyword.Unplayable);
     }
 
     /// <summary>
     /// Store an exhausted card into a free mirror, if any. The card is physically removed from combat
     /// (Thieving Hopper's steal move) — it vanishes from the exhaust pile and lives inside the mirror
-    /// (newest = top of the death stack) until the mirror dies.
+    /// until fired. Unplayable cards (curses/statuses) never enter mirrors — they'd jam the slot.
     /// </summary>
     public override async Task AfterCardExhausted(PlayerChoiceContext choiceContext, CardModel card, bool causedByEthereal)
     {
@@ -147,8 +159,13 @@ public sealed class MirrorImagePower : IllusionistPower
             return;
         }
 
-        // A card being fired out of a dying mirror goes straight to the exhaust pile — never back in.
+        // A card fired out of a mirror goes to the exhaust pile for real — never back in (no loops).
         if (_noRestore.Contains(card))
+        {
+            return;
+        }
+
+        if (card.Keywords.Contains(CardKeyword.Unplayable))
         {
             return;
         }
@@ -159,17 +176,75 @@ public sealed class MirrorImagePower : IllusionistPower
             return;
         }
 
-        try
+        await StoreCard(data, card, removeFromCombat: true);
+    }
+
+    /// <summary>
+    /// The turn's first card YOU play (manually — mirror volleys and other auto-plays don't count):
+    /// if it wasn't exhausted by its play, imprint an Exhaust-keyword copy of it into a free mirror.
+    /// A first card that DID exhaust already stored itself via <see cref="AfterCardExhausted"/> —
+    /// it only ever fills one mirror.
+    /// </summary>
+    public override async Task AfterCardPlayed(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    {
+        Player? player = base.Owner.Player;
+        if (player == null || cardPlay.Card.Owner != player)
         {
-            // Pull the card out of the exhaust pile and into the mirror. Marks it removed-from-state;
-            // Release() revives it (clears the flag) when the mirror dies.
-            await CardPileCmd.RemoveFromCombat(card);
-        }
-        catch (Exception ex)
-        {
-            // Couldn't take the card (e.g. it already left the pile) — leave the mirror free.
-            Log.Error($"[illusionist] MirrorImage: store failed for '{card.Title}': {ex}");
             return;
+        }
+
+        if (cardPlay.IsAutoPlay || _firstCardSeenThisTurn)
+        {
+            return;
+        }
+
+        // This IS the turn's first manual play — consumed whether or not an imprint happens.
+        _firstCardSeenThisTurn = true;
+
+        CardModel source = cardPlay.Card;
+        if (!CanImprintFirstCard(source))
+        {
+            return;
+        }
+
+        // "如果没有被消耗" — an exhausted first card already fed a mirror through the exhaust path.
+        if (source.Keywords.Contains(CardKeyword.Exhaust)
+            || cardPlay.ResultPile == PileType.Exhaust
+            || source.Pile?.Type == PileType.Exhaust)
+        {
+            return;
+        }
+
+        Data data = GetInternalData<Data>();
+        if (data.Empty <= 0)
+        {
+            return;
+        }
+
+        // Clone AFTER the play resolved (carries in-play state), stamp Exhaust so the copy is spent
+        // after its single mirror shot, register it with combat, then pull it into the mirror.
+        CardModel copy = source.CreateClone();
+        CardCmd.ApplyKeyword(copy, CardKeyword.Exhaust);
+        await CardPileCmd.AddGeneratedCardToCombat(copy, PileType.Exhaust, player);
+        await StoreCard(data, copy, removeFromCombat: true);
+        Log.Info($"[illusionist] MirrorImage: imprinted first-card copy of '{source.Title}'.");
+    }
+
+    private async Task StoreCard(Data data, CardModel card, bool removeFromCombat)
+    {
+        if (removeFromCombat)
+        {
+            try
+            {
+                // Pull the card out of its pile and into the mirror. Marks it removed-from-state;
+                // firing revives it (clears the flag).
+                await CardPileCmd.RemoveFromCombat(card, skipVisuals: true);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[illusionist] MirrorImage: store failed for '{card.Title}': {ex}");
+                return;
+            }
         }
 
         data.Empty--;
@@ -178,10 +253,117 @@ public sealed class MirrorImagePower : IllusionistPower
         Log.Info($"[illusionist] MirrorImage: stored '{card.Title}' ({data.Loaded.Count} loaded, {data.Empty} empty).");
     }
 
+    // ------------------------------------------------------------------ turn cycle
+
+    public override Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
+    {
+        if (base.Owner == player.Creature)
+        {
+            _firstCardSeenThisTurn = false;
+        }
+
+        return Task.CompletedTask;
+    }
+
     /// <summary>
-    /// Every instance of unblocked damage / HP loss the owner takes kills one mirror. Multi-hit = one
-    /// per hit; fully-blocked or 0-damage instances kill none. The dealer (if an enemy) becomes the
-    /// release target.
+    /// The volley: after the transmute revert (forced first, so stored transmuted cards fire in their
+    /// reverted form), every loaded mirror plays its card at a random enemy, newest first.
+    /// </summary>
+    public override async Task AfterPlayerTurnStartLate(PlayerChoiceContext choiceContext, Player player)
+    {
+        if (base.Owner != player.Creature)
+        {
+            return;
+        }
+
+        // The revert must land before the volley regardless of power-hook order (idempotent per turn).
+        TransmutePower? transmute = base.Owner.GetPower<TransmutePower>();
+        if (transmute != null)
+        {
+            await transmute.EnsureTurnStartRevert(choiceContext);
+        }
+
+        Data data = GetInternalData<Data>();
+        if (data.Loaded.Count == 0)
+        {
+            return;
+        }
+
+        // Snapshot: cards stored DURING the volley (exhausts of fired non-token cards, etc.) wait for
+        // next turn; cards that die out from under us are skipped via the Contains check.
+        List<CardModel> snapshot = data.Loaded.ToList();
+        for (int i = snapshot.Count - 1; i >= 0; i--)
+        {
+            CardModel card = snapshot[i];
+            if (!data.Loaded.Contains(card))
+            {
+                continue;
+            }
+
+            await FireOne(choiceContext, data, card);
+        }
+    }
+
+    /// <summary>
+    /// Fire one mirror's stored card at a random enemy. Spent cards (Exhaust keyword, or Powers —
+    /// a consumed power can't stay in a mirror) leave for the exhaust pile and free the mirror;
+    /// anything else is pulled back into the same mirror (same stack position) to fire again.
+    /// </summary>
+    private async Task FireOne(PlayerChoiceContext choiceContext, Data data, CardModel card)
+    {
+        Flash();
+        _noRestore.Add(card);
+        try
+        {
+            // Revive: the stored card was removed-from-state; a ghost card no-ops every pile add.
+            card.HasBeenRemovedFromState = false;
+            if (card.Pile == null)
+            {
+                await CardPileCmd.Add(card, PileType.Exhaust, CardPilePosition.Bottom, null, skipVisuals: true);
+            }
+
+            Log.Info($"[illusionist] MirrorImage: firing '{card.Title}'.");
+            await CardCmd.AutoPlay(choiceContext, card, null); // null target → randomized
+
+            bool spent = card.Keywords.Contains(CardKeyword.Exhaust)
+                || card.Type == CardType.Power
+                || card.Pile?.Type == PileType.Exhaust;
+            if (spent)
+            {
+                int index = data.Loaded.IndexOf(card);
+                if (index >= 0)
+                {
+                    data.Loaded.RemoveAt(index);
+                    data.Empty++;
+                }
+
+                // "打出后放入消耗牌堆" — if the play didn't already leave it there, move it now.
+                if (card.Pile != null && card.Pile.Type != PileType.Exhaust)
+                {
+                    await CardCmd.Exhaust(choiceContext, card);
+                }
+            }
+            else if (card.Pile != null)
+            {
+                // Not spent: back into the same mirror (Loaded position untouched → same slot).
+                await CardPileCmd.RemoveFromCombat(card, skipVisuals: true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"[illusionist] MirrorImage: fire failed for '{card.Title}': {ex}");
+        }
+        finally
+        {
+            _noRestore.Remove(card);
+        }
+    }
+
+    // ------------------------------------------------------------------ deaths
+
+    /// <summary>
+    /// Every instance of unblocked damage / HP loss the owner takes kills one mirror — a PURE loss
+    /// (empty mirrors first, then newest-loaded; the stored card just drops back to the exhaust pile).
     /// </summary>
     public override async Task AfterDamageReceived(PlayerChoiceContext choiceContext, Creature target, DamageResult result, ValueProp props, Creature? dealer, CardModel? cardSource)
     {
@@ -190,71 +372,95 @@ public sealed class MirrorImagePower : IllusionistPower
             return;
         }
 
-        Creature? attacker = null;
-        ICombatState? combat = base.Owner.CombatState;
-        if (dealer != null && dealer != base.Owner && combat != null && combat.HittableEnemies.Contains(dealer))
-        {
-            attacker = dealer;
-        }
-
-        await KillOne(choiceContext, attacker);
+        await DieOne(choiceContext);
     }
 
-    /// <summary>
-    /// Kill ONE mirror (newest-loaded first, then empty) and fire its payoff. Deaths are queued and
-    /// resolved one at a time — a released card that damages the owner re-enters here safely.
-    /// </summary>
-    internal async Task KillOne(PlayerChoiceContext choiceContext, Creature? attacker)
-    {
-        _pendingDeaths.Enqueue(attacker);
-        if (_resolvingDeaths)
-        {
-            return;
-        }
-
-        _resolvingDeaths = true;
-        try
-        {
-            while (_pendingDeaths.Count > 0)
-            {
-                await KillOneCore(choiceContext, _pendingDeaths.Dequeue());
-            }
-        }
-        finally
-        {
-            _resolvingDeaths = false;
-        }
-    }
-
-    private async Task KillOneCore(PlayerChoiceContext choiceContext, Creature? attacker)
+    /// <summary>Passive death: empty first, then newest loaded; no payoff.</summary>
+    internal async Task DieOne(PlayerChoiceContext choiceContext)
     {
         Player? player = base.Owner.Player;
-        if (player == null)
+        if (player == null || TotalMirrors <= 0)
         {
             return;
         }
 
         Data data = GetInternalData<Data>();
-        CardModel? stored = null;
-        if (data.Loaded.Count > 0)
-        {
-            stored = data.Loaded[^1];
-            data.Loaded.RemoveAt(data.Loaded.Count - 1);
-        }
-        else if (data.Empty > 0)
+        if (data.Empty > 0)
         {
             data.Empty--;
         }
         else
         {
-            return;
+            CardModel card = data.Loaded[^1];
+            data.Loaded.RemoveAt(data.Loaded.Count - 1);
+            await DropToExhaustPile(card);
         }
 
         Flash();
-
-        // The cosmetic clone dies first — its AfterDeath feeds 记忆 (draw/energy) and 不碎之镜 (AoE).
         await MirrorClone.ShatterOneClone(player);
+        await RemoveOneStack();
+    }
 
+    /// <summary>
+    /// Active destruction by a card ("先打出再摧毁"): same death order (empty first, then newest
+    /// loaded), but a loaded mirror FIRES its stored card before shattering. Returns 1 if a mirror
+    /// was destroyed.
+    /// </summary>
+    internal async Task<int> ConsumeOne(PlayerChoiceContext choiceContext)
+    {
+        Player? player = base.Owner.Player;
+        if (player == null || TotalMirrors <= 0)
+        {
+            return 0;
+        }
+
+        Data data = GetInternalData<Data>();
+        if (data.Empty > 0)
+        {
+            data.Empty--;
+        }
+        else
+        {
+            CardModel card = data.Loaded[^1];
+            await FireOne(choiceContext, data, card);
+            if (data.Loaded.Remove(card))
+            {
+                // The card survived the shot (non-Exhaust, re-stored) but its mirror is being
+                // destroyed — evict it to the exhaust pile.
+                await DropToExhaustPile(card);
+            }
+            else
+            {
+                // The shot spent the card; FireOne already converted the slot to an empty.
+                data.Empty--;
+            }
+        }
+
+        Flash();
+        await MirrorClone.ShatterOneClone(player);
+        await RemoveOneStack();
+        return 1;
+    }
+
+    private async Task DropToExhaustPile(CardModel card)
+    {
+        try
+        {
+            card.HasBeenRemovedFromState = false;
+            if (card.Pile == null)
+            {
+                // Silent pile add — NOT CardCmd.Exhaust, so no exhaust hooks fire and nothing re-stores.
+                await CardPileCmd.Add(card, PileType.Exhaust, CardPilePosition.Bottom, null, skipVisuals: true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"[illusionist] MirrorImage: dropping '{card.Title}' to exhaust pile failed: {ex}");
+        }
+    }
+
+    private async Task RemoveOneStack()
+    {
         if (base.Amount > 1m)
         {
             await PowerCmd.Decrement(this);
@@ -263,92 +469,14 @@ public sealed class MirrorImagePower : IllusionistPower
         {
             await PowerCmd.Remove(this);
         }
-
-        if (stored != null)
-        {
-            await Release(choiceContext, player, stored, attacker);
-        }
-        else
-        {
-            await EmptyBurst(choiceContext, player, attacker);
-        }
     }
 
-    /// <summary>
-    /// Fire a stored card out of a dying mirror: revive it (it was removed-from-state when stored —
-    /// clear the flag exactly the way TransmutePower revives reverted predecessors), put it back into
-    /// the exhaust pile, play it at the attacker (else random enemy), and make sure it ends up in the
-    /// exhaust pile afterwards.
-    /// </summary>
-    private async Task Release(PlayerChoiceContext choiceContext, Player player, CardModel card, Creature? attacker)
-    {
-        _noRestore.Add(card);
-        try
-        {
-            // Revive: a re-added card with HasBeenRemovedFromState still set is a ghost every
-            // CardPileCmd.Add silently no-ops on.
-            card.HasBeenRemovedFromState = false;
-            if (card.Pile == null)
-            {
-                await CardPileCmd.Add(card, PileType.Exhaust, CardPilePosition.Bottom, null, skipVisuals: true);
-            }
-
-            Creature? target = (attacker != null && attacker.IsAlive) ? attacker : null; // null → AutoPlay randomizes
-            Log.Info($"[illusionist] MirrorImage: releasing '{card.Title}'.");
-            await CardCmd.AutoPlay(choiceContext, card, target);
-
-            // "打出存储的牌并将其放入消耗牌堆" — if the play didn't already exhaust it, exhaust it now.
-            if (card.Pile != null && card.Pile.Type != PileType.Exhaust)
-            {
-                await CardCmd.Exhaust(choiceContext, card);
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.Error($"[illusionist] MirrorImage: release failed: {ex}");
-        }
-        finally
-        {
-            _noRestore.Remove(card);
-        }
-    }
-
-    /// <summary>Empty-mirror death: 2 damage at the breaker (else a random enemy) + 2 Block.</summary>
-    private async Task EmptyBurst(PlayerChoiceContext choiceContext, Player player, Creature? attacker)
-    {
-        try
-        {
-            Creature? target = (attacker != null && attacker.IsAlive) ? attacker : null;
-            if (target == null)
-            {
-                ICombatState? combat = player.Creature.CombatState;
-                List<Creature> enemies = combat?.HittableEnemies.Where(e => e.IsAlive).ToList() ?? new List<Creature>();
-                if (enemies.Count > 0)
-                {
-                    target = enemies[IllusionistRng.RunRng(player).NextInt(enemies.Count)];
-                }
-            }
-
-            if (target != null)
-            {
-                await CreatureCmd.Damage(choiceContext, target, EmptyDamage, ValueProp.Unpowered | ValueProp.SkipHurtAnim, player.Creature, null, null);
-            }
-
-            await CreatureCmd.GainBlock(player.Creature, EmptyBlock, ValueProp.Unpowered, null);
-        }
-        catch (Exception ex)
-        {
-            Log.Error($"[illusionist] MirrorImage: empty-mirror burst failed: {ex}");
-        }
-    }
+    // ------------------------------------------------------------------ transmute integration
 
     /// <summary>
     /// Temporarily eject a stored card back into the exhaust pile so the turn-start 幻化回退 can
-    /// transform it through the NORMAL batch path — standard transform preview animation, and the
-    /// card is on-pile when NotifyTransformed fires, so 即兴/Improvise can genuinely play it.
-    /// Frees the slot (the mirror is empty during the window); returns the card's stack index so
-    /// <see cref="RecaptureAfterRevert"/> can restore its death-order position, or -1 if the card
-    /// isn't stored.
+    /// transform it through the NORMAL batch path (standard preview animation). Frees the slot;
+    /// returns the card's stack index for <see cref="RecaptureAfterRevert"/>, or -1 if not stored.
     /// </summary>
     internal static async Task<int> EjectForRevert(Player player, CardModel card)
     {
@@ -378,9 +506,9 @@ public sealed class MirrorImagePower : IllusionistPower
 
     /// <summary>
     /// Pull a reverted card back into its mirror after the turn-start unwind (the closing half of
-    /// <see cref="EjectForRevert"/>), re-inserting at its old stack position so death order is
+    /// <see cref="EjectForRevert"/>), re-inserting at its old stack position so stack order is
     /// preserved. Skips — leaving the card wherever it is and the mirror empty — if the card was
-    /// played away (即兴), already re-stored by its own exhaust, or the freed slot got taken.
+    /// played away, already re-stored by its own exhaust, or the freed slot got taken.
     /// </summary>
     internal static async Task RecaptureAfterRevert(Player player, CardModel card, int slot)
     {
@@ -416,8 +544,8 @@ public sealed class MirrorImagePower : IllusionistPower
     }
 
     /// <summary>
-    /// A card was transformed (forward 幻化 or turn-start revert). If a mirror stored the old form,
-    /// re-point it at the new form — stored cards participate fully in 幻化回退.
+    /// A card was transformed (forward 幻化). If a mirror stored the old form, re-point it at the new
+    /// form — stored cards participate fully in 幻化.
     /// </summary>
     internal static void OnCardTransformed(Player player, CardModel from, CardModel to)
     {

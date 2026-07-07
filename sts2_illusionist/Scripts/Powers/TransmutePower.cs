@@ -99,6 +99,20 @@ public sealed class TransmutePower : IllusionistPower
         return (chain != null && chain.Predecessors.Count > 0) ? chain.Predecessors[^1] : null;
     }
 
+    // Whether this turn's start-of-turn revert already ran — 镜像 (MirrorImagePower) forces the revert
+    // before its volley regardless of power-hook order, so both entry points share this guard.
+    private bool _turnStartRevertDone;
+
+    public override Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
+    {
+        if (player.Creature == base.Owner)
+        {
+            _turnStartRevertDone = false;
+        }
+
+        return Task.CompletedTask;
+    }
+
     public override async Task AfterPlayerTurnStartLate(PlayerChoiceContext choiceContext, Player player)
     {
         // Revert at the START of the owner's turn — after the hand is drawn, before they can play.
@@ -116,6 +130,23 @@ public sealed class TransmutePower : IllusionistPower
             return;
         }
 
+        await EnsureTurnStartRevert(choiceContext);
+    }
+
+    /// <summary>
+    /// Run this turn's start-of-turn one-layer revert exactly once, whoever asks first — the 镜像
+    /// volley (which must fire AFTER the revert, so stored cards fire in their reverted form) calls
+    /// this before firing; our own Late hook calls it too. 揭露 (Unveil) still uses
+    /// <see cref="RevertOneLayer"/> directly for its extra mid-turn unwind.
+    /// </summary>
+    internal async Task EnsureTurnStartRevert(PlayerChoiceContext choiceContext)
+    {
+        if (_turnStartRevertDone)
+        {
+            return;
+        }
+
+        _turnStartRevertDone = true;
         await RevertOneLayer(choiceContext);
     }
 

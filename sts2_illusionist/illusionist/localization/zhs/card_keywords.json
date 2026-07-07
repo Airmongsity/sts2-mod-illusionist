@@ -2,7 +2,7 @@
   "ILLUSIONIST_KEYWORD_COPY.title": "复制",
   "ILLUSIONIST_KEYWORD_COPY.description": "创建一个镜像。",
   "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.title": "镜像",
-  "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.description": "你的幻影分身（上限 8）。你消耗的牌会被存入空闲的镜像。你每受到一次未被格挡的伤害，最后存入牌的镜像死亡（装有牌的镜像先于空镜像）：向破坏它的敌人（否则随机敌人）打出所存的牌并将其放入消耗牌堆；空镜像死亡时改为造成 2 点伤害并获得 2 点格挡。",
+  "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.description": "你的幻影分身（上限 8）。你消耗的牌会被存入空闲的镜像；你每回合亲自打出的第一张牌若未被消耗，也会将一份带[gold]消耗[/gold]的复制品存入镜像。你的回合开始时，每面装填的镜像对随机敌人打出所存的牌——带[gold]消耗[/gold]的牌打出后进入消耗牌堆，其余留在镜中每回合再打。你每受到一次未被格挡的伤害，一面镜像死亡（空镜优先，其余后进先出），存牌落回消耗牌堆。当卡牌主动摧毁镜像时，先打出所存的牌再摧毁。",
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.title": "先机",
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.description": "仅当这是你本回合打出的第一张牌时，才会触发。",
   "ILLUSIONIST_KEYWORD_TRANSMUTE.title": "幻化",
