@@ -137,5 +137,9 @@
   "ILLUSIONIST_CARD_EXTRACT.title": "Extract",
   "ILLUSIONIST_CARD_EXTRACT.description": "Destroy all [gold]mirror images[/gold].\nGain 1 [img]res://illusionist/art/illusionist_energy_icon_text.webp[/img] at the start of each turn.",
   "ILLUSIONIST_CARD_SHIFTING_WAVE.title": "Shifting Wave",
-  "ILLUSIONIST_CARD_SHIFTING_WAVE.description": "Deal {Damage:diff()} damage.\nGain {Block:diff()} [gold]Block[/gold].\n[gold]Transmute[/gold] every Shifting Wave in all piles this combat into its upgraded form."
+  "ILLUSIONIST_CARD_SHIFTING_WAVE.description": "Deal {Damage:diff()} damage.\nGain {Block:diff()} [gold]Block[/gold].\n[gold]Transmute[/gold] every Shifting Wave in all piles this combat into its upgraded form.",
+  "ILLUSIONIST_CARD_BLUFF.title": "Bluff",
+  "ILLUSIONIST_CARD_BLUFF.description": "Gain {Block:diff()} [gold]Block[/gold].\nThe enemy additionally intends to gain 20 [gold]Block[/gold].",
+  "ILLUSIONIST_CARD_CALL_THE_BLUFF.title": "Call the Bluff",
+  "ILLUSIONIST_CARD_CALL_THE_BLUFF.description": "Deal {Damage:diff()} damage.\nRemove ALL of the enemy's [gold]Block[/gold] and deal that much additional damage."
 }

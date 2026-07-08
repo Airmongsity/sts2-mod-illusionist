@@ -137,5 +137,9 @@
   "ILLUSIONIST_CARD_EXTRACT.title": "萃取",
   "ILLUSIONIST_CARD_EXTRACT.description": "摧毁所有[gold]镜像[/gold]。\n每回合开始时，获得 1 [img]res://illusionist/art/illusionist_energy_icon_text.webp[/img]。",
   "ILLUSIONIST_CARD_SHIFTING_WAVE.title": "幻形波",
-  "ILLUSIONIST_CARD_SHIFTING_WAVE.description": "造成 {Damage:diff()} 点伤害。\n获得 {Block:diff()} 点[gold]格挡[/gold]。\n将本场战斗中所有幻形波幻化为它的升级品。"
+  "ILLUSIONIST_CARD_SHIFTING_WAVE.description": "造成 {Damage:diff()} 点伤害。\n获得 {Block:diff()} 点[gold]格挡[/gold]。\n将本场战斗中所有幻形波幻化为它的升级品。",
+  "ILLUSIONIST_CARD_BLUFF.title": "虚张声势",
+  "ILLUSIONIST_CARD_BLUFF.description": "获得 {Block:diff()} 点[gold]格挡[/gold]。\n该敌人额外意图获得 20 点[gold]格挡[/gold]。",
+  "ILLUSIONIST_CARD_CALL_THE_BLUFF.title": "拆穿",
+  "ILLUSIONIST_CARD_CALL_THE_BLUFF.description": "造成 {Damage:diff()} 点伤害。\n消除该敌人的所有[gold]格挡[/gold]，并额外造成等量的伤害。"
 }
