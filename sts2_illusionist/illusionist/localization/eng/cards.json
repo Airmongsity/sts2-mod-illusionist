@@ -9,7 +9,7 @@
   "ILLUSIONIST_CARD_FORESIGHT.description": "Choose up to 8 cards from your draw pile and place them on top in any order.\nGain 1 [img]res://illusionist/art/illusionist_energy_icon_text.webp[/img] next turn.",
   "ILLUSIONIST_CARD_FORESIGHT.selectionScreenPrompt": "Choose cards to place on top of your draw pile.",
   "ILLUSIONIST_CARD_MIRROR_IMAGE.title": "Mirror Image",
-  "ILLUSIONIST_CARD_MIRROR_IMAGE.description": "[gold]Copy[/gold] 2.",
+  "ILLUSIONIST_CARD_MIRROR_IMAGE.description": "[gold]Copy[/gold] 1.",
   "ILLUSIONIST_CARD_RIPOSTE.title": "Riposte",
   "ILLUSIONIST_CARD_RIPOSTE.description": "Deal {Damage:diff()} damage.\nIf the enemy intends to attack, deal {Bonus:diff()} extra damage.\n[gold]Transmute[/gold] a card in your hand into an Extinguished Lamp.",
   "ILLUSIONIST_CARD_PHANTOM_VENOM.title": "Phantom Venom",

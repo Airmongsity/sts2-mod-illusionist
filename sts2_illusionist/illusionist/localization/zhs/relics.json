@@ -1,6 +1,6 @@
 {
   "ILLUSIONIST_RELIC_HALLUCINATORY_LAMP.title": "迷幻灯",
-  "ILLUSIONIST_RELIC_HALLUCINATORY_LAMP.description": "每场战斗开始时，[gold]复制[/gold]2。",
+  "ILLUSIONIST_RELIC_HALLUCINATORY_LAMP.description": "每场战斗开始时，[gold]复制[/gold]1。",
   "ILLUSIONIST_RELIC_HALLUCINATORY_LAMP.flavor": "轻轻一擦，烟雾中便走出另一个你。",
   "ILLUSIONIST_RELIC_PRISM_SHARD.title": "棱镜碎片",
   "ILLUSIONIST_RELIC_PRISM_SHARD.description": "每当你创建一个[gold]镜像[/gold]时，获得 8 点[gold]格挡[/gold]。",

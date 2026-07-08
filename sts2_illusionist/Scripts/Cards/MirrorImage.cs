@@ -14,9 +14,9 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 镜像 (Mirror Image) — 1 cost Skill, Uncommon (upgraded: 0 cost).
-/// Copy 2 (create two mirrors): while a mirror is present, the first card you play each turn is
-/// replayed once. Taking unblocked damage shatters all mirrors. No drawback.
+/// 镜像 (Mirror Image) — 1 cost Skill, Uncommon (upgraded: 0 cost). Copy 1 (create one empty
+/// mirror — see <see cref="MirrorImagePower"/>). Back to Copy 1 in the v5 slowdown pass: mirror
+/// slots are meant to be built deliberately, not flooded.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "MIRROR_IMAGE")]
 public sealed class MirrorImageIllusionist : IllusionistCard
@@ -31,8 +31,7 @@ public sealed class MirrorImageIllusionist : IllusionistCard
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        // Copy 2: applies MirrorImagePower and summons two random-typed cosmetic clones.
-        await MirrorClone.Copy(base.Owner, 2, choiceContext);
+        await MirrorClone.Copy(base.Owner, 1, choiceContext);
     }
 
     protected override void OnUpgrade()

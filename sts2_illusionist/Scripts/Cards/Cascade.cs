@@ -12,9 +12,10 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 镜涌 (CascadeIllusionist) — 1 cost Power, Uncommon (upgraded: Innate). At the start of each turn,
+/// 镜涌 (CascadeIllusionist) — 3 cost Power, Uncommon (upgraded: Innate). At the start of each turn,
 /// Copy 1 — a steady, self-sustaining mirror engine. Stacks: play it twice to Copy 2 each turn.
-/// (Reworked from 渐强 / Crescendo.)
+/// Costed heavily (1 -> 3 in the v5 slowdown pass) because a free-running mirror faucet made the
+/// board ramp too fast. (Reworked from 渐强 / Crescendo.)
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "CASCADE")]
 public sealed class CascadeIllusionist : IllusionistCard
@@ -23,7 +24,7 @@ public sealed class CascadeIllusionist : IllusionistCard
     public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage };
 
     public CascadeIllusionist()
-        : base(1, CardType.Power, CardRarity.Uncommon, TargetType.Self)
+        : base(3, CardType.Power, CardRarity.Uncommon, TargetType.Self)
     {
     }
 

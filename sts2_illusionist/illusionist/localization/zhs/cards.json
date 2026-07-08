@@ -9,7 +9,7 @@
   "ILLUSIONIST_CARD_FORESIGHT.description": "从抽牌堆中选择最多 8 张牌，以任意顺序置于抽牌堆顶部。\n下回合获得 1 点能量。",
   "ILLUSIONIST_CARD_FORESIGHT.selectionScreenPrompt": "选择要置于抽牌堆顶部的牌。",
   "ILLUSIONIST_CARD_MIRROR_IMAGE.title": "镜像",
-  "ILLUSIONIST_CARD_MIRROR_IMAGE.description": "[gold]复制[/gold]2。",
+  "ILLUSIONIST_CARD_MIRROR_IMAGE.description": "[gold]复制[/gold]1。",
   "ILLUSIONIST_CARD_RIPOSTE.title": "反击",
   "ILLUSIONIST_CARD_RIPOSTE.description": "造成 {Damage:diff()} 点伤害。\n如果敌人的意图是攻击，额外造成 {Bonus:diff()} 点伤害。\n将一张手牌[gold]幻化[/gold]为熄灭油灯。",
   "ILLUSIONIST_CARD_PHANTOM_VENOM.title": "淬毒",
