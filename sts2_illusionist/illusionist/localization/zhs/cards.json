@@ -141,5 +141,7 @@
   "ILLUSIONIST_CARD_BLUFF.title": "虚张声势",
   "ILLUSIONIST_CARD_BLUFF.description": "获得 {Block:diff()} 点[gold]格挡[/gold]。\n该敌人额外意图获得 20 点[gold]格挡[/gold]。",
   "ILLUSIONIST_CARD_CALL_THE_BLUFF.title": "拆穿",
-  "ILLUSIONIST_CARD_CALL_THE_BLUFF.description": "造成 {Damage:diff()} 点伤害。\n消除该敌人的所有[gold]格挡[/gold]，并额外造成等量的伤害。"
+  "ILLUSIONIST_CARD_CALL_THE_BLUFF.description": "造成 {Damage:diff()} 点伤害。\n消除该敌人的所有[gold]格挡[/gold]，并额外造成等量的伤害。",
+  "ILLUSIONIST_CARD_SHIELD_TAX.title": "恃盾者亡",
+  "ILLUSIONIST_CARD_SHIELD_TAX.description": "每当敌人获得[gold]格挡[/gold]，每累计 {Threshold:diff()} 点，你获得 1 点[gold]力量[/gold]。"
 }

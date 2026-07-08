@@ -141,5 +141,7 @@
   "ILLUSIONIST_CARD_BLUFF.title": "Bluff",
   "ILLUSIONIST_CARD_BLUFF.description": "Gain {Block:diff()} [gold]Block[/gold].\nThe enemy additionally intends to gain 20 [gold]Block[/gold].",
   "ILLUSIONIST_CARD_CALL_THE_BLUFF.title": "Call the Bluff",
-  "ILLUSIONIST_CARD_CALL_THE_BLUFF.description": "Deal {Damage:diff()} damage.\nRemove ALL of the enemy's [gold]Block[/gold] and deal that much additional damage."
+  "ILLUSIONIST_CARD_CALL_THE_BLUFF.description": "Deal {Damage:diff()} damage.\nRemove ALL of the enemy's [gold]Block[/gold] and deal that much additional damage.",
+  "ILLUSIONIST_CARD_SHIELD_TAX.title": "Shield Tax",
+  "ILLUSIONIST_CARD_SHIELD_TAX.description": "Whenever an enemy gains [gold]Block[/gold], every {Threshold:diff()} points grant you 1 [gold]Strength[/gold]."
 }
