@@ -28,5 +28,7 @@
   "ILLUSIONIST_POWER_EXTRACT_POWER.title": "萃取",
   "ILLUSIONIST_POWER_EXTRACT_POWER.description": "每回合开始时获得1点能量。",
   "ILLUSIONIST_POWER_SHIELD_TAX_POWER.title": "恃盾者亡",
-  "ILLUSIONIST_POWER_SHIELD_TAX_POWER.description": "每当敌人获得格挡，每累计若干点，你获得 1 点力量。图标显示距下一点力量的进度。"
+  "ILLUSIONIST_POWER_SHIELD_TAX_POWER.description": "每当敌人获得格挡，每累计若干点，你获得 1 点力量。图标显示距下一点力量的进度。",
+  "ILLUSIONIST_POWER_IMAGINED_FOE_POWER.title": "假想敌",
+  "ILLUSIONIST_POWER_IMAGINED_FOE_POWER.description": "你的回合开始时，所有生物（你、盟友与所有敌人）获得等同于图标所示数值的格挡。"
 }
