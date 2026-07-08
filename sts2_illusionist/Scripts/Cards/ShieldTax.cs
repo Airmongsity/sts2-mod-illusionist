@@ -13,7 +13,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 恃盾者亡 (Shield Tax) — 1 cost Power, Uncommon (upgraded: every 8 -> every 6). Whenever an
+/// 恃盾者亡 (Shield Tax) — 1 cost Power, Uncommon (upgraded: every 10 -> every 8). Whenever an
 /// enemy gains Block, every {Threshold} points grant you 1 Strength. The intent flow's scaling
 /// spine: rides the 虚张声势/逆转 feed line, turns naturally block-happy enemies into a tax base,
 /// and closes the loop with 拆穿 (Strength raises the crack's base damage; the crack harvests the
@@ -30,7 +30,7 @@ public sealed class ShieldTaxIllusionist : IllusionistCard
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DynamicVar("Threshold", 8m),
+        new DynamicVar("Threshold", 10m),
     };
 
     public ShieldTaxIllusionist()
@@ -46,6 +46,6 @@ public sealed class ShieldTaxIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars["Threshold"].UpgradeValueBy(-2m); // every 8 -> every 6
+        base.DynamicVars["Threshold"].UpgradeValueBy(-2m); // every 10 -> every 8
     }
 }

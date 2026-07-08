@@ -13,10 +13,11 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 假想敌 (Imagined Foe) — 1 cost Power, Uncommon (upgraded: 6 -> 9). At the start of your turn,
-/// ALL creatures (you, allies, Osty, every enemy) gain 6 Block. The automated feed engine of the
-/// intent flow: your half is real defense, the enemies' half fuels 恃盾者亡's tax and 拆穿's
-/// harvest — and the more enemies there are, the bigger the tax base.
+/// 假想敌 (Imagined Foe) — 1 cost Power, Uncommon (upgraded: 4 -> 6). At the start of your turn,
+/// ALL creatures (you, real allies like Osty, every enemy — mirror clones excluded) gain 4 Block.
+/// The automated feed engine of the intent flow: your half is real defense, the enemies' half
+/// fuels 恃盾者亡's tax and 拆穿's harvest — and the more enemies there are, the bigger the tax
+/// base. (6/8-threshold made ~26 Strength by turn 4 with Shield Tax; slowed to 4/10.)
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "IMAGINED_FOE")]
 public sealed class ImaginedFoeIllusionist : IllusionistCard
@@ -31,7 +32,7 @@ public sealed class ImaginedFoeIllusionist : IllusionistCard
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DynamicVar("Block", 6m),
+        new DynamicVar("Block", 4m),
     };
 
     public ImaginedFoeIllusionist()
@@ -47,6 +48,6 @@ public sealed class ImaginedFoeIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars["Block"].UpgradeValueBy(3m); // 6 -> 9
+        base.DynamicVars["Block"].UpgradeValueBy(2m); // 4 -> 6
     }
 }

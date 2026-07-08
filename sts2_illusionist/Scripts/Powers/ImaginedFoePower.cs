@@ -9,6 +9,7 @@ using MegaCrit.Sts2.Core.Entities.Powers;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
+using Illusionist.Scripts.Monsters;
 
 using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
@@ -16,10 +17,11 @@ namespace Illusionist.Scripts.Powers;
 /// <summary>
 /// 假想敌 (Imagined Foe) — persistent Power applied by
 /// <see cref="Illusionist.Scripts.Cards.ImaginedFoeIllusionist"/>. At the start of your turn,
-/// EVERY living creature — you, allies (mirror clones, Osty), and all enemies — gains
-/// <c>Amount</c> Block. Everyone braces against threats that aren't there: your half is real
-/// defense, the enemies' half is a tax base for 恃盾者亡 and a harvest for 拆穿. Stacks additively
-/// (Amount = block per turn), so upgraded and base copies mix correctly.
+/// EVERY living creature — you, real allies (Osty/pets), and all enemies — gains <c>Amount</c>
+/// Block. Mirror clones are NOT creatures (no HP bar; pure cosmetics) and are skipped. Everyone
+/// braces against threats that aren't there: your half is real defense, the enemies' half is a
+/// tax base for 恃盾者亡 and a harvest for 拆穿. Stacks additively (Amount = block per turn), so
+/// upgraded and base copies mix correctly.
 /// </summary>
 [RegisterPower]
 public sealed class ImaginedFoePower : IllusionistPower
@@ -41,10 +43,16 @@ public sealed class ImaginedFoePower : IllusionistPower
             return;
         }
 
-        // ALL creatures: the owner, every ally (mirror clones, Osty, other pets), every enemy.
+        // ALL creatures: the owner, every REAL ally (Osty, pets — mirror clones are cosmetic,
+        // not creatures), every enemy.
         HashSet<Creature> creatures = new HashSet<Creature> { base.Owner };
         foreach (Creature ally in combat.Allies)
         {
+            if (ally.Monster is MirrorClone)
+            {
+                continue;
+            }
+
             creatures.Add(ally);
         }
         foreach (Creature enemy in combat.HittableEnemies)
