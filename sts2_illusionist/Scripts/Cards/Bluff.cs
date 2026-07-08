@@ -19,7 +19,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 虚张声势 (Bluff) — 1 cost Skill, Common (upgraded: 18 -> 25 Block). Gain 18 Block; the target
+/// 虚张声势 (Bluff) — 1 cost Skill, Common (upgraded: 14 -> 18 Block). Gain 14 Block; the target
 /// enemy ADDITIONALLY intends to gain <see cref="EnemyBlock"/> Block — its current move is wrapped
 /// (original intents + behavior fully preserved via <see cref="MoveState.PerformMove"/>) with a
 /// Defend telegraph and a block gain on its turn. The feed half of the intent flow's "fatten the
@@ -40,7 +40,7 @@ public sealed class BluffIllusionist : IllusionistCard
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new BlockVar(18m, ValueProp.Move),
+        new BlockVar(14m, ValueProp.Move),
     };
 
     public BluffIllusionist()
@@ -93,6 +93,6 @@ public sealed class BluffIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Block.UpgradeValueBy(7m); // 18 -> 25
+        base.DynamicVars.Block.UpgradeValueBy(4m); // 14 -> 18
     }
 }
