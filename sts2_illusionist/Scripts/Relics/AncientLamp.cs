@@ -32,7 +32,7 @@ public sealed class AncientLamp : IllusionistRelic
     // Placeholder art until Lamp Unbound has its own.
     protected override string IconBaseName => "boundphylactery";
 
-    protected override IEnumerable<string> RegisteredKeywordIds => new[] { IllusionistKeywords.CopyId, IllusionistKeywords.MirrorImageId };
+    protected override IEnumerable<string> RegisteredKeywordIds => new[] { IllusionistKeywords.CopyId, IllusionistKeywords.MirrorImageId, IllusionistKeywords.ExecuteId };
 
     public override async Task BeforeCombatStart()
     {

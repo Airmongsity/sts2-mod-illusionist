@@ -23,7 +23,7 @@ namespace Illusionist.Scripts.Cards;
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "RECAST")]
 public sealed class RecastIllusionist : IllusionistCard
 {
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage, IllusionistKeywords.Execute };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

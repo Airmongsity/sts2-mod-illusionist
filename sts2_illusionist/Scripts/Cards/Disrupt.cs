@@ -29,7 +29,7 @@ public sealed class DisruptIllusionist : IllusionistCard
     public override bool GainsBlock => true;
 
     // Block tip comes from GainsBlock; Weak + Copy/the mirror token need their tips added explicitly.
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage, IllusionistKeywords.Execute };
 
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {

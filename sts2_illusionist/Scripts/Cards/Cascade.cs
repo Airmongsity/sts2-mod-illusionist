@@ -21,7 +21,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class CascadeIllusionist : IllusionistCard
 {
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage, IllusionistKeywords.Execute };
 
     public CascadeIllusionist()
         : base(3, CardType.Power, CardRarity.Uncommon, TargetType.Self)

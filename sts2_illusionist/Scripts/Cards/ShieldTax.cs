@@ -46,6 +46,6 @@ public sealed class ShieldTaxIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars["Threshold"].UpgradeValueBy(-2m); // every 10 -> every 8
+        base.EnergyCost.UpgradeBy(-1); // 1 -> 0
     }
 }

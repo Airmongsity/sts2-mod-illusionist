@@ -73,6 +73,11 @@ public sealed class MirrorImagePower : IllusionistPower
     // Cards currently being fired out of a mirror: their (re-)exhaust must NOT re-store them.
     private readonly HashSet<CardModel> _noRestore = new();
 
+    // Cards currently being fired out of a mirror must not be fired again by active mirror destruction.
+    private readonly HashSet<CardModel> _firing = new();
+
+    private int _mirrorPlayDepth;
+
     // Set once the turn's first manual card play has been seen (imprint considered exactly once/turn).
     private bool _firstCardSeenThisTurn;
 
@@ -193,7 +198,7 @@ public sealed class MirrorImagePower : IllusionistPower
             return;
         }
 
-        if (cardPlay.IsAutoPlay || _firstCardSeenThisTurn)
+        if (_mirrorPlayDepth > 0 || cardPlay.IsAutoPlay || _firstCardSeenThisTurn)
         {
             return;
         }
@@ -313,6 +318,8 @@ public sealed class MirrorImagePower : IllusionistPower
     {
         Flash();
         _noRestore.Add(card);
+        _firing.Add(card);
+        _mirrorPlayDepth++;
         try
         {
             // Revive: the stored card was removed-from-state; a ghost card no-ops every pile add.
@@ -325,9 +332,24 @@ public sealed class MirrorImagePower : IllusionistPower
             Log.Info($"[illusionist] MirrorImage: firing '{card.Title}'.");
             await CardCmd.AutoPlay(choiceContext, card, null); // null target → randomized
 
+            bool mirrorStillLoaded = data.Loaded.Contains(card);
             bool spent = card.Keywords.Contains(CardKeyword.Exhaust)
                 || card.Type == CardType.Power
                 || card.Pile?.Type == PileType.Exhaust;
+            if (!mirrorStillLoaded)
+            {
+                if (card.Pile != null && card.Pile.Type != PileType.Exhaust)
+                {
+                    await CardCmd.Exhaust(choiceContext, card);
+                }
+                else if (card.Pile == null)
+                {
+                    await DropToExhaustPile(card);
+                }
+
+                return;
+            }
+
             if (spent)
             {
                 int index = data.Loaded.IndexOf(card);
@@ -355,6 +377,8 @@ public sealed class MirrorImagePower : IllusionistPower
         }
         finally
         {
+            _mirrorPlayDepth--;
+            _firing.Remove(card);
             _noRestore.Remove(card);
         }
     }
@@ -422,8 +446,22 @@ public sealed class MirrorImagePower : IllusionistPower
         else
         {
             CardModel card = data.Loaded[^1];
-            await FireOne(choiceContext, data, card);
-            if (data.Loaded.Remove(card))
+            bool destroyedWhileFiring = false;
+            if (_firing.Contains(card))
+            {
+                data.Loaded.RemoveAt(data.Loaded.Count - 1);
+                destroyedWhileFiring = true;
+            }
+            else
+            {
+                await FireOne(choiceContext, data, card);
+            }
+
+            if (destroyedWhileFiring)
+            {
+                // Already resolving from this mirror; shatter it without re-firing the card.
+            }
+            else if (data.Loaded.Remove(card))
             {
                 // The card survived the shot (non-Exhaust, re-stored) but its mirror is being
                 // destroyed — evict it to the exhaust pile.

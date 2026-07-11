@@ -48,6 +48,12 @@ public sealed class BlindIllusionist : IllusionistCard
         ArgumentNullException.ThrowIfNull(cardPlay.Target, "cardPlay.Target");
         Creature target = cardPlay.Target;
 
+        int block = target.Block;
+        if (block > 0)
+        {
+            await CreatureCmd.LoseBlock(target, block);
+        }
+
         await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this, cardPlay).Targeting(target)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);

@@ -20,7 +20,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class PhaseShiftIllusionist : IllusionistCard
 {
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.MirrorImage };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.MirrorImage, IllusionistKeywords.Execute };
 
     public PhaseShiftIllusionist()
         : base(1, CardType.Skill, CardRarity.Event, TargetType.Self)

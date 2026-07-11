@@ -19,13 +19,13 @@ namespace Illusionist.Scripts.Cards;
 /// <summary>
 /// 淬毒 (Phantom Venom) — 0 cost Attack, Common (upgraded: 9 damage). Named PhantomVenomIllusionist because the
 /// base game already has a card whose type is "Envenom" (model ids are derived from the type name).
-/// Deal 6 damage, add a copy of this card — 幻化 (transmuted) into a 毒素 (Toxic) — to your discard
+/// Deal 6 damage, add a copy of this card — 幻化 (transmuted) into a 熄灭油灯 (Extinguished Lamp) — to your discard
 /// pile, then Exhaust.
 ///
 /// <para>This sidesteps the "a card can't transform ITSELF mid-play (it hangs)" limitation entirely:
-/// the played card simply Exhausts, and the Toxic you see is a SEPARATE, freshly-added card, so the
-/// 幻化 uses the normal (visible) <see cref="Transmutation.TransmuteCards"/> path — you watch the new
-/// venom morph into a Toxic. That Toxic reverts into a Phantom Venom at the start of your next turn, so
+/// the played card simply Exhausts, and the Extinguished Lamp you see is a SEPARATE, freshly-added card, so the
+/// 幻化 uses the normal (visible) <see cref="Transmutation.TransmuteCards"/> path. It reverts into a
+/// Phantom Venom at the start of your next turn, so
 /// the card cycles back while the played copy is consumed.</para>
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "PHANTOM_VENOM")]
@@ -36,7 +36,7 @@ public sealed class PhantomVenomIllusionist : IllusionistCard
 
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
-        HoverTipFactory.FromCard<MegaCrit.Sts2.Core.Models.Cards.Toxic>(),
+        HoverTipFactory.FromCard<ExtinguishedLampIllusionist>(),
     };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
@@ -61,20 +61,19 @@ public sealed class PhantomVenomIllusionist : IllusionistCard
         {
             Player owner = base.Owner;
 
-            // Add a fresh copy of this card (keeps its upgrade) to the discard pile, then 幻化 it into a
-            // Toxic via the normal transmute path — it is NOT the in-play card, so the transform is safe
-            // and VISIBLE. The Toxic reverts to this Phantom Venom at the start of your next turn.
+            // Add a fresh copy of this card (keeps its upgrade) to the discard pile, then transmute it
+            // into an Extinguished Lamp. It is not the in-play card, so the transform is safe and visible.
             CardModel venom = CreateClone();
             CardPileAddResult result = await CardPileCmd.AddGeneratedCardToCombat(venom, PileType.Discard, owner);
             if (result.cardAdded != null)
             {
                 await Transmutation.TransmuteCards(new[] { result.cardAdded }, this, choiceContext,
-                    _ => base.CardScope!.CreateCard<MegaCrit.Sts2.Core.Models.Cards.Toxic>(owner));
+                    _ => base.CardScope!.CreateCard<ExtinguishedLampIllusionist>(owner));
             }
         }
         catch (Exception ex)
         {
-            Log.Error($"[illusionist] PhantomVenomIllusionist: add/transmute Toxic failed: {ex}");
+            Log.Error($"[illusionist] PhantomVenomIllusionist: add/transmute Extinguished Lamp failed: {ex}");
         }
     }
 

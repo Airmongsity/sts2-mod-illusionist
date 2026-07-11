@@ -6,7 +6,7 @@
   "ILLUSIONIST_RELIC_PRISM_SHARD.description": "每当你创建一个[gold]镜像[/gold]时，获得 8 点[gold]格挡[/gold]。",
   "ILLUSIONIST_RELIC_PRISM_SHARD.flavor": "每一道切面，都记得一束不同的光。",
   "ILLUSIONIST_RELIC_HEAD_START.title": "速行靴",
-  "ILLUSIONIST_RELIC_HEAD_START.description": "你每回合打出的第一张牌花费降低 1 点。",
+  "ILLUSIONIST_RELIC_HEAD_START.description": "你每场战斗打出的第一张牌花费为 0。",
   "ILLUSIONIST_RELIC_HEAD_START.flavor": "胜负，在迈出第一步之前便已分晓。",
   "ILLUSIONIST_RELIC_UNBREAKABLE_MIRROR.title": "不碎之镜",
   "ILLUSIONIST_RELIC_UNBREAKABLE_MIRROR.description": "每当你的一个[gold]镜像[/gold]死亡时，对所有敌人造成 3 点伤害。",

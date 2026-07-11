@@ -13,6 +13,7 @@ namespace Illusionist.Scripts;
 /// </summary>
 [RegisterOwnedCardKeyword("copy")]
 [RegisterOwnedCardKeyword("mirror_image")]
+[RegisterOwnedCardKeyword("execute")]
 [RegisterOwnedCardKeyword("first_move")]
 [RegisterOwnedCardKeyword("transmute")]
 public sealed class IllusionistKeywordRegistrations
@@ -28,6 +29,8 @@ public static class IllusionistKeywords
     /// <summary>The mirror-image entity itself (复制品) — what a created copy does on the field.</summary>
     public const string MirrorImageId = "ILLUSIONIST_KEYWORD_MIRROR_IMAGE";
 
+    public const string ExecuteId = "ILLUSIONIST_KEYWORD_EXECUTE";
+
     /// <summary>"First Move" (先机) — the bonus triggers only on the first card played this turn.</summary>
     public const string FirstMoveId = "ILLUSIONIST_KEYWORD_FIRST_MOVE";
 
@@ -37,6 +40,8 @@ public static class IllusionistKeywords
     public static CardKeyword Copy => CopyId.GetModCardKeyword();
 
     public static CardKeyword MirrorImage => MirrorImageId.GetModCardKeyword();
+
+    public static CardKeyword Execute => ExecuteId.GetModCardKeyword();
 
     public static CardKeyword FirstMove => FirstMoveId.GetModCardKeyword();
 

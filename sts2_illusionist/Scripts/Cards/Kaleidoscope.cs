@@ -20,7 +20,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class KaleidoscopeIllusionist : IllusionistCard
 {
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage, IllusionistKeywords.Execute };
 
     public KaleidoscopeIllusionist()
         : base(1, CardType.Power, CardRarity.Rare, TargetType.Self)

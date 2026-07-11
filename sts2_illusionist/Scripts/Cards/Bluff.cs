@@ -29,7 +29,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class BluffIllusionist : IllusionistCard
 {
     /// <summary>Block the enemy is fed (fixed; the upgrade only raises YOUR block).</summary>
-    private const int EnemyBlock = 20;
+    private const int EnemyBlock = 6;
 
     public override bool GainsBlock => true;
 

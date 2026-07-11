@@ -17,9 +17,9 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 召唤 (SummonIllusionist) — 1 cost Skill, Uncommon (upgraded: Innate).
-/// Choose a non-Power card in your draw pile; add a native Toxic to your hand, transmuted into a copy
-/// of the chosen card (carrying its upgrades). A temporary copy you play this turn — it reverts to the
-/// Toxic at end of turn (transmute stack), and a held Toxic costs 5 (blockable) HP. The chosen
+/// Choose a non-Power card in your draw pile; add an Extinguished Lamp to your hand, transmuted into a copy
+/// of the chosen card (carrying its upgrades). A temporary copy you play this turn reverts to the
+/// Extinguished Lamp at end of turn (transmute stack). The chosen
 /// draw-pile card is left untouched.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "SUMMON")]
@@ -30,7 +30,7 @@ public sealed class SummonIllusionist : IllusionistCard
 
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
-        HoverTipFactory.FromCard<MegaCrit.Sts2.Core.Models.Cards.Toxic>(),
+        HoverTipFactory.FromCard<ExtinguishedLampIllusionist>(),
     };
 
     public SummonIllusionist()
@@ -57,9 +57,9 @@ public sealed class SummonIllusionist : IllusionistCard
             return;
         }
 
-        // 2) Add a native Toxic to hand and 幻化 it into a copy of the chosen card.
-        CardModel toxic = base.CardScope!.CreateCard<MegaCrit.Sts2.Core.Models.Cards.Toxic>(owner);
-        CardPileAddResult result = await CardPileCmd.AddGeneratedCardToCombat(toxic, PileType.Hand, owner);
+        // 2) Add an Extinguished Lamp to hand and transmute it into a copy of the chosen card.
+        CardModel lamp = base.CardScope!.CreateCard<ExtinguishedLampIllusionist>(owner);
+        CardPileAddResult result = await CardPileCmd.AddGeneratedCardToCombat(lamp, PileType.Hand, owner);
         if (result.cardAdded == null)
         {
             return;

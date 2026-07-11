@@ -50,10 +50,7 @@ public sealed class ShieldTaxPower : IllusionistPower
             return;
         }
 
-        // Enemies only — the owner's own block (and the cosmetic mirror clones, which are allies)
-        // pays no tax.
-        if (creature == base.Owner
-            || base.Owner.CombatState == null || !base.Owner.CombatState.HittableEnemies.Contains(creature))
+        if (base.Owner.CombatState == null || !creature.IsAlive)
         {
             return;
         }

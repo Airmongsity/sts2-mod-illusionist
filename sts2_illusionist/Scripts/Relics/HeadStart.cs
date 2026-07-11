@@ -1,25 +1,45 @@
-using System.Linq;
+using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Combat;
-using MegaCrit.Sts2.Core.Combat.History.Entries;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Relics;
+using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 
 using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Relics;
 
 /// <summary>
-/// 抢先 (Head Start) — Common. The first card you play each turn costs 1 less Energy.
-/// Implemented via the cost-modify hook: while no first-in-series card has been played this turn,
-/// every card in hand shows 1 cheaper (down to 0); once you play one, the discount ends.
+/// Swift Boots - Common. The first non-autoplay card you play each combat costs 0 Energy.
 /// </summary>
 [RegisterRelic(typeof(IllusionistRelicPool))]
 public sealed class HeadStart : IllusionistRelic
 {
+    private bool _usedThisCombat;
+
     public override RelicRarity Rarity => RelicRarity.Common;
 
     // Placeholder art until Head Start has its own.
     protected override string IconBaseName => "bookmark";
+
+    public override Task BeforeCombatStart()
+    {
+        _usedThisCombat = false;
+        Status = RelicStatus.Normal;
+        return Task.CompletedTask;
+    }
+
+    public override Task AfterCardPlayed(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    {
+        if (_usedThisCombat || cardPlay.IsAutoPlay || !cardPlay.IsFirstInSeries || cardPlay.Card.Owner != base.Owner)
+        {
+            return Task.CompletedTask;
+        }
+
+        _usedThisCombat = true;
+        Status = RelicStatus.Disabled;
+        Flash();
+        return Task.CompletedTask;
+    }
 
     public override bool TryModifyEnergyCostInCombat(CardModel card, decimal originalCost, out decimal modifiedCost)
     {
@@ -27,27 +47,18 @@ public sealed class HeadStart : IllusionistRelic
 
         var owner = base.Owner;
         ICombatState? combat = owner?.Creature.CombatState;
-        if (owner == null || combat == null || originalCost <= 0m)
+        if (owner == null || combat == null || _usedThisCombat || originalCost <= 0m)
         {
             return false;
         }
 
-        // In multiplayer this cost hook fires for EVERY player's cards, so only discount the boots
-        // owner's own cards — otherwise the relic would cheapen teammates' first card too.
+        // In multiplayer this cost hook fires for every player's cards.
         if (card.Owner != owner)
         {
             return false;
         }
 
-        // Count this turn's original (first-in-series) plays. While 0, the next card is "the first".
-        int playedThisTurn = CombatManager.Instance.History.CardPlaysStarted.Count(
-            e => e.Actor == owner.Creature && e.CardPlay.IsFirstInSeries && e.HappenedThisTurn(combat));
-        if (playedThisTurn > 0)
-        {
-            return false;
-        }
-
-        modifiedCost = originalCost - 1m;
+        modifiedCost = 0m;
         return true;
     }
 }

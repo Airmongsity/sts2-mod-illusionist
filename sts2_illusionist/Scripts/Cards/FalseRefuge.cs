@@ -6,34 +6,35 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
-using Illusionist.Scripts;
 using Illusionist.Scripts.Powers;
 
 using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 记忆 (MemoryIllusionist) — 2 cost Power, Uncommon (upgraded: 1 cost).
-/// Apply MemoryIllusionist: whenever a mirror clone is destroyed, draw 2 cards and gain 1 energy.
+/// False Refuge - 1 cost Power, Uncommon. Whenever an enemy gains Block, it loses that much HP.
 /// </summary>
-[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "MEMORY")]
-public sealed class MemoryIllusionist : IllusionistCard
+[RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "FALSE_REFUGE")]
+public sealed class FalseRefugeIllusionist : IllusionistCard
 {
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
+    {
+        HoverTipFactory.Static(StaticHoverTip.Block),
+        HoverTipFactory.FromPower<FalseRefugePower>(),
+    };
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.MirrorImage, IllusionistKeywords.Execute };
-
-    public MemoryIllusionist()
+    public FalseRefugeIllusionist()
         : base(1, CardType.Power, CardRarity.Uncommon, TargetType.Self)
     {
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        await PowerCmd.Apply<MemoryPower>(choiceContext, base.Owner.Creature, 1, base.Owner.Creature, this);
+        await PowerCmd.Apply<FalseRefugePower>(choiceContext, base.Owner.Creature, 1, base.Owner.Creature, this);
     }
 
     protected override void OnUpgrade()
     {
-        AddKeyword(CardKeyword.Innate);
+        base.EnergyCost.UpgradeBy(-1); // 1 -> 0
     }
 }

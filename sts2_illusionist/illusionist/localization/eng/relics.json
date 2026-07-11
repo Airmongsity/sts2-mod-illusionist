@@ -6,7 +6,7 @@
   "ILLUSIONIST_RELIC_PRISM_SHARD.description": "Whenever you create a [gold]mirror image[/gold], gain 8 [gold]Block[/gold].",
   "ILLUSIONIST_RELIC_PRISM_SHARD.flavor": "Every facet remembers a different light.",
   "ILLUSIONIST_RELIC_HEAD_START.title": "Swift Boots",
-  "ILLUSIONIST_RELIC_HEAD_START.description": "The first card you play each turn costs 1 less.",
+  "ILLUSIONIST_RELIC_HEAD_START.description": "The first card you play each combat costs 0.",
   "ILLUSIONIST_RELIC_HEAD_START.flavor": "The race is won before the first step.",
   "ILLUSIONIST_RELIC_UNBREAKABLE_MIRROR.title": "Unbreakable Mirror",
   "ILLUSIONIST_RELIC_UNBREAKABLE_MIRROR.description": "Whenever one of your [gold]mirror images[/gold] dies, deal 3 damage to ALL enemies.",

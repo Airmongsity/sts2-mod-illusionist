@@ -20,7 +20,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class RekindleIllusionist : IllusionistCard
 {
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage, IllusionistKeywords.Execute };
 
     public RekindleIllusionist()
         : base(1, CardType.Skill, CardRarity.Common, TargetType.Self)

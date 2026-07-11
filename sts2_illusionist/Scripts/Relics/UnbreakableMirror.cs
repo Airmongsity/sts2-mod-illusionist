@@ -34,7 +34,7 @@ public sealed class UnbreakableMirror : IllusionistRelic
     // Placeholder art until Unbreakable Mirror has its own.
     protected override string IconBaseName => "funerarymask";
 
-    protected override IEnumerable<string> RegisteredKeywordIds => new[] { IllusionistKeywords.MirrorImageId };
+    protected override IEnumerable<string> RegisteredKeywordIds => new[] { IllusionistKeywords.MirrorImageId, IllusionistKeywords.ExecuteId };
 
     public override async Task AfterDeath(PlayerChoiceContext choiceContext, Creature creature, bool wasRemovalPrevented, float deathAnimLength)
     {

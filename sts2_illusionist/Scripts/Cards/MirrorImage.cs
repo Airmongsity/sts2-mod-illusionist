@@ -22,7 +22,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class MirrorImageIllusionist : IllusionistCard
 {
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage, IllusionistKeywords.Execute };
 
     public MirrorImageIllusionist()
         : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)

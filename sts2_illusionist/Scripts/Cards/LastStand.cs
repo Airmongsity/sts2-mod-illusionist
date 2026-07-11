@@ -25,7 +25,7 @@ public sealed class LastStandIllusionist : IllusionistCard
 
     public override bool GainsBlock => true;
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Retain, CardKeyword.Exhaust, IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new CardKeyword[] { CardKeyword.Retain, CardKeyword.Exhaust, IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage, IllusionistKeywords.Execute };
 
     // Two BlockVars: the base block ("Block") and the conditional bonus. A second var of the same
     // type MUST be given an explicit name or DynamicVarSet throws on the duplicate "Block" key.

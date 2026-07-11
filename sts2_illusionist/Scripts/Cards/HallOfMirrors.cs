@@ -17,7 +17,7 @@ namespace Illusionist.Scripts.Cards;
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "HALL_OF_MIRRORS")]
 public sealed class HallOfMirrorsIllusionist : IllusionistCard
 {
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage, IllusionistKeywords.Execute };
 
     public HallOfMirrorsIllusionist()
         : base(1, CardType.Skill, CardRarity.Rare, TargetType.Self)

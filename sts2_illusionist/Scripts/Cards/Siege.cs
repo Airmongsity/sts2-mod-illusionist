@@ -25,7 +25,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class SiegeIllusionist : IllusionistCard
 {
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.MirrorImage };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.MirrorImage, IllusionistKeywords.Execute };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

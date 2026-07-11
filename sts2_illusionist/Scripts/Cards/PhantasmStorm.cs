@@ -25,7 +25,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class PhantasmStormIllusionist : IllusionistCard
 {
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Copy, IllusionistKeywords.MirrorImage, IllusionistKeywords.Execute };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

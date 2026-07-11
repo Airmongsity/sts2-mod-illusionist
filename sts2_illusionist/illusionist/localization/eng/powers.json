@@ -28,7 +28,9 @@
   "ILLUSIONIST_POWER_EXTRACT_POWER.title": "Extract",
   "ILLUSIONIST_POWER_EXTRACT_POWER.description": "Gain 1 energy at the start of each turn.",
   "ILLUSIONIST_POWER_SHIELD_TAX_POWER.title": "Shield Tax",
-  "ILLUSIONIST_POWER_SHIELD_TAX_POWER.description": "Whenever an enemy gains Block, every few points grant you 1 Strength. Progress toward the next Strength is shown on the power icon.",
+  "ILLUSIONIST_POWER_SHIELD_TAX_POWER.description": "Whenever a creature gains Block, every few points grant you 1 Strength. Progress toward the next Strength is shown on the power icon.",
+  "ILLUSIONIST_POWER_FALSE_REFUGE_POWER.title": "False Refuge",
+  "ILLUSIONIST_POWER_FALSE_REFUGE_POWER.description": "Whenever an enemy gains Block, it loses that much HP per stack.",
   "ILLUSIONIST_POWER_IMAGINED_FOE_POWER.title": "Imagined Foe",
   "ILLUSIONIST_POWER_IMAGINED_FOE_POWER.description": "At the start of your turn, ALL creatures (you, allies, and every enemy) gain Block equal to the amount shown on the power icon."
 }

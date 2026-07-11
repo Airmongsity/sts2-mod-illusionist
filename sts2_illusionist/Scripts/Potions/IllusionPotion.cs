@@ -25,7 +25,7 @@ public sealed class IllusionPotion : IllusionistPotion
 
     public override TargetType TargetType => TargetType.AnyPlayer;
 
-    protected override IEnumerable<string> RegisteredKeywordIds => new[] { IllusionistKeywords.CopyId, IllusionistKeywords.MirrorImageId };
+    protected override IEnumerable<string> RegisteredKeywordIds => new[] { IllusionistKeywords.CopyId, IllusionistKeywords.MirrorImageId, IllusionistKeywords.ExecuteId };
 
     protected override async Task OnUse(PlayerChoiceContext choiceContext, Creature? target)
     {
