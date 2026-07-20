@@ -12,7 +12,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 回响 (EchoIllusionist) — 2 cost Skill, Rare (upgraded: 1 cost), Exhaust.
+/// 回响 (EchoIllusionist) - 1 cost Skill, Rare (upgraded: +2 Block), Exhaust.
 /// Gain 3 Block, then put a copy of this card into the discard pile whose Replay count is one
 /// higher than this card's (so each generation plays an extra time and snowballs).
 /// </summary>

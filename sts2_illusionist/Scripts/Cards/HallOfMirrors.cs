@@ -11,7 +11,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 镜厅 (HallOfMirrorsIllusionist) — 1 cost Skill, Rare (upgraded: 0 cost). [gold]Copy[/gold] 1 for every 2
+/// 镜厅 (HallOfMirrorsIllusionist) — 1 cost Skill, Rare (upgraded: 0 cost). [gold]Copy[/gold] 1 for every 3
 /// cards in your hand — the more you're holding, the bigger the mirror army you conjure.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "HALL_OF_MIRRORS")]
@@ -28,8 +28,8 @@ public sealed class HallOfMirrorsIllusionist : IllusionistCard
     {
         Player owner = base.Owner;
 
-        // Copy 1 for every 2 cards remaining in your hand (this card has already left it on play).
-        int copies = PileType.Hand.GetPile(owner).Cards.Count / 2;
+        // Copy 1 for every 3 cards remaining in your hand (this card has already left it on play).
+        int copies = PileType.Hand.GetPile(owner).Cards.Count / 3;
         if (copies > 0)
         {
             await MirrorClone.Copy(owner, copies, choiceContext);

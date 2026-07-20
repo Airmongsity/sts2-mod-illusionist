@@ -8,6 +8,7 @@ using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
+using Illusionist.Scripts.Cards;
 using Illusionist.Scripts.Powers;
 
 namespace Illusionist.Scripts;
@@ -64,17 +65,35 @@ public static class Transmutation
         foreach (CardModel original in targets)
         {
             CardModel replacement = makeReplacement(original);
+
             CardPileAddResult? result = await CardCmd.Transform(original, replacement);
             if (result == null || result.Value.cardAdded == null)
             {
                 continue;
             }
 
-            revert.RegisterTransmute(original, result.Value.cardAdded);
+            CardModel added = result.Value.cardAdded;
+            revert.RegisterTransmute(original, added);
             // A stored (in-mirror) card that gets transmuted must keep its mirror pointing at the new form.
-            MirrorImagePower.OnCardTransformed(owner, original, result.Value.cardAdded);
-            await NotifyTransformed(owner, choiceContext, result.Value.cardAdded);
+            await MirrorImagePower.OnCardTransformed(owner, original, added);
+            await NotifyTransformed(owner, choiceContext, added);
             transformed++;
+
+            // 长明灯 (Everlit Lamp): once per turn, the first 熄灭油灯 (Extinguished Lamp) to APPEAR in
+            // hand is 幻化-ed into a 暗淡油灯 (Dim Lamp) - a REAL two-step chain (X -> 熄灭油灯 -> 暗淡油灯),
+            // not an intercepted swap. The 熄灭油灯 is genuinely created first, then 幻化-ed. This fires on the
+            // forward-幻化 path only (Disillusion/Douse/Riposte/PhantomVenom turning a HAND card into an
+            // 熄灭油灯); the recursive call below yields a 暗淡油灯 (not an 熄灭油灯), so it terminates. Drawn
+            // lamps are handled in EverlitLampPower.AfterCardDrawn; reverts run through
+            // TransmutePower.RevertOneLayer (not here), so they can't re-trigger and loop. Hand-only.
+            if (added is ExtinguishedLampIllusionist
+                && added.Pile?.Type == PileType.Hand
+                && owner.Creature.GetPower<EverlitLampPower>() is { } everlit
+                && everlit.TryConsumeThisTurn())
+            {
+                await TransmuteCards(new[] { added }, added, choiceContext,
+                    o => o.CardScope!.CreateCard<DimLampIllusionist>(owner));
+            }
         }
 
         return transformed;

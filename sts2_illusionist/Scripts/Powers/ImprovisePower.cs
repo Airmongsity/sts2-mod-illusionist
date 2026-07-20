@@ -56,6 +56,26 @@ public sealed class ImprovisePower : IllusionistPower
             return;
         }
 
+        // Skip unplayable cards (curses, unplayable statuses). AutoPlay "plays" them by moving them
+        // straight to their result pile (MoveToResultPileWithoutPlaying); a reverted curse sitting in a
+        // mirror pile would be yanked out WITHOUT going through FireOne's slot management, leaving a ghost
+        // loaded card and corrupting the mirror state (the next volley then hangs on the ghost). Mirrors
+        // the 镜像 volley's own skip-AutoPlay for unplayable cards. Don't burn a charge on them.
+        if (transformedCard.Keywords.Contains(CardKeyword.Unplayable))
+        {
+            return;
+        }
+
+        // Skip cards still sitting in a mirror pile. Revert transforms stored cards IN PLACE (the
+        // reverted form lands back in the mirror), so auto-playing one would yank it out without FireOne's
+        // slot management and corrupt the mirror state (ghost loaded card -> next volley hangs). Stored
+        // reverted cards stay stored and fire next volley instead. Forward transmutes land in hand, so
+        // they're unaffected.
+        if (MirrorPile.IsMirrorPile(transformedCard.Pile))
+        {
+            return;
+        }
+
         Data data = GetInternalData<Data>();
         if (data.TriggeredThisTurn >= base.Amount)
         {

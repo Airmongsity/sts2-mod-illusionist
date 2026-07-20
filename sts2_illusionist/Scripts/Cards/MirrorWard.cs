@@ -29,7 +29,7 @@ public sealed class MirrorWardIllusionist : IllusionistCard
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new BlockVar(7m, ValueProp.Move),
+        new BlockVar(6m, ValueProp.Move),
     };
 
     public MirrorWardIllusionist()

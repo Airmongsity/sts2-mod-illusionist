@@ -51,7 +51,7 @@ public sealed class BlindIllusionist : IllusionistCard
         int block = target.Block;
         if (block > 0)
         {
-            await CreatureCmd.LoseBlock(target, block);
+            await CreatureCmd.LoseBlock(choiceContext, target, block, base.Owner.Creature);
         }
 
         await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this, cardPlay).Targeting(target)

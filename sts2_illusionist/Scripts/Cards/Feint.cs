@@ -17,7 +17,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// Feint - 3 cost Skill, Rare. Gain 1 Intangible; all enemies gain 30 Block.
+/// Feint - 3 cost Skill, Rare. Gain 1 Intangible; all enemies gain 15 Block.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "FEINT")]
 public sealed class FeintIllusionist : IllusionistCard
@@ -30,7 +30,7 @@ public sealed class FeintIllusionist : IllusionistCard
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new BlockVar(30m, ValueProp.Move),
+        new BlockVar(15m, ValueProp.Move),
     };
 
     public FeintIllusionist()

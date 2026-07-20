@@ -15,7 +15,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 绝境 (Last Stand) — 1 cost Skill, Common, Innate + Exhaust (a guaranteed turn-1 Mirror opener).
+/// 绝境 (Last Stand) - 1 cost Skill, Common, Retain + Exhaust.
 /// Gain 5 Block. If you have no mirror clones (复制品), gain 5 extra Block AND Copy 2 (so it doubles
 /// as a Mirror opener). Upgraded: +3 to both Block values (5 -> 8, 5 -> 8).
 /// </summary>

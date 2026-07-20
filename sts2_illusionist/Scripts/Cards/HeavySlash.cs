@@ -16,7 +16,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 重斩击 (Heavy Slash) — 3 cost Attack, Uncommon.
+/// 重斩击 (Heavy Slash) - 2 cost Attack, Uncommon.
 /// Deal 22 damage. 先机 (First Move): if this is the first card you play this turn, gain 1 energy.
 /// Upgraded: 30 damage.
 /// </summary>

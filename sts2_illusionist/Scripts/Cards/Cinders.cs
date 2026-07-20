@@ -14,11 +14,8 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 灰烬 (Cinders) — 2 cost Attack, Common (upgraded: 10 -> 14 damage). Deal 10 damage to ALL enemies,
-/// Exhaust. While it sits in your exhaust pile it keeps smoldering: at the start of each of your turns it
-/// replays itself (dealing its damage again to all enemies) and re-exhausts — a persistent AoE engine from
-/// the ash pile. Copies the native Bombardment pattern (<see cref="AfterAutoPrePlayPhaseEnteredEarly"/> +
-/// <see cref="CardKeyword.Exhaust"/>).
+/// CindersIllusionist - 2 cost Attack, Common (upgraded: 9 -> 13 damage).
+/// Deal damage to all enemies. While this card is in the exhaust pile, replay it at the start of your turn.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "CINDERS")]
 public sealed class CindersIllusionist : IllusionistCard
@@ -27,7 +24,7 @@ public sealed class CindersIllusionist : IllusionistCard
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(10m, ValueProp.Move),
+        new DamageVar(9m, ValueProp.Move),
     };
 
     public CindersIllusionist()
@@ -49,11 +46,6 @@ public sealed class CindersIllusionist : IllusionistCard
             .Execute(choiceContext);
     }
 
-    /// <summary>
-    /// While this card is in the exhaust pile, replay it at the start of your turn (native Bombardment
-    /// pattern). Early phase avoids double-firing with other pre-play exhaust effects; the Exhaust keyword
-    /// then sends it straight back to the exhaust pile so it keeps recurring.
-    /// </summary>
     public override async Task AfterAutoPrePlayPhaseEnteredEarly(PlayerChoiceContext choiceContext, Player player)
     {
         CardPile? pile = base.Pile;

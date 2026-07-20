@@ -1,0 +1,5 @@
+{
+  "ILLUSIONIST_CARDPILE_MIRROR.title": "镜像",
+  "ILLUSIONIST_CARDPILE_MIRROR.description": "储存在镜像中的牌。较新的牌会优先触发。",
+  "ILLUSIONIST_CARDPILE_MIRROR.empty": "我的镜像牌堆是空的。"
+}

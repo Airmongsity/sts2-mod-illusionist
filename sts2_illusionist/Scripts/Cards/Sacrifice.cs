@@ -15,8 +15,8 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 献身 (SacrificeIllusionist) — 0 cost Skill, Uncommon.
-/// Gain 2 energy and draw 2 cards. If you have any mirror images, destroy one of them.
-/// Upgraded: draw 4 cards instead of 2.
+/// Gain 1 energy and draw 1 card. If you have any mirror images, destroy one of them.
+/// Upgraded: draw 2 cards.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "SACRIFICE")]
 public sealed class SacrificeIllusionist : IllusionistCard

@@ -28,7 +28,7 @@ public sealed class ShiftingBladeIllusionist : IllusionistCard
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(11m, ValueProp.Move),
+        new DamageVar(9m, ValueProp.Move),
     };
 
     public ShiftingBladeIllusionist()
@@ -49,6 +49,6 @@ public sealed class ShiftingBladeIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Damage.UpgradeValueBy(4m);
+        base.DynamicVars.Damage.UpgradeValueBy(3m);
     }
 }

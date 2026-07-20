@@ -17,8 +17,8 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 引爆 (DetonateIllusionist) — 1 cost Attack, Uncommon.
-/// Destroy all mirror clones; for each one destroyed, deal 12 damage to ALL enemies once.
-/// Upgraded: 15 damage.
+/// Destroy all mirror clones; for each one destroyed, deal 20 damage to ALL enemies once.
+/// Upgraded: 28 damage.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "DETONATE")]
 public sealed class DetonateIllusionist : IllusionistCard
@@ -52,7 +52,7 @@ public sealed class DetonateIllusionist : IllusionistCard
             return;
         }
 
-        // One 12-damage hit to all enemies per destroyed clone.
+        // One 20-damage hit to all enemies per destroyed clone.
         await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this, cardPlay)
             .TargetingAllOpponents(combat)
             .WithHitCount(clones)

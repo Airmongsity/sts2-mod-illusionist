@@ -13,6 +13,7 @@ using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
 
+using Illusionist.Scripts;
 using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
@@ -103,6 +104,10 @@ public sealed class TransmutePower : IllusionistPower
     // before its volley regardless of power-hook order, so both entry points share this guard.
     private bool _turnStartRevertDone;
 
+    // 凝固时间 (SolidifyTimePower): set at turn start (early phase) when the freeze power spends a
+    // stack, consumed here (late phase) to skip this turn's one-layer revert.
+    private bool _skipNextRevert;
+
     public override Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
     {
         if (player.Creature == base.Owner)
@@ -147,15 +152,32 @@ public sealed class TransmutePower : IllusionistPower
         }
 
         _turnStartRevertDone = true;
-        await RevertOneLayer(choiceContext);
+
+        // 凝固时间 (SolidifyTime): the freeze power spends one of its own stacks at turn start (strictly
+        // "next turn" - wasted if there's nothing to revert) and signals us via _skipNextRevert to skip
+        // this turn's one-layer revert, so transmuted cards hold their form an extra turn.
+        if (_skipNextRevert)
+        {
+            _skipNextRevert = false;
+            Log.Info("[illusionist] TransmuteIllusionist: turn-start revert skipped (凝固时间).");
+            return;
+        }
+
+        await RevertOneLayer(choiceContext, isTurnStart: true);
     }
+
+    /// <summary>
+    /// Called by <see cref="SolidifyTimePower"/> at turn start when it spends a stack: this turn's
+    /// one-layer 幻化 revert is skipped (transmuted cards hold their form an extra turn).
+    /// </summary>
+    internal void RequestSkipNextRevert() => _skipNextRevert = true;
 
     /// <summary>
     /// Revert every transmuted card one layer toward its original form, in one atomic batch, and run each
     /// reverted card through the transmute-payoff choke point (<see cref="Transmutation.NotifyTransformed"/>).
     /// Called at the owner's turn start and on demand by 揭露 (Unveil).
     /// </summary>
-    internal async Task RevertOneLayer(PlayerChoiceContext choiceContext)
+    internal async Task RevertOneLayer(PlayerChoiceContext choiceContext, bool isTurnStart = false)
     {
         Player? player = base.Owner.Player;
         if (player == null)
@@ -186,9 +208,12 @@ public sealed class TransmutePower : IllusionistPower
 
             // Only drop the chain if the card was truly REMOVED from combat (no pile at all) or
             // there's nothing left to unwind. A card in the exhaust pile still has a (non-null) pile,
-            // so it keeps reverting — exactly the 彼岸咆哮 case. A pile-less card stored inside a
-            // mirror is NOT gone: eject it back into the exhaust pile so it reverts through the
-            // normal batch below, then recapture the reverted form after the notifies.
+            // so it keeps reverting — exactly the 彼岸咆哮 case. A card stored in a Mirror Pile also
+            // has a non-null pile, so CardCmd.Transform replaces it in-place: the reverted form lands
+            // in the Mirror Pile at the same slot, and the fly-back animation targets the Mirror Pile
+            // button via RitsuLib's GetTargetPosition patch. No eject/recapture needed.
+            // A truly pile-less card (removed from combat) cannot be transformed (Transform requires
+            // a non-null Pile) — eject it to the exhaust pile first, then recapture.
             if (chain.Current.Pile == null)
             {
                 int slot = await MirrorImagePower.EjectForRevert(player, chain.Current);
@@ -247,9 +272,19 @@ public sealed class TransmutePower : IllusionistPower
             foreach ((Chain chain, CardModel replaced, CardModel previous) in pending)
             {
                 chain.Current = previous;
+                // Turn-start only (NOT Unveil's mid-turn revert): strip any stale affliction (e.g.
+                // Queen's ChainsOfBinding / Bound) from the reverted card. Afflictions clear from
+                // cards-in-piles at side-turn-end, but the original sat in transmute limbo (held by this
+                // power, not in any pile) so its affliction survived the cleanup - the reverted card
+                // would otherwise re-enter play with an expired affliction. Mid-turn reverts (Unveil)
+                // skip this: the affliction is still fresh this turn and must not be cleared early.
+                if (isTurnStart && previous.Affliction != null)
+                {
+                    CardCmd.ClearAffliction(previous);
+                }
                 // A stored (in-mirror) card that just reverted must keep its mirror pointing at the
                 // new (reverted) form — stored cards participate fully in 幻化回退.
-                MirrorImagePower.OnCardTransformed(player, replaced, previous);
+                await MirrorImagePower.OnCardTransformed(player, replaced, previous);
                 if (chain.Predecessors.Count == 0)
                 {
                     data.Chains.Remove(chain);

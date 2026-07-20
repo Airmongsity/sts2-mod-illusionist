@@ -12,9 +12,22 @@
 /FA328AA4BCA0ED98C3C379E0BBB5E605.png
 /avatar-s.png
 /avatar-m.png
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.svg
+*.skel
+*.atlas
+*.spine
+*.psd
 
 # --- Decompiled game code (MegaCrit IP) — never publish ---
 /.re/
+/.claude/
+/STS2-RitsuLib/
+/tutorials.sts2modding.com/
 
 # --- Godot editor binaries (huge, not source) ---
 /Godot_v4.5.1-stable_win64.exe
@@ -25,6 +38,9 @@
 
 # --- Logs ---
 /logs/
+err*.txt
+ritsu_types_all.txt
+*.zip
 
 # --- Godot / .NET build caches & outputs ---
 .godot/

@@ -18,8 +18,8 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 挑衅 (ProvokeIllusionist) — 0 cost Skill, Uncommon (upgraded: 10 -> 18 Strength, 1 -> 2 Dexterity).
-/// Gain 1 Dexterity (permanent, self). If the target enemy's intent includes attack, give it 10
+/// 挑衅 (ProvokeIllusionist) - 0 cost Skill, Uncommon (upgraded: 5 -> 9 Strength, 1 -> 2 Dexterity).
+/// Gain 1 Dexterity (permanent, self). If the target enemy's intent includes attack, give it 5
 /// temporary Strength this turn (inflating that swing). The intent enabler: goad an attacking enemy
 /// into a bigger swing, then reflect it with 抗衡 (CounterIllusionist) or block it with 预见
 /// (ForesightIllusionist) — and the Dexterity makes it worth playing even when the enemy isn't attacking.

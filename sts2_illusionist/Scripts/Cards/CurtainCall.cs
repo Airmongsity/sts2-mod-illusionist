@@ -13,40 +13,28 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 谢幕 (CurtainCallIllusionist) — 0 cost Attack, Rare. Deal 40 damage to ALL enemies, but can
-/// only be played while NO enemy's intent includes an attack — the intent-control payoff (à la Grand
-/// Finale): pacify every attacker (Provoke / Blind / Counter / …) then take the stage. The gate is an
-/// <see cref="IsPlayable"/> override → CanPlay reports UnplayableReason.BlockedByCardLogic, so the card
-/// greys out until the board is safe.
-/// Upgraded: 55 damage.
+/// 谢幕 (CurtainCallIllusionist) - 1 cost Attack, Rare. Deal 6 damage to ALL enemies; if NO living enemy
+/// intends to attack, the bonus is folded into the SAME damage instance (one hit of 30, not 6 then 24),
+/// the intent-control payoff (pacify every attacker with Provoke / Blind / Counter / Reversal / ... then
+/// take the stage). Always playable: the old Grand-Finale playability gate is gone, so the safe board is
+/// REWARDED with a bonus rather than required.
+/// Upgraded: the bonus goes 24 -> 39 (the base 6 is unchanged, so 6 or 45).
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "CURTAIN_CALL")]
 public sealed class CurtainCallIllusionist : IllusionistCard
 {
+    // Two DamageVars: the base AoE ("Damage") and the safe-board bonus. A second var of the same type
+    // MUST be given an explicit name or DynamicVarSet throws on the duplicate "Damage" key. The bonus is
+    // ADDED to the base in ONE hit (not a second damage instance).
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(40m, ValueProp.Move),
+        new DamageVar(6m, ValueProp.Move),
+        new DamageVar("BonusDamage", 24m, ValueProp.Move),
     };
 
     public CurtainCallIllusionist()
-        : base(0, CardType.Attack, CardRarity.Rare, TargetType.AllEnemies)
+        : base(1, CardType.Attack, CardRarity.Rare, TargetType.AllEnemies)
     {
-    }
-
-    // Grand-Finale gate: unplayable while any living enemy intends to attack. CardModel.CanPlay ORs in
-    // UnplayableReason.BlockedByCardLogic whenever IsPlayable is false.
-    protected override bool IsPlayable
-    {
-        get
-        {
-            ICombatState? combat = base.Owner?.Creature?.CombatState;
-            if (combat == null)
-            {
-                return true;
-            }
-
-            return !combat.Enemies.Any(e => e.IsAlive && e.Monster != null && e.Monster.IntendsToAttack);
-        }
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
@@ -57,7 +45,15 @@ public sealed class CurtainCallIllusionist : IllusionistCard
             return;
         }
 
-        await DamageCmd.Attack(base.DynamicVars.Damage.BaseValue).FromCard(this, cardPlay)
+        // One damage instance: the base 6, PLUS the bonus (24 / 39 upgraded) folded into the SAME hit
+        // when no living enemy intends to attack (so 6, or 30 / 45 upgraded), not a second separate hit.
+        var damage = base.DynamicVars.Damage.BaseValue;
+        if (!combat.Enemies.Any(e => e.IsAlive && e.Monster != null && e.Monster.IntendsToAttack))
+        {
+            damage += ((DamageVar)base.DynamicVars["BonusDamage"]).BaseValue;
+        }
+
+        await DamageCmd.Attack(damage).FromCard(this, cardPlay)
             .TargetingAllOpponents(combat)
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
@@ -65,6 +61,6 @@ public sealed class CurtainCallIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Damage.UpgradeValueBy(15m); // 40 -> 55
+        ((DamageVar)base.DynamicVars["BonusDamage"]).UpgradeValueBy(15m); // 24 -> 39
     }
 }

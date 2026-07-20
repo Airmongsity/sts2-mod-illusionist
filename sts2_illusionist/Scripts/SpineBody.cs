@@ -84,16 +84,22 @@ public static class SpineBody
                 return null;
             }
 
+            Log.Info($"[illusionist] Spine BuildData: start '{skelPath}' (atlas '{atlasPath}')");
             GodotObject atlas = ClassDB.Instantiate("SpineAtlasResource").AsGodotObject();
+            Log.Info("[illusionist] Spine BuildData: load_from_atlas_file...");
             atlas.Call("load_from_atlas_file", atlasPath);
 
             GodotObject skeletonFile = ClassDB.Instantiate("SpineSkeletonFileResource").AsGodotObject();
+            Log.Info("[illusionist] Spine BuildData: load_from_file...");
             skeletonFile.Call("load_from_file", skelPath);
 
             GodotObject data = ClassDB.Instantiate("SpineSkeletonDataResource").AsGodotObject();
+            Log.Info("[illusionist] Spine BuildData: set_atlas_res...");
             data.Call("set_atlas_res", atlas);
+            Log.Info("[illusionist] Spine BuildData: set_skeleton_file_res...");
             data.Call("set_skeleton_file_res", skeletonFile);
 
+            Log.Info("[illusionist] Spine BuildData: is_skeleton_data_loaded...");
             if (!data.Call("is_skeleton_data_loaded").AsBool())
             {
                 Log.Error($"[illusionist] Spine: skeleton data failed to load for {skelPath}; using static body.");
@@ -103,6 +109,7 @@ public static class SpineBody
             KeepAlive.Add(atlas);
             KeepAlive.Add(skeletonFile);
             KeepAlive.Add(data);
+            Log.Info($"[illusionist] Spine BuildData: done '{skelPath}'");
             return data;
         }
         catch (Exception ex)

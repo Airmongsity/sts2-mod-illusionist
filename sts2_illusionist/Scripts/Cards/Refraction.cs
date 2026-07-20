@@ -12,10 +12,8 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 折光 (RefractionIllusionist) — 1 cost Power, Uncommon (upgraded: 11 -> 13 damage). Whenever you 变化
-/// (transform) a card, deal 11 damage to a random enemy. One 幻化 (transmute) is two transforms (forward +
-/// revert), so it lands two bolts per transmute. Applies the persistent <see cref="RefractionPower"/>;
-/// playing it again adds its damage on top.
+/// RefractionIllusionist - 1 cost Power, Uncommon (upgraded: 4 -> 6 damage).
+/// Whenever you transform a card, deal damage to a random enemy.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "REFRACTION")]
 public sealed class RefractionIllusionist : IllusionistCard
@@ -23,7 +21,7 @@ public sealed class RefractionIllusionist : IllusionistCard
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DynamicVar("Damage", 11m),
+        new DynamicVar("Damage", 4m),
     };
 
     public RefractionIllusionist()
@@ -39,6 +37,6 @@ public sealed class RefractionIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars["Damage"].UpgradeValueBy(2m); // 11 -> 13
+        base.DynamicVars["Damage"].UpgradeValueBy(2m); // 4 -> 6
     }
 }

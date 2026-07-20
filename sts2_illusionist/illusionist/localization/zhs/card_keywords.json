@@ -4,7 +4,7 @@
   "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.title": "镜像",
   "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.description": "每回合开始时，每个镜像[gold]执行[/gold] 1。\n你消耗的牌和每回合打出的第一张牌的消耗复制品会被放入镜像。\n每当你受到未被格挡的伤害时，你的一个镜像死亡。",
   "ILLUSIONIST_KEYWORD_EXECUTE.title": "执行",
-  "ILLUSIONIST_KEYWORD_EXECUTE.description": "如果携带的牌没有[gold]消耗[/gold]且不是能力牌，则将其对随机敌人打出。否则对随机敌人打出并放入消耗牌堆。",
+  "ILLUSIONIST_KEYWORD_EXECUTE.description": "对敌人打出这张牌并添加消耗",
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.title": "先机",
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.description": "仅当这是你本回合打出的第一张牌时，才会触发。",
   "ILLUSIONIST_KEYWORD_TRANSMUTE.title": "幻化",

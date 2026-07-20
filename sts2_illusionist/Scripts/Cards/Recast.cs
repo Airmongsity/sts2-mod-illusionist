@@ -16,9 +16,8 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 重铸 (Recast) — 1 cost Attack, Uncommon (upgraded: 13 -> 16 damage). Deal 13 damage, destroy all your
-/// mirror images, then [gold]Copy[/gold] the same number back — shattering the whole board (triggering
-/// every shatter payoff: 愈镜 heal, 裂镜 burst, 记忆 draw) and rerolling it into fresh random types at the
-/// same count.
+/// mirror images (each death fires its stored card / empty burst), then [gold]Copy[/gold] the same number
+/// back as fresh empty mirrors - dump the bank, then reload from scratch at the same count.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "RECAST")]
 public sealed class RecastIllusionist : IllusionistCard

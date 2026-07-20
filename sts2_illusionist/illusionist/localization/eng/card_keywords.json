@@ -4,7 +4,7 @@
   "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.title": "Mirror Image",
   "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.description": "At the start of your turn, each mirror [gold]Executes[/gold] 1.\nCards you [gold]Exhaust[/gold] and [gold]Exhaust[/gold] copies of the first card you play each turn are stored in mirrors.\nWhenever you take unblocked damage, one of your mirrors dies.",
   "ILLUSIONIST_KEYWORD_EXECUTE.title": "Execute",
-  "ILLUSIONIST_KEYWORD_EXECUTE.description": "If the stored card does not have [gold]Exhaust[/gold] and is not a Power, play it at a random enemy. Otherwise, play it at a random enemy and put it into the exhaust pile.",
+  "ILLUSIONIST_KEYWORD_EXECUTE.description": "Play a card, add [gold]Exhaust[/gold] to it.",
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.title": "First Move",
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.description": "Triggers only if this is the first card you play this turn.",
   "ILLUSIONIST_KEYWORD_TRANSMUTE.title": "Transmute",

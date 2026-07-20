@@ -46,6 +46,7 @@ public sealed class IllusionistRestSitePatch : IPatchMethod
     {
         try
         {
+            Log.Info("[illusionist] RestSite: _Ready postfix start");
             if (__instance.Player?.Character is not global::Illusionist.Scripts.Characters.Illusionist)
             {
                 return;
@@ -56,7 +57,9 @@ public sealed class IllusionistRestSitePatch : IPatchMethod
             }
 
             // Build our sprite FIRST; if Spine is unavailable, leave the borrowed body untouched.
+            Log.Info("[illusionist] RestSite: CreateSprite (loads illusionist_rest.skel)...");
             Node2D? sprite = SpineBody.CreateSprite(SpineBody.RestSkel, alpha: 1f, NodeName);
+            Log.Info($"[illusionist] RestSite: CreateSprite -> {(sprite != null ? "ok" : "null (spine unavailable/failed)")}");
             if (sprite == null)
             {
                 return;
@@ -89,10 +92,14 @@ public sealed class IllusionistRestSitePatch : IPatchMethod
                 }
             }
 
+            Log.Info("[illusionist] RestSite: AddChild");
             __instance.AddChild(sprite);
             Vector2 anchorLocal = (anchor != null) ? anchor.Position : Vector2.Zero;
+            Log.Info("[illusionist] RestSite: Place");
             SpineBody.Place(sprite, SpineBody.RestSkel, anchorLocal, TargetHeightPx, Mathf.Abs(__instance.GlobalScale.Y), YOffset);
+            Log.Info("[illusionist] RestSite: Play");
             SpineBody.Play(sprite, SpineBody.RestSkel);   // start idle AFTER it's in the tree
+            Log.Info("[illusionist] RestSite: postfix done (render loop takes over)");
         }
         catch (Exception ex)
         {
