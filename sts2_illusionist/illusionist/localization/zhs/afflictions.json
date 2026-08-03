@@ -1,0 +1,8 @@
+{
+  "ILLUSIONIST_AFFLICTION_FROZEN.title": "冻结",
+  "ILLUSIONIST_AFFLICTION_FROZEN.description": "除非将其打出，否则这张牌无法变化",
+  "ILLUSIONIST_AFFLICTION_FROZEN.extraCardText": "除非将其打出，否则这张牌无法变化",
+  "ILLUSIONIST_AFFLICTION_SCORCHING.title": "灼热",
+  "ILLUSIONIST_AFFLICTION_SCORCHING.description": "回合开始时，消耗这张牌，为同一牌堆的一张随机牌添加灼热。当你打出这张牌时，移除灼热",
+  "ILLUSIONIST_AFFLICTION_SCORCHING.extraCardText": "回合开始时，消耗这张牌，为同一牌堆的一张随机牌添加灼热。当你打出这张牌时，移除灼热"
+}

@@ -17,9 +17,9 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 围攻 (SiegeIllusionist) — 1 cost Attack, Uncommon.
-/// For each mirror clone (复制品) you have, deal 10 damage to ALL enemies once (mirrors are NOT consumed).
+/// For each mirror clone (复制品) you have, deal 6 damage to ALL enemies once (mirrors are NOT consumed).
 /// Against a lone target every hit lands on it, so this is the mirror deck's single-target burst too.
-/// Upgraded: 12 damage.
+/// Upgraded: 8 damage.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "SIEGE")]
 public sealed class SiegeIllusionist : IllusionistCard
@@ -29,7 +29,7 @@ public sealed class SiegeIllusionist : IllusionistCard
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(10m, ValueProp.Move),
+        new DamageVar(6m, ValueProp.Move),
     };
 
     public SiegeIllusionist()

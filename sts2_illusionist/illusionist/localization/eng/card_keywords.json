@@ -2,7 +2,7 @@
   "ILLUSIONIST_KEYWORD_COPY.title": "Copy",
   "ILLUSIONIST_KEYWORD_COPY.description": "Create a mirror image.",
   "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.title": "Mirror Image",
-  "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.description": "At the start of your turn, each mirror [gold]Executes[/gold] 1.\nCards you [gold]Exhaust[/gold] and [gold]Exhaust[/gold] copies of the first card you play each turn are stored in mirrors.\nWhenever you take unblocked damage, one of your mirrors dies.",
+  "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.description": "At the start of your turn, each mirror [gold]Executes[/gold] 1.\nCards you [gold]Exhaust[/gold] and [gold]Exhaust[/gold] copies of the first card you play each turn are stored in mirrors.\nWhenever you take unblocked damage, one of your mirrors dies.\nYou can have up to 9 mirrors.",
   "ILLUSIONIST_KEYWORD_EXECUTE.title": "Execute",
   "ILLUSIONIST_KEYWORD_EXECUTE.description": "Play a card, add [gold]Exhaust[/gold] to it.",
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.title": "First Move",

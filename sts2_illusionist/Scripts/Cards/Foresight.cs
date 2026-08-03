@@ -6,6 +6,7 @@ using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization;
+using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.Models.Powers;
@@ -14,12 +15,17 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 预见 (ForesightIllusionist) — 1 cost Skill, Uncommon (upgraded: Retain).
-/// Choose up to 8 cards from your draw pile and place them on top in any order.
+/// 预见 (ForesightIllusionist) — 1-cost Uncommon Skill. Choose 3 cards from the draw and discard
+/// piles and put them on top of the draw pile. At the start of next turn, gain 1 Energy.
+/// Upgraded: choose 5 cards.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "FORESIGHT")]
 public sealed class ForesightIllusionist : IllusionistCard
 {
+    protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
+    {
+        new CardsVar(3),
+    };
 
     public ForesightIllusionist()
         : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.Self)
@@ -29,23 +35,28 @@ public sealed class ForesightIllusionist : IllusionistCard
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         CardPile drawPile = PileType.Draw.GetPile(base.Owner);
-        if (drawPile.Cards.Count == 0) return;
+        CardPile discardPile = PileType.Discard.GetPile(base.Owner);
+        List<CardModel> candidates = drawPile.Cards
+            .Concat(discardPile.Cards)
+            .ToList();
 
-        int pickCount = System.Math.Min(8, drawPile.Cards.Count);
-
-        List<CardModel> selected = (await CardSelectCmd.FromCombatPile(
-            choiceContext, drawPile, base.Owner,
-            new CardSelectorPrefs(
-                new LocString("cards", "ILLUSIONIST_CARD_FORESIGHT.selectionScreenPrompt"),
-                pickCount))).ToList();
-
-        if (selected.Count == 0) return;
-
-        // Place selected cards on top; reverse so the first-picked is on top.
-        selected.Reverse();
-        foreach (CardModel card in selected)
+        int pickCount = System.Math.Min(base.DynamicVars.Cards.IntValue, candidates.Count);
+        if (pickCount > 0)
         {
-            await CardPileCmd.Add(card, PileType.Draw, CardPilePosition.Top);
+            List<CardModel> selected = (await CardSelectCmd.FromSimpleGrid(
+                choiceContext,
+                candidates,
+                base.Owner,
+                new CardSelectorPrefs(
+                    new LocString("cards", "ILLUSIONIST_CARD_FORESIGHT.selectionScreenPrompt"),
+                    pickCount))).ToList();
+
+            // Reverse so the first selected card ends on top after repeated top insertions.
+            selected.Reverse();
+            foreach (CardModel card in selected)
+            {
+                await CardPileCmd.Add(card, PileType.Draw, CardPilePosition.Top);
+            }
         }
 
         await PowerCmd.Apply<EnergyNextTurnPower>(choiceContext, base.Owner.Creature, 1, base.Owner.Creature, this);
@@ -53,6 +64,6 @@ public sealed class ForesightIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        AddKeyword(CardKeyword.Retain);
+        base.DynamicVars.Cards.UpgradeValueBy(2m);
     }
 }

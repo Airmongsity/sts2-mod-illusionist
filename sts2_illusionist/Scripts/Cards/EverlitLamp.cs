@@ -16,9 +16,9 @@ namespace Illusionist.Scripts.Cards;
 /// 长明灯 (Everlit Lamp) - 2 cost Power, Rare (upgraded: gains Innate). Each turn, the first time you
 /// 幻化 a card in your hand into an 熄灭油灯 (Extinguished Lamp), it becomes a 暗淡油灯 (Dim Lamp) instead
 /// (0 cost: gain 1 energy, draw 2). A Transmute-pillar ceiling raiser, not a damage finisher: it turns
-/// the "blank a card" cost (Riposte / Disillusion) into a productive Dim Lamp. Hand-only - the swap
-/// lives in TransmuteCards with an original.Pile==Hand gate, so it can't fire on (or deadlock) the
-/// transmute-revert path or discard/draw lamp additions. Upgraded Innate so it's online from turn 1.
+/// the "blank a card" cost (Riposte / Disillusion) into a productive Dim Lamp. Hand-only: forward
+/// transmutation results, drawn Lamps, and directly generated final-form Lamps all share the same
+/// once-per-turn conversion gate. Upgraded Innate so it's online from turn 1.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "EVERLIT_LAMP")]
 public sealed class EverlitLampIllusionist : IllusionistCard

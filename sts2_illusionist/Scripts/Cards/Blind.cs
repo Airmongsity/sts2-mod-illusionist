@@ -19,14 +19,12 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 致盲 (BlindIllusionist) — 1 cost Attack, Common.
-/// Deal 5 damage; if the enemy intends to attack, apply 1 Weak and gain 5 Block — a reactive
-/// attack that punishes (and partly defends against) an incoming swing. Upgraded: 8 damage.
+/// Remove all of the enemy's Block, deal 5 damage, then apply 1 Weak if it intends to attack.
+/// Upgraded: 8 damage.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "BLIND")]
 public sealed class BlindIllusionist : IllusionistCard
 {
-
-    public override bool GainsBlock => true;
 
     // Weak power needs its hover-tip added explicitly (base-game Bash pattern).
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[] { HoverTipFactory.FromPower<WeakPower>() };
@@ -35,7 +33,6 @@ public sealed class BlindIllusionist : IllusionistCard
     {
         new DamageVar(5m, ValueProp.Move),
         new PowerVar<WeakPower>(1m),
-        new BlockVar(5m, ValueProp.Move),
     };
 
     public BlindIllusionist()
@@ -58,11 +55,10 @@ public sealed class BlindIllusionist : IllusionistCard
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
 
-        // Only if the enemy telegraphs an attack: Weak it and brace with Block.
+        // Only if the enemy telegraphs an attack: apply Weak.
         if (IntendsToAttack(target))
         {
             await PowerCmd.Apply<WeakPower>(choiceContext, target, base.DynamicVars.Weak.BaseValue, base.Owner.Creature, this);
-            await CreatureCmd.GainBlock(base.Owner.Creature, base.DynamicVars.Block, cardPlay);
         }
     }
 

@@ -15,8 +15,8 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 变幻之刃 (Shifting Blade) — 1 cost Attack, Common (upgraded: 11 -> 15 damage).
-/// Deal 11 damage, then 幻化 a card in your hand into a COPY of this Blade until end of turn (carrying
+/// 变幻之刃 (Shifting Blade) — 1 cost Attack, Common (upgraded: 9 -> 11 damage).
+/// Deal 9 damage, then 幻化 a card in your hand into a COPY of this Blade until end of turn (carrying
 /// this card's upgrades/enchantments/temporary effects). The attack backbone of the 幻化 system: turn
 /// a dead card into more damage, and with FluxweaveIllusionist draw a card for the reshape.
 /// </summary>
@@ -25,6 +25,11 @@ public sealed class ShiftingBladeIllusionist : IllusionistCard
 {
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Transmute };
+
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
+    {
+        HoverTipFactory.FromKeyword(CardKeyword.Exhaust),
+    };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
@@ -44,11 +49,11 @@ public sealed class ShiftingBladeIllusionist : IllusionistCard
             .Execute(choiceContext);
 
         // 幻化 a hand card into a copy of THIS Blade (preserving its upgrade/enchant state) this turn.
-        await Transmutation.TransmuteToCopyOf(this, choiceContext);
+        await Transmutation.TransmuteToNonExhaustCopyOf(this, choiceContext);
     }
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Damage.UpgradeValueBy(3m);
+        base.DynamicVars.Damage.UpgradeValueBy(2m);
     }
 }

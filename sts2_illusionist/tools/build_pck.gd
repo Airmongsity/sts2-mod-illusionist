@@ -42,6 +42,7 @@ const IMPORTED_DIRS := [
 	"res://illusionist/art/cards",
 	"res://illusionist/art/powers",
 	"res://illusionist/art/potions",
+	"res://illusionist/art/afflictions",
 ]
 
 func _initialize() -> void:

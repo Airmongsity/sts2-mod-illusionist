@@ -14,7 +14,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 拟形之盾 (Mirror Ward) — 1 cost Skill, Common (upgraded: 7 -> 10 Block).
+/// 拟形之盾 (Mirror Ward) — 1 cost Skill, Common (upgraded: 7 -> 9 Block).
 /// Gain 7 Block, then 幻化 a card in your hand into a COPY of this Ward until end of turn (carrying
 /// this card's upgrades/enchantments/temporary effects). The defense backbone of the 幻化 system:
 /// turn a dead card into more Block, and with FluxweaveIllusionist draw a card for the reshape.
@@ -27,9 +27,14 @@ public sealed class MirrorWardIllusionist : IllusionistCard
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { IllusionistKeywords.Transmute };
 
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
+    {
+        HoverTipFactory.FromKeyword(CardKeyword.Exhaust),
+    };
+
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new BlockVar(6m, ValueProp.Move),
+        new BlockVar(7m, ValueProp.Move),
     };
 
     public MirrorWardIllusionist()
@@ -42,11 +47,11 @@ public sealed class MirrorWardIllusionist : IllusionistCard
         await CreatureCmd.GainBlock(base.Owner.Creature, base.DynamicVars.Block.BaseValue, ValueProp.Move, cardPlay);
 
         // 幻化 a hand card into a copy of THIS Ward (preserving its upgrade/enchant state) this turn.
-        await Transmutation.TransmuteToCopyOf(this, choiceContext);
+        await Transmutation.TransmuteToNonExhaustCopyOf(this, choiceContext);
     }
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Block.UpgradeValueBy(3m);
+        base.DynamicVars.Block.UpgradeValueBy(2m);
     }
 }

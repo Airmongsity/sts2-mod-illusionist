@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Illusionist.Scripts;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
@@ -17,7 +18,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 催化 (AgingIllusionist) — 1 cost Skill, Uncommon (upgraded: 0 cost).
+/// 催化 (AgingIllusionist) — 1 cost Skill, Rare (upgraded: 0 cost).
 /// Double your damage this turn (via DoubleDamagePower, same as Shadow Step).
 /// If the target enemy's intent this turn consists ONLY of Attack and/or Defend,
 /// advance it to next turn's intent, discarding the current one.
@@ -26,7 +27,7 @@ namespace Illusionist.Scripts.Cards;
 public sealed class AgingIllusionist : IllusionistCard
 {
     public AgingIllusionist()
-        : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
+        : base(1, CardType.Skill, CardRarity.Rare, TargetType.AnyEnemy)
     {
     }
 
@@ -44,21 +45,31 @@ public sealed class AgingIllusionist : IllusionistCard
             && intents.All(i => i.IntentType == IntentType.Attack || i.IntentType == IntentType.Defend);
         if (!onlyAttackOrDefend) return;
 
+        bool changed = false;
         try
         {
-            MoveState currentMove = target.Monster.NextMove;
-            MoveState? nextMove = ResolveNextMove(target);
-            if (nextMove == null || ReferenceEquals(nextMove, currentMove))
+            MoveState? nextMove = ResolveNextMove(target, out MonsterState? loggedState);
+            if (nextMove == null)
             {
-                Log.Info("[illusionist] Aging: no distinct next move; no intent change.");
+                Log.Info("[illusionist] Aging: no next move; no intent change.");
                 return;
             }
 
             target.Monster.SetMoveImmediate(nextMove, forceTransition: true);
+            if (loggedState != null)
+            {
+                target.Monster.MoveStateMachine?.StateLog.Add(loggedState);
+            }
+            changed = true;
         }
         catch (Exception ex)
         {
             Log.Error($"[illusionist] Aging failed to advance intent: {ex}");
+        }
+
+        if (changed)
+        {
+            await IntentManipulation.NotifyChanged(choiceContext, base.Owner);
         }
     }
 
@@ -67,8 +78,9 @@ public sealed class AgingIllusionist : IllusionistCard
         base.EnergyCost.UpgradeBy(-1);
     }
 
-    private static MoveState? ResolveNextMove(Creature monster)
+    private static MoveState? ResolveNextMove(Creature monster, out MonsterState? loggedState)
     {
+        loggedState = null;
         if (monster.Monster == null) return null;
 
         MonsterMoveStateMachine? machine = monster.Monster.MoveStateMachine;
@@ -83,6 +95,11 @@ public sealed class AgingIllusionist : IllusionistCard
                 return null;
 
             state = next;
+            if (loggedState == null && state.ShouldAppearInLogs)
+            {
+                loggedState = state;
+            }
+
             if (state.IsMove) return (MoveState)state;
         }
 

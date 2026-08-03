@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Illusionist.Scripts;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
@@ -60,6 +61,7 @@ public sealed class BluffIllusionist : IllusionistCard
             return;
         }
 
+        bool changed = false;
         try
         {
             // Wrap the enemy's current move: same intents plus a Defend telegraph; on its turn it
@@ -84,10 +86,16 @@ public sealed class BluffIllusionist : IllusionistCard
             wrapped.FollowUpState = move.FollowUpState;
 
             target.Monster.SetMoveImmediate(wrapped, forceTransition: true);
+            changed = true;
         }
         catch (Exception ex)
         {
             Log.Error($"[illusionist] Bluff: failed to add block intent: {ex}");
+        }
+
+        if (changed)
+        {
+            await IntentManipulation.NotifyChanged(choiceContext, base.Owner);
         }
     }
 

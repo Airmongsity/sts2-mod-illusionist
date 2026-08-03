@@ -75,6 +75,8 @@ public static class Entry
             // Gameplay / UX patches that no library feature covers.
             patcher.RegisterPatch<IllusionistMirrorVisualPatch>();
             patcher.RegisterPatch<IllusionistMirrorRingPatch>();
+            patcher.RegisterPatch<MirrorPlayResultVisualPatch>();
+            patcher.RegisterPatch<CutInHitCountPatch>();
             patcher.RegisterPatch<TransmuteRevertHoverPatch>();
             patcher.RegisterPatch<ArchitectDialogueFallbackPatch>();
             patcher.RegisterPatch<RunWonAchievementGuardPatch>();

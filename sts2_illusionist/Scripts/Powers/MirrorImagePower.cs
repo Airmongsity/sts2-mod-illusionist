@@ -35,8 +35,9 @@ namespace Illusionist.Scripts.Powers;
 /// <para><b>Volley:</b> at the start of your turn, AFTER the transmute revert
 /// (<see cref="TransmutePower.EnsureTurnStartRevert"/>), every LOADED mirror plays its stored card,
 /// newest first. Attack/Skill/Status cards without Exhaust return to the same mirror after the
-/// first shot and gain Exhaust, so the second shot spends them. Cards that already have Exhaust are
-/// spent immediately. Power cards resolve like normal powers and disappear. Mirror-fired plays never
+/// first shot and gain Exhaust, so the second shot normally spends them. A card that entered with
+/// Exhaust is spent only if it still has Exhaust after resolving; removing Exhaust during play keeps
+/// it loaded. Power cards resolve like normal powers and disappear. Mirror-fired plays never
 /// re-store themselves and never count as the turn's first card — no loops.</para>
 ///
 /// <para><b>Death:</b> each instance of unblocked damage / HP loss you take kills ONE mirror — EMPTY
@@ -123,7 +124,14 @@ public sealed class MirrorImagePower : IllusionistPower
 
     private readonly HashSet<CardModel> _destroyedWhileFiring = new();
 
+    // The result-visual patch has already launched this card directly toward the exhaust pile.
+    // Its real CardCmd.Exhaust must still run for history/hooks, but with native burn-away visuals skipped.
+    private readonly HashSet<CardModel> _directExhaustFlights = new();
+
     private int _mirrorPlayDepth;
+
+    /// <summary>Whether this exact card is currently resolving from a mirror.</summary>
+    internal bool IsExecuting(CardModel card) => _noRestore.Contains(card);
 
     // The exact cards the player manually played from hand and that may still report Exhaust later in
     // the engine's play pipeline. AutoPlay, mirror volleys, exhaust-pile effects, and unrelated hand
@@ -194,6 +202,29 @@ public sealed class MirrorImagePower : IllusionistPower
         return _autoPlaySourcePile.TryGetValue(card, out PileType sourcePile)
             ? sourcePile
             : null;
+    }
+
+    /// <summary>
+    /// The result-pile capability provisionally sends every playable mirror shot back to the mirror so
+    /// post-play Exhaust removal can be honored. Once the effect has resolved, the result-animation patch
+    /// asks here whether this exact resolving card should visually fly to Exhaust instead.
+    /// </summary>
+    internal static bool ShouldFlyDirectlyToExhaust(CardModel card, PileType newPileType)
+    {
+        if (newPileType != MirrorPile.Type || !card.Keywords.Contains(CardKeyword.Exhaust))
+        {
+            return false;
+        }
+
+        Player? player = card.Owner;
+        MirrorImagePower? power = player?.Creature.GetPower<MirrorImagePower>();
+        return power != null && power._firing.Contains(card);
+    }
+
+    internal static void MarkDirectExhaustFlightStarted(CardModel card)
+    {
+        Player? player = card.Owner;
+        player?.Creature.GetPower<MirrorImagePower>()?._directExhaustFlights.Add(card);
     }
 
     /// <summary>
@@ -597,19 +628,35 @@ public sealed class MirrorImagePower : IllusionistPower
             await transmute.EnsureTurnStartRevert(choiceContext);
         }
 
-        Data data = GetInternalData<Data>();
-        await TrimOverflow(data);
-        List<CardModel> loaded = LoadedCards;
-        if (loaded.Count == 0)
+        await FireAll(choiceContext);
+    }
+
+    /// <summary>
+    /// Fire every loaded mirror using the normal round-robin targeting rules. The loaded-card snapshot
+    /// is fixed before the volley, so cards stored during execution wait for a later volley.
+    /// </summary>
+    internal async Task FireAll(PlayerChoiceContext choiceContext)
+    {
+        if (!HasLivingHittableEnemy())
         {
             return;
         }
 
-        // Snapshot: cards stored DURING the volley (exhausts of fired non-token cards, etc.) wait for
-        // next turn; cards that die out from under us are skipped via the Contains check.
-        List<CardModel> snapshot = loaded;
+        Data data = GetInternalData<Data>();
+        await TrimOverflow(data);
+        List<CardModel> snapshot = LoadedCards;
+        if (snapshot.Count == 0)
+        {
+            return;
+        }
+
         for (int i = snapshot.Count - 1; i >= 0; i--)
         {
+            if (!HasLivingHittableEnemy())
+            {
+                break;
+            }
+
             CardModel card = snapshot[i];
             if (!LoadedCards.Contains(card))
             {
@@ -621,10 +668,26 @@ public sealed class MirrorImagePower : IllusionistPower
     }
 
     /// <summary>
-    /// Fire one mirror's stored card. Attack/Skill/Status cards without Exhaust return once and gain Exhaust,
-    /// so a non-Exhaust card consumed into a mirror fires across the next two turns instead of forever.
-    /// Cards that already had Exhaust are spent immediately. Power cards resolve and disappear, matching
-    /// normal player-played powers.
+    /// Wait for the ordinary exhaust-storage pass before firing. This ensures an exhausted card is
+    /// loaded normally before 幻象风暴 takes its snapshot, without resolving a volley inside the
+    /// engine's exhaust hook stack.
+    /// </summary>
+    internal async Task FireAllAfterPendingExhausts(PlayerChoiceContext choiceContext)
+    {
+        await Cmd.Wait(0.06f);
+        while (_pendingManualExhaustFlushQueued || _pendingManualExhausts.Count > 0)
+        {
+            await Cmd.Wait(0.01f);
+        }
+
+        await FireAll(choiceContext);
+    }
+
+    /// <summary>
+    /// Fire one mirror's stored card. Attack/Skill/Status cards use the mirror pile as their provisional
+    /// result pile, so their post-play keyword state decides whether they stay loaded. Cards entering without
+    /// Exhaust return and gain it; cards entering with Exhaust are spent only if they still have it after
+    /// resolving. Power cards resolve and disappear, matching normal player-played powers.
     /// </summary>
     private async Task FireOne(PlayerChoiceContext choiceContext, Data data, CardModel card, Creature? forcedTarget = null)
     {
@@ -654,6 +717,11 @@ public sealed class MirrorImagePower : IllusionistPower
             Creature? volleyTarget = forcedTarget != null
                 ? (card.TargetType == TargetType.AnyEnemy ? forcedTarget : null)
                 : PickVolleyTarget(card, data);
+            if (card.TargetType == TargetType.AnyEnemy
+                && (volleyTarget == null || !volleyTarget.IsAlive))
+            {
+                return;
+            }
 
             bool isAttackSkillOrStatus = card.Type == CardType.Attack
                 || card.Type == CardType.Skill
@@ -662,12 +730,11 @@ public sealed class MirrorImagePower : IllusionistPower
             bool hadExhaustAtFire = card.Keywords.Contains(CardKeyword.Exhaust);
             bool canFireFromMirror = isAttackSkillOrStatus || isPower || hadExhaustAtFire;
             bool unplayable = card.Keywords.Contains(CardKeyword.Unplayable);
-            bool shouldReturnToMirrorAfterPlay = isAttackSkillOrStatus && !hadExhaustAtFire && !unplayable;
             MirrorPlayResultPileCapability? mirrorResultPile = null;
 
             if (canFireFromMirror && !unplayable)
             {
-                if (shouldReturnToMirrorAfterPlay)
+                if (isAttackSkillOrStatus)
                 {
                     mirrorResultPile = new MirrorPlayResultPileCapability();
                     card.Capabilities().Insert(0, mirrorResultPile);
@@ -705,18 +772,23 @@ public sealed class MirrorImagePower : IllusionistPower
 
                 SyncEmptySlots(data);
             }
-            else if (hadExhaustAtFire || card.Pile?.Type == PileType.Exhaust)
+            else if (hadExhaustAtFire && card.Keywords.Contains(CardKeyword.Exhaust))
             {
-                // The card entered this volley with Exhaust, so this shot spends it. If AutoPlay did
-                // not already put it in the exhaust pile, move it there without letting mirror restore
-                // hooks recapture it.
+                // The card entered this volley with Exhaust and still has it after resolving, so spend it.
+                // If AutoPlay did not already put it in the exhaust pile, move it there without letting
+                // mirror restore hooks recapture it.
                 if (unplayable)
                 {
                     await DropToExhaustPile(card);
                 }
                 else if (card.Pile != null && card.Pile.Type != PileType.Exhaust)
                 {
-                    await CardCmd.Exhaust(choiceContext, card);
+                    bool skipNativeExhaustVisual = _directExhaustFlights.Remove(card);
+                    await CardCmd.Exhaust(
+                        choiceContext,
+                        card,
+                        causedByEthereal: false,
+                        skipVisuals: skipNativeExhaustVisual);
                     NotifyMirrorPileRemove();
                 }
                 else if (card.Pile == null)
@@ -732,14 +804,18 @@ public sealed class MirrorImagePower : IllusionistPower
             }
             else if (isAttackSkillOrStatus && canFireFromMirror && !unplayable)
             {
-                CardCmd.ApplyKeyword(card, CardKeyword.Exhaust);
+                if (!hadExhaustAtFire)
+                {
+                    CardCmd.ApplyKeyword(card, CardKeyword.Exhaust);
+                }
+
                 if (card.Pile == null)
                 {
                     card.HasBeenRemovedFromState = false;
                 }
 
-                // First shot of a non-Exhaust Attack/Skill/Status: keep it loaded, but the next mirror shot
-                // will see Exhaust and spend it.
+                // A non-Exhaust card gains Exhaust for its next shot. A card that entered with Exhaust but
+                // removed it while resolving remains loaded without re-adding the keyword.
                 await KeepStoredAt(card, slot);
                 SyncEmptySlots(data);
             }
@@ -762,6 +838,7 @@ public sealed class MirrorImagePower : IllusionistPower
             _firingOrder.Remove(card);
             _destroyedWhileFiring.Remove(card);
             _firing.Remove(card);
+            _directExhaustFlights.Remove(card);
             _noRestore.Remove(card);
         }
     }
@@ -774,6 +851,11 @@ public sealed class MirrorImagePower : IllusionistPower
     /// </summary>
     internal async Task FireAllAtTarget(PlayerChoiceContext choiceContext, Creature target)
     {
+        if (!target.IsAlive || !HasLivingHittableEnemy())
+        {
+            return;
+        }
+
         Data data = GetInternalData<Data>();
         List<CardModel> snapshot = LoadedCards;
         if (snapshot.Count == 0)
@@ -783,6 +865,11 @@ public sealed class MirrorImagePower : IllusionistPower
 
         for (int i = snapshot.Count - 1; i >= 0; i--)
         {
+            if (!target.IsAlive || !HasLivingHittableEnemy())
+            {
+                break;
+            }
+
             CardModel card = snapshot[i];
             if (!LoadedCards.Contains(card))
             {
@@ -813,7 +900,9 @@ public sealed class MirrorImagePower : IllusionistPower
             return null;
         }
 
-        List<Creature> enemies = combat.HittableEnemies.ToList();
+        List<Creature> enemies = combat.HittableEnemies
+            .Where(enemy => enemy.IsAlive)
+            .ToList();
         if (enemies.Count == 0)
         {
             return null;
@@ -822,6 +911,12 @@ public sealed class MirrorImagePower : IllusionistPower
         Creature target = enemies[data.VolleyCursor % enemies.Count];
         data.VolleyCursor++;
         return target;
+    }
+
+    private bool HasLivingHittableEnemy()
+    {
+        ICombatState? combat = base.Owner.CombatState;
+        return combat != null && combat.HittableEnemies.Any(enemy => enemy.IsAlive);
     }
 
     // ------------------------------------------------------------------ deaths

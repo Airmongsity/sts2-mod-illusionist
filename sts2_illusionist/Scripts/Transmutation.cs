@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Illusionist.Scripts.Afflictions;
 using MegaCrit.Sts2.Core.CardSelection;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
@@ -14,7 +15,7 @@ using Illusionist.Scripts.Powers;
 namespace Illusionist.Scripts;
 
 /// <summary>
-/// Shared helpers for the 幻化 (TransmuteIllusionist) system: temporarily transform cards in hand (reverting at
+/// Shared helpers for the 幻形 (TransmuteIllusionist) system: temporarily transform cards in hand (reverting at
 /// end of turn if unplayed, via <see cref="TransmutePower"/>). Every transmute also pings
 /// <see cref="FluxweavePower"/>, so "draw on transform" lives in one place.
 /// </summary>
@@ -29,7 +30,7 @@ public static class Transmutation
         List<CardModel> selection = (await CardSelectCmd.FromHand(
             choiceContext, source.Owner,
             new CardSelectorPrefs(CardSelectorPrefs.TransformSelectionPrompt, 1),
-            c => c.IsTransformable,
+            CanTransmute,
             source)).ToList();
 
         await TransmuteCards(selection, source, choiceContext, makeReplacement);
@@ -40,9 +41,14 @@ public static class Transmutation
     /// enchantments, and temporary effects (<see cref="CardModel.CreateClone"/>). The signature
     /// "幻化为自己的复制品" move used by 变幻之刃 / 拟形之盾.
     /// </summary>
-    public static Task TransmuteToCopyOf(CardModel source, PlayerChoiceContext choiceContext)
+    public static Task TransmuteToNonExhaustCopyOf(CardModel source, PlayerChoiceContext choiceContext)
     {
-        return TransmuteOneFromHand(source, choiceContext, _ => source.CreateClone());
+        return TransmuteOneFromHand(source, choiceContext, _ =>
+        {
+            CardModel replacement = source.CreateClone();
+            replacement.RemoveKeyword(CardKeyword.Exhaust);
+            return replacement;
+        });
     }
 
     /// <summary>
@@ -52,7 +58,7 @@ public static class Transmutation
     public static async Task<int> TransmuteCards(IEnumerable<CardModel> originals, CardModel source, PlayerChoiceContext choiceContext, Func<CardModel, CardModel> makeReplacement)
     {
         // Snapshot up front: transforming (and the FluxweaveIllusionist draws it triggers) mutates the piles.
-        List<CardModel> targets = originals.Where(c => c.IsTransformable).ToList();
+        List<CardModel> targets = originals.Where(CanTransmute).ToList();
         if (targets.Count == 0)
         {
             return 0;
@@ -64,6 +70,13 @@ public static class Transmutation
         int transformed = 0;
         foreach (CardModel original in targets)
         {
+            // Recheck immediately before the transform. The selection snapshot may be followed by
+            // awaited effects, and Frozen must remain an absolute guard at the execution choke point.
+            if (!CanTransmute(original))
+            {
+                continue;
+            }
+
             CardModel replacement = makeReplacement(original);
 
             CardPileAddResult? result = await CardCmd.Transform(original, replacement);
@@ -88,15 +101,22 @@ public static class Transmutation
             // TransmutePower.RevertOneLayer (not here), so they can't re-trigger and loop. Hand-only.
             if (added is ExtinguishedLampIllusionist
                 && added.Pile?.Type == PileType.Hand
-                && owner.Creature.GetPower<EverlitLampPower>() is { } everlit
-                && everlit.TryConsumeThisTurn())
+                && owner.Creature.GetPower<EverlitLampPower>() is { } everlit)
             {
-                await TransmuteCards(new[] { added }, added, choiceContext,
-                    o => o.CardScope!.CreateCard<DimLampIllusionist>(owner));
+                await everlit.TryTransmuteLampInHand(choiceContext, added);
             }
         }
 
         return transformed;
+    }
+
+    /// <summary>
+    /// The authoritative forward-transmutation guard. Do not rely only on the patched
+    /// CardModel.IsTransformable getter: small getters can be inlined by runtime call sites.
+    /// </summary>
+    private static bool CanTransmute(CardModel card)
+    {
+        return card.IsTransformable && !Frozen.IsAppliedTo(card);
     }
 
     /// <summary>
@@ -127,6 +147,14 @@ public static class Transmutation
         foreach (FluxweavePower flux in player.Creature.GetPowerInstances<FluxweavePower>().ToList())
         {
             await flux.OnTransform(choiceContext);
+        }
+
+        // 障眼法 (Misdirection): every card change this turn grants Block. Reverts deliberately
+        // travel through this same notification point, so each reverted layer triggers separately.
+        MisdirectionPower? misdirection = player.Creature.GetPower<MisdirectionPower>();
+        if (misdirection != null)
+        {
+            await misdirection.OnCardChanged();
         }
 
         ImprovisePower? improvise = player.Creature.GetPower<ImprovisePower>();

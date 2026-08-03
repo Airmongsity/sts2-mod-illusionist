@@ -14,11 +14,12 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.CommonUi;
 
 using Illusionist.Scripts;
+using Illusionist.Scripts.Afflictions;
 using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
-/// 幻化 (TransmuteIllusionist) revert power — maintains, for each transmuted card, a STACK of its previous
+/// 幻形 (TransmuteIllusionist) revert power — maintains, for each transmuted card, a STACK of its previous
 /// forms, and pops ONE layer at the START of each of your turns (after the hand is drawn, before you
 /// can play). A transmuted card therefore stays transmuted through the enemy's turn and unwinds one
 /// step when your next turn begins — so a single 幻化 lasts until your next turn, and chained 幻化 on
@@ -104,10 +105,6 @@ public sealed class TransmutePower : IllusionistPower
     // before its volley regardless of power-hook order, so both entry points share this guard.
     private bool _turnStartRevertDone;
 
-    // 凝固时间 (SolidifyTimePower): set at turn start (early phase) when the freeze power spends a
-    // stack, consumed here (late phase) to skip this turn's one-layer revert.
-    private bool _skipNextRevert;
-
     public override Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
     {
         if (player.Creature == base.Owner)
@@ -141,8 +138,8 @@ public sealed class TransmutePower : IllusionistPower
     /// <summary>
     /// Run this turn's start-of-turn one-layer revert exactly once, whoever asks first — the 镜像
     /// volley (which must fire AFTER the revert, so stored cards fire in their reverted form) calls
-    /// this before firing; our own Late hook calls it too. 揭露 (Unveil) still uses
-    /// <see cref="RevertOneLayer"/> directly for its extra mid-turn unwind.
+    /// this before firing; our own Late hook calls it too. 揭露 (Unveil) uses
+    /// <see cref="RevertAllExcept"/> for its all-pile mid-turn unwind while excluding itself.
     /// </summary>
     internal async Task EnsureTurnStartRevert(PlayerChoiceContext choiceContext)
     {
@@ -153,36 +150,120 @@ public sealed class TransmutePower : IllusionistPower
 
         _turnStartRevertDone = true;
 
-        // 凝固时间 (SolidifyTime): the freeze power spends one of its own stacks at turn start (strictly
-        // "next turn" - wasted if there's nothing to revert) and signals us via _skipNextRevert to skip
-        // this turn's one-layer revert, so transmuted cards hold their form an extra turn.
-        if (_skipNextRevert)
-        {
-            _skipNextRevert = false;
-            Log.Info("[illusionist] TransmuteIllusionist: turn-start revert skipped (凝固时间).");
-            return;
-        }
-
-        await RevertOneLayer(choiceContext, isTurnStart: true);
+        await RevertOneLayer(choiceContext, isTurnStart: true, excludedCard: null);
     }
 
     /// <summary>
-    /// Called by <see cref="SolidifyTimePower"/> at turn start when it spends a stack: this turn's
-    /// one-layer 幻化 revert is skipped (transmuted cards hold their form an extra turn).
+    /// Revert every transmuted card across all piles one layer except the exact card instance passed
+    /// by the caller. This keeps a resolving 揭露 out of its own batch without excluding any other
+    /// copy of that card.
     /// </summary>
-    internal void RequestSkipNextRevert() => _skipNextRevert = true;
+    internal Task<int> RevertAllExcept(PlayerChoiceContext choiceContext, CardModel excludedCard)
+    {
+        return RevertOneLayer(choiceContext, isTurnStart: false, excludedCard);
+    }
 
     /// <summary>
-    /// Revert every transmuted card one layer toward its original form, in one atomic batch, and run each
-    /// reverted card through the transmute-payoff choke point (<see cref="Transmutation.NotifyTransformed"/>).
-    /// Called at the owner's turn start and on demand by 揭露 (Unveil).
+    /// Fully unwind the exact transmuted <paramref name="card"/> one layer at a time and return a
+    /// snapshot of every form revealed, newest predecessor first. Used by 层层杀机: the caller waits
+    /// for the chain to be stable before executing any Attack snapshots, so those plays cannot mutate
+    /// the chain while it is being traversed.
+    ///
+    /// Each successful layer follows the normal mid-turn revert contract: transform the live card in
+    /// its current pile, keep a mirror slot pointing at the replacement, and notify every 变化 payoff.
+    /// Other chains are untouched.
     /// </summary>
-    internal async Task RevertOneLayer(PlayerChoiceContext choiceContext, bool isTurnStart = false)
+    internal async Task<IReadOnlyList<CardModel>> RevertFully(
+        PlayerChoiceContext choiceContext,
+        CardModel card)
+    {
+        List<CardModel> revealedForms = new();
+        Data data = GetInternalData<Data>();
+        Chain? chain = data.Chains.FirstOrDefault(candidate => ReferenceEquals(candidate.Current, card));
+        if (chain == null)
+        {
+            return revealedForms;
+        }
+
+        while (data.Chains.Contains(chain) && chain.Predecessors.Count > 0)
+        {
+            CardModel current = chain.Current;
+
+            // Frozen pauses this chain without consuming or deleting any predecessor.
+            if (Frozen.IsAppliedTo(current))
+            {
+                break;
+            }
+
+            // A live card normally has a pile. Preserve the same legacy mirror fallback used by the
+            // regular revert path if an older stored card is temporarily pile-less.
+            if (current.Pile == null)
+            {
+                Player? player = base.Owner.Player;
+                int slot = player == null ? -1 : await MirrorImagePower.EjectForRevert(player, current);
+                if (slot < 0)
+                {
+                    data.Chains.Remove(chain);
+                    break;
+                }
+            }
+
+            CardModel previous = chain.Predecessors[^1];
+            if (!current.IsTransformable || !previous.IsTransformable)
+            {
+                data.Chains.Remove(chain);
+                break;
+            }
+
+            chain.Predecessors.RemoveAt(chain.Predecessors.Count - 1);
+            previous.HasBeenRemovedFromState = false;
+
+            try
+            {
+                await CardCmd.Transform(current, previous);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[illusionist] TransmuteIllusionist: focused full revert failed: {ex}");
+                data.Chains.Remove(chain);
+                break;
+            }
+
+            chain.Current = previous;
+            await MirrorImagePower.OnCardTransformed(base.Owner.Player!, current, previous);
+
+            // Snapshot BEFORE transform payoffs run. 即兴 may auto-play and move the live form, but
+            // 层层杀机 must still remember exactly which form this layer revealed.
+            revealedForms.Add(previous.CreateClone());
+            await Transmutation.NotifyTransformed(base.Owner.Player!, choiceContext, previous);
+
+            if (chain.Predecessors.Count == 0)
+            {
+                data.Chains.Remove(chain);
+            }
+        }
+
+        if (data.Chains.Count == 0)
+        {
+            await PowerCmd.Remove(this);
+        }
+
+        Log.Info($"[illusionist] TransmuteIllusionist: fully reverted one chain through {revealedForms.Count} layer(s).");
+        return revealedForms;
+    }
+
+    /// <summary>
+    /// Revert eligible transmuted cards one layer toward their original form, in one atomic batch, and
+    /// run each reverted card through the transmute-payoff choke point
+    /// (<see cref="Transmutation.NotifyTransformed"/>). Turn start excludes nothing; 揭露 excludes
+    /// only its exact resolving instance while still reverting cards in every pile.
+    /// </summary>
+    private async Task<int> RevertOneLayer(PlayerChoiceContext choiceContext, bool isTurnStart, CardModel? excludedCard)
     {
         Player? player = base.Owner.Player;
         if (player == null)
         {
-            return;
+            return 0;
         }
 
         Data data = GetInternalData<Data>();
@@ -203,6 +284,17 @@ public sealed class TransmutePower : IllusionistPower
             if (chain.Predecessors.Count == 0)
             {
                 data.Chains.Remove(chain);
+                continue;
+            }
+
+            if (ReferenceEquals(chain.Current, excludedCard))
+            {
+                continue;
+            }
+
+            // Frozen pauses this chain without consuming or deleting any predecessor.
+            if (Frozen.IsAppliedTo(chain.Current))
+            {
                 continue;
             }
 
@@ -329,5 +421,7 @@ public sealed class TransmutePower : IllusionistPower
         {
             await PowerCmd.Remove(this);
         }
+
+        return batch.Count;
     }
 }

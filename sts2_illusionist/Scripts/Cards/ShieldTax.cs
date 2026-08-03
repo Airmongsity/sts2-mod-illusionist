@@ -14,7 +14,7 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 恃盾者亡 (Shield Tax) - 1 cost Power, Uncommon (upgraded: 0 cost). Whenever a
-/// creature gains Block, every {Threshold} points grant you 1 Strength. The intent flow's scaling
+/// creature gains 10 Block, you gain 1 Strength. The intent flow's scaling
 /// spine: rides the 虚张声势/逆转 feed line, turns naturally block-happy enemies into a tax base,
 /// and closes the loop with 拆穿 (Strength raises the crack's base damage; the crack harvests the
 /// very Block that paid the tax).

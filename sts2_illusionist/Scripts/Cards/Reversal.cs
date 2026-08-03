@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Illusionist.Scripts;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
@@ -45,25 +46,24 @@ public sealed class ReversalIllusionist : IllusionistCard
         base.EnergyCost.UpgradeBy(-1);
     }
 
-    // Not async: the only await lives inside the MoveState lambda below (which runs when the enemy
-    // later takes its turn), so OnPlay itself does no awaiting and returns a completed task.
-    protected override Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay.Target, "cardPlay.Target");
         Creature target = cardPlay.Target;
 
         if (target.Monster == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         MoveState move = target.Monster.NextMove;
         List<AttackIntent> attacks = move.Intents.OfType<AttackIntent>().ToList();
         if (attacks.Count == 0)
         {
-            return Task.CompletedTask;
+            return;
         }
 
+        bool changed = false;
         try
         {
             IReadOnlyList<Creature> me = new[] { base.Owner.Creature };
@@ -91,12 +91,16 @@ public sealed class ReversalIllusionist : IllusionistCard
             blockMove.FollowUpState = move.FollowUpState;
 
             target.Monster.SetMoveImmediate(blockMove, forceTransition: true);
+            changed = true;
         }
         catch (Exception ex)
         {
             Log.Error($"[illusionist] Reversal: failed to convert attack to block: {ex}");
         }
 
-        return Task.CompletedTask;
+        if (changed)
+        {
+            await IntentManipulation.NotifyChanged(choiceContext, base.Owner);
+        }
     }
 }

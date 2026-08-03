@@ -15,7 +15,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 点灯 (KindleIllusionist) — 1 cost Skill, Common (upgraded: 10 Block instead of 7).
+/// 点灯 (KindleIllusionist) — 1 cost Skill, Common (upgraded: 8 Block instead of 5).
 /// Gain {Block:diff()} [gold]Block[/gold], then [gold]Transmute[/gold] every Status card in your hand
 /// into a 暗淡油灯 (Dim Lamp). Each Lamp reverts at the start of your next turn (transmute stack),
 /// so play them this turn.
@@ -35,7 +35,7 @@ public sealed class KindleIllusionist : IllusionistCard
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new BlockVar(7m, ValueProp.Move),
+        new BlockVar(5m, ValueProp.Move),
     };
 
     public KindleIllusionist()

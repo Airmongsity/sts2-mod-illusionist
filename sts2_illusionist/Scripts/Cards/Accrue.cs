@@ -14,21 +14,21 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 积蓄 (Accrue) - 2 cost Attack, Uncommon (upgraded: 2 -> 1). Deal 13 damage, plus 1 more for every
-/// 4 points of Block ANY creature has gained this combat (tracked by the hidden
+/// 积蓄 (Accrue) - 2 cost Attack, Uncommon (upgraded: 2 -> 1). Deal 11 damage, plus 1 more for every
+/// 5 points of Block ANY creature has gained this combat (tracked by the hidden
 /// <see cref="CombatBlockGainedCount"/>, applied at combat start). The 养龟 line's scaling finisher:
 /// 假想敌 (Imagined Foe) feeds every creature Block every turn, and Accrue turns that accumulated
-/// Block into a single growing hit. The card face shows 13 + (total block gained / 4) (Body Slam-style
+/// Block into a single growing hit. The card face shows 11 + (total block gained / 5) (Body Slam-style
 /// <see cref="ModCardVars.ComputedDamage"/>) so the player never has to mental-math the bonus.
 /// Rate tuned down from 1:1 (too strong in playtest).
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "ACCRUE")]
 public sealed class AccrueIllusionist : IllusionistCard
 {
-    private const decimal BaseDamage = 13m;
+    private const decimal BaseDamage = 11m;
 
     /// <summary>Block gained (by any creature, this combat) required for +1 damage. Tuned down from 1:1 (too strong).</summary>
-    private const int BlockPerBonus = 4;
+    private const int BlockPerBonus = 5;
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {

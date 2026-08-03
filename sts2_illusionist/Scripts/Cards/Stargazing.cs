@@ -12,11 +12,9 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 观星 (StargazingIllusionist) - 1 cost Power, Rare (upgraded: Innate). Grants 观星: at the start of
-/// each of your turns (after the draw), choose up to 3 cards in hand, put them on the bottom of your
-/// draw pile, then draw that many - a per-turn mini-mulligan that cycles dead draws into fresh ones.
-/// The Intent pillar's 控顶 (card-order control) ceiling, expressed as hand cycling (the effect lands
-/// AFTER the draw to dodge the before-draw timing problem).
+/// 候场 (keeps the STARGAZING stable ID) - 1 cost Rare Power, upgraded with Innate. At the start of
+/// each turn, draw 1 card, then put 1 hand card on top of the draw pile so it can wait for a later
+/// draw or the next turn.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "STARGAZING")]
 public sealed class StargazingIllusionist : IllusionistCard

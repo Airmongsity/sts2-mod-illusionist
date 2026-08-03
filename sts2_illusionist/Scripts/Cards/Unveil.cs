@@ -17,10 +17,10 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 揭露 (UnveilIllusionist) — 1 cost Attack, Common (upgraded: 12 -> 16 damage). Deal 12 damage, then
-/// force every transmuted card to revert one layer of 幻化 immediately (the same one-layer unwind that
-/// normally waits for your next turn start). Each revert is a 变化, so it pours the transmute payoffs
-/// (折光 bolts, 流变 draw, 嬗变/恍惚 counters …) through this one card. (Renamed from "Expose" — that name
-/// collided with a base-game card's model ID.)
+/// force every other transmuted card across all piles to revert one layer of 幻化 immediately. Each revert is a
+/// 变化, so it pours the transmute payoffs (折光 bolts, 流变 draw, 嬗变/恍惚 counters …) through this one
+/// card without ever attempting to transform the currently resolving Unveil. (Renamed from "Expose"
+/// — that name collided with a base-game card's model ID.)
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "UNVEIL")]
 public sealed class UnveilIllusionist : IllusionistCard
@@ -49,11 +49,12 @@ public sealed class UnveilIllusionist : IllusionistCard
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
 
-        // Unwind every transmuted card one layer, right now.
+        // Unwind every other transmuted card, wherever it lives. Exclude this exact resolving
+        // Unveil instance so CardPlay retains ownership of it until its normal resolution finishes.
         TransmutePower? transmute = base.Owner.Creature.GetPower<TransmutePower>();
         if (transmute != null)
         {
-            await transmute.RevertOneLayer(choiceContext);
+            await transmute.RevertAllExcept(choiceContext, this);
         }
     }
 

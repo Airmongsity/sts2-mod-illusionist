@@ -17,9 +17,9 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 幻化 (TransmuteIllusionist) — 1 cost Skill, Uncommon, Exhaust (upgraded: pick from 5 instead of 3).
-/// Look at 3 random cards from your exhaust pile, choose one, then 幻化 a card in your hand into a
-/// copy of it (carrying that card's upgrades/enchantments). Upgraded: pick from 5. Exhausts itself.
+/// 幻形 (Shapeshift) — 1 cost Skill, Uncommon, Exhaust. Look at random cards from your exhaust pile,
+/// choose one, then 幻化 a card in your hand into a copy of it (carrying that card's
+/// upgrades/enchantments). Upgraded: no longer Exhausts.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "TRANSMUTE")]
 public sealed class TransmuteIllusionist : IllusionistCard
@@ -65,6 +65,6 @@ public sealed class TransmuteIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Cards.UpgradeValueBy(10m);
+        RemoveKeyword(CardKeyword.Exhaust);
     }
 }

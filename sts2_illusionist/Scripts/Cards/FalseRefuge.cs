@@ -12,7 +12,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// False Refuge - 1 cost Power, Uncommon. Whenever an enemy gains Block, it loses that much HP.
+/// False Refuge - 1 cost Power, Rare. Whenever an enemy gains Block, it loses that much HP.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "FALSE_REFUGE")]
 public sealed class FalseRefugeIllusionist : IllusionistCard
@@ -24,7 +24,7 @@ public sealed class FalseRefugeIllusionist : IllusionistCard
     };
 
     public FalseRefugeIllusionist()
-        : base(1, CardType.Power, CardRarity.Uncommon, TargetType.Self)
+        : base(1, CardType.Power, CardRarity.Rare, TargetType.Self)
     {
     }
 

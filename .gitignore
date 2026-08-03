@@ -22,12 +22,17 @@
 *.atlas
 *.spine
 *.psd
+*.tscn
 
 # --- Decompiled game code (MegaCrit IP) — never publish ---
 /.re/
 /.claude/
 /STS2-RitsuLib/
 /tutorials.sts2modding.com/
+/.re_current_*/
+
+# --- Local agent tooling (not part of the published mod source) ---
+/.codex/
 
 # --- Godot editor binaries (huge, not source) ---
 /Godot_v4.5.1-stable_win64.exe

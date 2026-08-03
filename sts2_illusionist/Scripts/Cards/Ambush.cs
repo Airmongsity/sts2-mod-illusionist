@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.ValueProps;
 using Illusionist.Scripts;
+using Illusionist.Scripts.Powers;
 
 using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
@@ -65,6 +66,15 @@ public sealed class AmbushIllusionist : IllusionistCard
         // so it feeds the transmute payoffs immediately.
         await Transmutation.RegisterRevert(base.Owner, choiceContext, this, prescience, lamp);
         await Transmutation.NotifyTransformed(base.Owner, choiceContext, lamp);
+
+        // This Lamp was generated directly into the hand rather than drawn or produced by
+        // TransmuteCards. Let 长明灯 process it only AFTER the Prescience -> Lamp history above has
+        // been registered, so the resulting chain remains Prescience -> Lamp -> Dim Lamp.
+        EverlitLampPower? everlit = base.Owner.Creature.GetPower<EverlitLampPower>();
+        if (everlit != null)
+        {
+            await everlit.TryTransmuteLampInHand(choiceContext, lamp);
+        }
     }
 
     protected override void OnUpgrade()

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Illusionist.Scripts.Powers;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
@@ -12,27 +13,17 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.Models.Powers;
 using MegaCrit.Sts2.Core.MonsterMoves.Intents;
-using Illusionist.Scripts.Powers;
-
 using STS2RitsuLib.Interop.AutoRegistration;
+
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 挑衅 (ProvokeIllusionist) - 0 cost Skill, Uncommon (upgraded: 5 -> 9 Strength, 1 -> 2 Dexterity).
-/// Gain 1 Dexterity (permanent, self). If the target enemy's intent includes attack, give it 5
-/// temporary Strength this turn (inflating that swing). The intent enabler: goad an attacking enemy
-/// into a bigger swing, then reflect it with 抗衡 (CounterIllusionist) or block it with 预见
-/// (ForesightIllusionist) — and the Dexterity makes it worth playing even when the enemy isn't attacking.
-///
-/// <para>The Strength is temporary (<see cref="ProvokePower"/>, Flex-style): it lasts through the
-/// enemy's own attack and is removed at the end of the enemy's turn, so it only ever makes the REAL
-/// incoming hit bigger (which you then neutralize). Conditioning it on an attack intent ties the card
-/// to the enemy's 意图 — so it reads as, and counts as, an intent card.</para>
+/// Provoke - gain temporary Dexterity; an attacking target gains temporary Strength and refunds
+/// Energy. The upgrade increases the refund from 1 to 2.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "PROVOKE")]
 public sealed class ProvokeIllusionist : IllusionistCard
 {
-
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         HoverTipFactory.FromPower<StrengthPower>(),
@@ -41,8 +32,9 @@ public sealed class ProvokeIllusionist : IllusionistCard
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new PowerVar<StrengthPower>(5m),
-        new PowerVar<DexterityPower>(1m),
+        new PowerVar<StrengthPower>(3m),
+        new PowerVar<DexterityPower>(2m),
+        new EnergyVar(1),
     };
 
     public ProvokeIllusionist()
@@ -52,32 +44,37 @@ public sealed class ProvokeIllusionist : IllusionistCard
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
-        ArgumentNullException.ThrowIfNull(cardPlay.Target, "cardPlay.Target");
+        ArgumentNullException.ThrowIfNull(cardPlay.Target, nameof(cardPlay.Target));
 
-        // Permanent Dexterity to yourself (rest of combat).
-        await PowerCmd.Apply<DexterityPower>(choiceContext, base.Owner.Creature, base.DynamicVars.Dexterity.BaseValue, base.Owner.Creature, this);
+        await PowerCmd.Apply<ProvokeDexterityPower>(
+            choiceContext,
+            base.Owner.Creature,
+            base.DynamicVars.Dexterity.BaseValue,
+            base.Owner.Creature,
+            this);
 
-        // Only if the enemy telegraphs an attack: give it temporary Strength this turn (inflating that
-        // swing — which you then neutralize/reflect). This is what makes the +Strength honest, and it
-        // ties Provoke to the enemy's intent (so it reads as, and counts as, an intent card).
-        if (IntendsToAttack(cardPlay.Target))
+        if (!IntendsToAttack(cardPlay.Target))
         {
-            await PowerCmd.Apply<ProvokePower>(choiceContext, cardPlay.Target, base.DynamicVars.Strength.BaseValue, base.Owner.Creature, this);
+            return;
         }
+
+        await PowerCmd.Apply<ProvokePower>(
+            choiceContext,
+            cardPlay.Target,
+            base.DynamicVars.Strength.BaseValue,
+            base.Owner.Creature,
+            this);
+        await PlayerCmd.GainEnergy(base.DynamicVars.Energy.IntValue, base.Owner);
     }
 
     private static bool IntendsToAttack(Creature target)
     {
-        if (target.Monster == null)
-        {
-            return false;
-        }
-        return target.Monster.NextMove.Intents.Any(i => i.IntentType == IntentType.Attack);
+        return target.Monster?.NextMove.Intents.Any(intent =>
+            intent.IntentType == IntentType.Attack) == true;
     }
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars.Strength.UpgradeValueBy(4m);
-        base.DynamicVars.Dexterity.UpgradeValueBy(1m);
+        base.DynamicVars.Energy.UpgradeValueBy(1m);
     }
 }

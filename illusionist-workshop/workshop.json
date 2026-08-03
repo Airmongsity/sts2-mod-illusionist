@@ -1,8 +1,8 @@
 {
-  "title": "Illusionist / 幻术师",
-  "description": "A standalone mirror-and-illusion character for Slay the Spire 2, with three coupled systems:\n\n- Mirror: \"Copy\" summons mirror images that replay your first card each turn and shatter when you take unblocked damage.\n- Intent: read and reflect enemy telegraphs (Counter, Foresight, Provoke).\n- Transmute: temporarily reshape your own cards (Shifting Blade, Myriad Faces, Phantom Blast), with a transmute stack that unwinds one layer per turn.\n\n~40 themed cards, custom relics and potions, a starter relic, and Orobas (Ancient) relic/card upgrades.\n\nFully localized in English and 简体中文.",
+  "title": null,
+  "description": null,
   "visibility": "public",
-  "changeNote": "v0.5.1 - Balance and mirror-system fixes: mirror exhaust storage now follows source-pile rules, statuses can resolve through mirrors like Attack/Skill cards, and Shifting Blade / Mirror Ward were slightly reduced. English & Simplified Chinese localization updated.",
+  "changeNote": "v0.5.3 - Rare-card and intent-system refinements, Frozen card support, expanded card content, and balance updates. Stargazing has been replaced by Waiting in the Wings. English and Simplified Chinese localization updated.",
   "tags": ["Characters"],
   "dependencies": [3747602295]
 }
