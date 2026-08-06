@@ -80,6 +80,7 @@ public static class Entry
             patcher.RegisterPatch<TransmuteRevertHoverPatch>();
             patcher.RegisterPatch<ArchitectDialogueFallbackPatch>();
             patcher.RegisterPatch<RunWonAchievementGuardPatch>();
+            patcher.RegisterPatch<CuteAncientPortraitCompatibilityPatch>();
 
             // Borrowed-asset reskins that need a live scene (no asset-profile equivalent).
             patcher.RegisterPatch<IllusionistEnergyCounterPatch>();

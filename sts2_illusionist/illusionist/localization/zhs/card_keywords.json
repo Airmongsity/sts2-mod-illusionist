@@ -8,5 +8,7 @@
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.title": "先机",
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.description": "仅当这是你本回合打出的第一张牌时，才会触发。",
   "ILLUSIONIST_KEYWORD_TRANSMUTE.title": "幻化",
-  "ILLUSIONIST_KEYWORD_TRANSMUTE.description": "[gold]变化[/gold]一张牌，你的下个回合开始时，将这张牌[gold]变化[/gold]为前一次[gold]变化[/gold]前的结果。"
+  "ILLUSIONIST_KEYWORD_TRANSMUTE.description": "[gold]变化[/gold]一张牌，你的下个回合开始时，将这张牌[gold]变化[/gold]为前一次[gold]变化[/gold]前的结果。",
+  "ILLUSIONIST_KEYWORD_SEVERE_COLD.title": "严寒",
+  "ILLUSIONIST_KEYWORD_SEVERE_COLD.description": "战斗开始时，冻结这张牌"
 }

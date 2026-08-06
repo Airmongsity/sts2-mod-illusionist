@@ -53,8 +53,8 @@ public sealed class ChannelIllusionist : IllusionistCard
                 .Execute(choiceContext);
         }
 
-        // Refund energy: upgrading improves only the damage; the net energy cost remains 1.
-        int energy = x - 1;
+        // Refund half of the energy spent, rounded down; upgrading improves only the damage.
+        int energy = x / 2;
         if (energy > 0)
         {
             await PlayerCmd.GainEnergy(energy, base.Owner);

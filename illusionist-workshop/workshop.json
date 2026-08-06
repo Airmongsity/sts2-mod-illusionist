@@ -2,7 +2,7 @@
   "title": null,
   "description": null,
   "visibility": "public",
-  "changeNote": "v0.5.3 - Rare-card and intent-system refinements, Frozen card support, expanded card content, and balance updates. Stargazing has been replaced by Waiting in the Wings. English and Simplified Chinese localization updated.",
+  "changeNote": "v0.5.4\n\nBalance / 平衡性\n- Feint now Exhausts before upgrade; its upgrade removes Exhaust instead of reducing its cost. / 【虚晃】未升级时添加消耗，升级时移除消耗，不再降低费用。\n- Added Severe Cold: a card with it starts combat Frozen. Reversal, Cut In, and Catalyze now have Severe Cold, including the Frozen reminder tooltip. / 新增【严寒】：具有该效果的牌在战斗开始时被冻结；【逆转】、【抢拍】与【催化】获得严寒及冻结说明。\n- Channel now refunds X/2 Energy, rounded down, instead of X-1. / 【导能】的能量返还由 X-1 调整为 X/2（向下取整）。\n\nFixes / 修复\n- Fixed Cameo and Grand Masquerade character selection failing because canonical card templates were shown directly. / 修复【客串】与【大假面舞会】无法正常完成角色选择的问题。\n- Fixed combat freezing when an auto-played Ambush killed the final enemy and then attempted to register a transmutation revert. / 修复自动打出的【突袭】击杀最后一名敌人后继续注册幻化回退导致的卡死。\n- Added a narrowly scoped compatibility guard for CuteAncientIllustrationFZ-Cards 1.0.0 reusing an unloaded card texture. / 为 CuteAncientIllustrationFZ-Cards 1.0.0 重用已卸载卡图的问题添加兼容保护。",
   "tags": ["Characters"],
   "dependencies": [3747602295]
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.CardSelection;
+using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Players;
@@ -78,7 +79,7 @@ internal static class OtherCharacterCardSelection
         Player owner,
         LocString prompt)
     {
-        List<(CharacterModel Character, CardModel Starter)> characterChoices = ModelDb.AllCharacters
+        List<(CharacterModel Character, CardModel Starter)> candidates = ModelDb.AllCharacters
             .Where(character => character.IsPlayable && character.Id != owner.Character.Id)
             .Select(character =>
             {
@@ -91,22 +92,49 @@ internal static class OtherCharacterCardSelection
             .Select(choice => (choice.Character, choice.Starter!))
             .ToList();
 
-        if (characterChoices.Count == 0)
+        if (candidates.Count == 0)
         {
             return null;
         }
 
-        CardModel? selectedStarter = (await CardSelectCmd.FromSimpleGrid(
-            choiceContext,
-            characterChoices.Select(choice => choice.Starter).ToList(),
-            owner,
-            new CardSelectorPrefs(prompt, 1))).FirstOrDefault();
+        ICombatState? combat = owner.Creature.CombatState;
+        if (combat == null)
+        {
+            return null;
+        }
 
-        return selectedStarter == null
-            ? null
-            : characterChoices
-                .FirstOrDefault(choice => choice.Starter.Id == selectedStarter.Id)
-                .Character;
+        List<(CharacterModel Character, CardModel Display)> characterChoices = new();
+        try
+        {
+            // StartingDeck contains canonical ModelDb cards. The selection screen reads Owner and
+            // other mutable state, so passing those templates directly throws CanonicalModelException.
+            foreach ((CharacterModel character, CardModel starter) in candidates)
+            {
+                CardModel display = combat.CreateCard(starter, owner);
+                characterChoices.Add((character, display));
+            }
+
+            CardModel? selectedStarter = (await CardSelectCmd.FromSimpleGrid(
+                choiceContext,
+                characterChoices.Select(choice => choice.Display).ToList(),
+                owner,
+                new CardSelectorPrefs(prompt, 1))).FirstOrDefault();
+
+            return selectedStarter == null
+                ? null
+                : characterChoices
+                    .FirstOrDefault(choice => ReferenceEquals(choice.Display, selectedStarter))
+                    .Character;
+        }
+        finally
+        {
+            // These cards exist only to represent characters in the grid; never leave them in the
+            // combat card scope after the selection closes or is cancelled.
+            foreach ((_, CardModel display) in characterChoices)
+            {
+                combat.RemoveCard(display);
+            }
+        }
     }
 
     internal static List<CardModel> GetUnlockedPool(Player owner, CharacterModel character)

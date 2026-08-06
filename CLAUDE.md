@@ -1,4 +1,4 @@
-# AGENTS.md
+# CLAUDE.md
 
 This file provides context for AI coding assistants (Claude Code, Cursor, GitHub Copilot, Codex, etc.) working with the Sts2-Illusionist-mod repository.
 
@@ -67,3 +67,15 @@ When uncertain about expected artifacts, ask for clarification.
 - Commit `.env` files, API keys, or credentials
 - Skip pre-commit hooks
 - Change public APIs without updating documentations in `docs/`
+
+## Illusionist Release Workflow
+
+Treat `AGENTS.md` as the authoritative project instructions. For every release:
+
+1. Compare the working source with the last published `release-baselines/vX.Y.Z.json` by running `sts2_illusionist\tools\release_surface.ps1 selftest` and then `diff` with the matching Git tag as `-BaseRef`.
+2. Publish only the final net player-visible difference. Collapse repeated redesigns of one card into its baseline-to-release result, remove reverted changes, and manually add cross-cutting bug or compatibility fixes that the checker cannot infer.
+3. Keep the version in `sts2_illusionist\mod_manifest.json`, a newly added current-version section in `next-mirror.md`, and `illusionist-workshop\workshop.json` `changeNote` aligned. Export a new immutable release baseline after those contents are final.
+4. Run `sts2_illusionist\build-illusionist-windows.ps1` without `-SkipInstallCopy`; verify the installed DLL/PCK/manifest and the synchronized `illusionist-workshop/content/` payload.
+5. If a GitHub archive is requested, package the built DLL, PCK, and manifest beneath `illusionist/`. Packed art remains in the PCK.
+6. Explicitly stage only code, localization, configuration, documentation, and baseline files. Never commit source art or resources (`*.png`, `*.jpg`, `*.jpeg`, `*.webp`, `*.gif`, `*.svg`, `*.skel`, `*.atlas`, `*.spine`, `*.psd`, `*.import`) or `.tscn` files. Review the staged file list and diff before commit/push.
+7. Create and push the matching version tag when finalizing a release. Leave the Steam upload command to the user unless they explicitly ask the assistant to run it.

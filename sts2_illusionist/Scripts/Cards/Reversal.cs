@@ -29,12 +29,16 @@ namespace Illusionist.Scripts.Cards;
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "REVERSAL")]
 public sealed class ReversalIllusionist : IllusionistCard
 {
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { CardKeyword.Exhaust };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[]
+    {
+        CardKeyword.Exhaust,
+        IllusionistKeywords.SevereCold,
+    };
 
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         HoverTipFactory.Static(StaticHoverTip.Block),
-    };
+    }.Concat(SevereCold.FrozenReminderHoverTips(this));
 
     public ReversalIllusionist()
         : base(2, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
@@ -44,6 +48,11 @@ public sealed class ReversalIllusionist : IllusionistCard
     protected override void OnUpgrade()
     {
         base.EnergyCost.UpgradeBy(-1);
+    }
+
+    public override Task BeforeCombatStart()
+    {
+        return SevereCold.ApplyAtCombatStart(this);
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)

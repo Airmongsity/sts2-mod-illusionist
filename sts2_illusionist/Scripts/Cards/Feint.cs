@@ -22,6 +22,8 @@ namespace Illusionist.Scripts.Cards;
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "FEINT")]
 public sealed class FeintIllusionist : IllusionistCard
 {
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { CardKeyword.Exhaust };
+
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         HoverTipFactory.Static(StaticHoverTip.Block),
@@ -56,6 +58,6 @@ public sealed class FeintIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.EnergyCost.UpgradeBy(-1); // 3 -> 2
+        RemoveKeyword(CardKeyword.Exhaust);
     }
 }

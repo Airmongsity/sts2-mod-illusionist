@@ -34,3 +34,16 @@
 
 - `sts2_illusionist\mod_manifest.json` is the runtime MOD version presented to the game.
 - When bumping a release version, keep the manifest, the current version heading in `next-mirror.md`, and `illusionist-workshop\workshop.json` release notes aligned.
+
+## Release Workflow
+
+1. Identify the last published tag and its immutable `release-baselines/vX.Y.Z.json`; do not overwrite an older baseline.
+2. Run `sts2_illusionist\tools\release_surface.ps1 selftest`, then run `diff` against that baseline with the matching tag as `-BaseRef`. Release notes describe only the net difference from the last published version; do not list intermediate development iterations that were later replaced or reverted.
+3. Review the generated draft. Rewrite raw expressions as player-facing changes and add cross-cutting fixes or compatibility changes that the registered-content snapshot cannot infer. During development, record such changes with `Release-Note:` commit trailers when practical.
+4. Bump `sts2_illusionist\mod_manifest.json`, add a new current-version section to `next-mirror.md` without relabeling older sections, and update `illusionist-workshop\workshop.json` `changeNote`. Keep English and Simplified Chinese release information behaviorally consistent.
+5. Export `release-baselines/v<NEW_VERSION>.json` only after the release contents and version are final, and commit that new baseline with the release.
+6. Run `sts2_illusionist\build-illusionist-windows.ps1` without `-SkipInstallCopy`. Confirm the DLL, PCK, and manifest were installed and that `illusionist-workshop/content/` contains the synchronized Workshop payload.
+7. When a GitHub release archive is required, package the built DLL, PCK, and manifest under a top-level `illusionist/` directory. The archive includes packed art in the PCK even though source art is excluded from Git.
+8. Stage an explicit allowlist of code, localization, configuration, documentation, and release-baseline files. Never use a blanket stage for a release. Do not commit art/resource sources (including PNG, JPG/JPEG, WEBP, GIF, SVG, SKEL, ATLAS, SPINE, PSD, or Godot import sidecars) or `.tscn` files.
+9. Inspect `git diff --cached --name-only` and the staged diff before committing. Commit and push the release commit, then create/push the matching `vX.Y.Z` tag when the release is being finalized.
+10. Do not run `ModUploader.exe` unless the user asks Codex to upload. Normally hand off the prepared Workshop payload so the user can run `sts2-mod-uploader\ModUploader.exe upload -w ..\illusionist-workshop` manually.

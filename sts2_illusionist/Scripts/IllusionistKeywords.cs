@@ -16,6 +16,9 @@ namespace Illusionist.Scripts;
 [RegisterOwnedCardKeyword("execute")]
 [RegisterOwnedCardKeyword("first_move")]
 [RegisterOwnedCardKeyword("transmute")]
+[RegisterOwnedCardKeyword(
+    "severe_cold",
+    CardDescriptionPlacement = ModKeywordCardDescriptionPlacement.AfterCardDescription)]
 public sealed class IllusionistKeywordRegistrations
 {
 }
@@ -37,6 +40,9 @@ public static class IllusionistKeywords
     /// <summary>幻化 — transform a card; it reverts one step at the start of your next turn.</summary>
     public const string TransmuteId = "ILLUSIONIST_KEYWORD_TRANSMUTE";
 
+    /// <summary>严寒 — at combat start, apply Frozen to this card's combat copy.</summary>
+    public const string SevereColdId = "ILLUSIONIST_KEYWORD_SEVERE_COLD";
+
     public static CardKeyword Copy => CopyId.GetModCardKeyword();
 
     public static CardKeyword MirrorImage => MirrorImageId.GetModCardKeyword();
@@ -46,4 +52,6 @@ public static class IllusionistKeywords
     public static CardKeyword FirstMove => FirstMoveId.GetModCardKeyword();
 
     public static CardKeyword Transmute => TransmuteId.GetModCardKeyword();
+
+    public static CardKeyword SevereCold => SevereColdId.GetModCardKeyword();
 }

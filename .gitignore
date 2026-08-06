@@ -46,6 +46,7 @@
 err*.txt
 ritsu_types_all.txt
 *.zip
+/release-notes/generated/
 
 # --- Godot / .NET build caches & outputs ---
 .godot/

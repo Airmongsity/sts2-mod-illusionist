@@ -8,5 +8,7 @@
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.title": "First Move",
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.description": "Triggers only if this is the first card you play this turn.",
   "ILLUSIONIST_KEYWORD_TRANSMUTE.title": "Transmute",
-  "ILLUSIONIST_KEYWORD_TRANSMUTE.description": "[gold]Transform[/gold] a card. At the start of your next turn, [gold]transform[/gold] it into what it was before that [gold]transform[/gold]."
+  "ILLUSIONIST_KEYWORD_TRANSMUTE.description": "[gold]Transform[/gold] a card. At the start of your next turn, [gold]transform[/gold] it into what it was before that [gold]transform[/gold].",
+  "ILLUSIONIST_KEYWORD_SEVERE_COLD.title": "Severe Cold",
+  "ILLUSIONIST_KEYWORD_SEVERE_COLD.description": "At the start of combat, Freeze this card."
 }

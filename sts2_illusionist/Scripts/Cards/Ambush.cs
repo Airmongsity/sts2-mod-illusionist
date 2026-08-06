@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -52,6 +53,14 @@ public sealed class AmbushIllusionist : IllusionistCard
             .WithHitFx("vfx/vfx_attack_slash")
             .Execute(choiceContext);
 
+        // A lethal hit can put the combat into its ending state before the rest of this card resolves.
+        // PowerCmd.Apply deliberately returns null in that state, and generated combat cards have no
+        // next turn to revert on, so stop here instead of starting a dead transmutation chain.
+        if (CombatManager.Instance.IsEnding)
+        {
+            return;
+        }
+
         // Build the 先见 (Prescience) worth this card's Block — that's what the player ultimately gets —
         // but deliver it as its 熄灭油灯 (Extinguished Lamp) form: a 幻化 product that reverts to the
         // Prescience at the start of the next turn.
@@ -64,7 +73,10 @@ public sealed class AmbushIllusionist : IllusionistCard
 
         // Register the Lamp -> Prescience revert (next turn start), and count this delivery as a 幻化 now
         // so it feeds the transmute payoffs immediately.
-        await Transmutation.RegisterRevert(base.Owner, choiceContext, this, prescience, lamp);
+        if (!await Transmutation.RegisterRevert(base.Owner, choiceContext, this, prescience, lamp))
+        {
+            return;
+        }
         await Transmutation.NotifyTransformed(base.Owner, choiceContext, lamp);
 
         // This Lamp was generated directly into the hand rather than drawn or produced by

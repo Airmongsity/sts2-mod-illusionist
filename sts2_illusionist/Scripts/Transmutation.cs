@@ -65,7 +65,11 @@ public static class Transmutation
         }
 
         Player owner = source.Owner;
-        TransmutePower revert = await EnsureRevertPower(owner, choiceContext, source);
+        TransmutePower? revert = await EnsureRevertPower(owner, choiceContext, source);
+        if (revert == null)
+        {
+            return 0;
+        }
 
         int transformed = 0;
         foreach (CardModel original in targets)
@@ -183,22 +187,27 @@ public static class Transmutation
     /// play (e.g. removed via a <see cref="PileType.None"/> result pile) so we DON'T transform the
     /// in-play card (which hangs — no base card self-transforms on play).
     /// </summary>
-    public static async Task RegisterRevert(Player owner, PlayerChoiceContext choiceContext, CardModel source, CardModel revertTo, CardModel token)
+    public static async Task<bool> RegisterRevert(Player owner, PlayerChoiceContext choiceContext, CardModel source, CardModel revertTo, CardModel token)
     {
-        TransmutePower revert = await EnsureRevertPower(owner, choiceContext, source);
+        TransmutePower? revert = await EnsureRevertPower(owner, choiceContext, source);
+        if (revert == null)
+        {
+            return false;
+        }
+
         revert.RegisterTransmute(revertTo, token);
+        return true;
     }
 
     /// <summary>One shared revert power per turn; created lazily on the first transmute.</summary>
-    private static async Task<TransmutePower> EnsureRevertPower(Player owner, PlayerChoiceContext choiceContext, CardModel source)
+    private static async Task<TransmutePower?> EnsureRevertPower(Player owner, PlayerChoiceContext choiceContext, CardModel source)
     {
         TransmutePower? revert = owner.Creature.GetPower<TransmutePower>();
         if (revert == null)
         {
-            await PowerCmd.Apply<TransmutePower>(choiceContext, owner.Creature, 1, owner.Creature, source);
-            revert = owner.Creature.GetPower<TransmutePower>();
+            revert = await PowerCmd.Apply<TransmutePower>(choiceContext, owner.Creature, 1, owner.Creature, source);
         }
 
-        return revert!;
+        return revert;
     }
 }

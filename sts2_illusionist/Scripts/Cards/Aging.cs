@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.CardPools;
@@ -26,6 +27,14 @@ namespace Illusionist.Scripts.Cards;
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "AGING")]
 public sealed class AgingIllusionist : IllusionistCard
 {
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[]
+    {
+        IllusionistKeywords.SevereCold,
+    };
+
+    protected override IEnumerable<IHoverTip> AdditionalHoverTips =>
+        SevereCold.FrozenReminderHoverTips(this);
+
     public AgingIllusionist()
         : base(1, CardType.Skill, CardRarity.Rare, TargetType.AnyEnemy)
     {
@@ -76,6 +85,11 @@ public sealed class AgingIllusionist : IllusionistCard
     protected override void OnUpgrade()
     {
         base.EnergyCost.UpgradeBy(-1);
+    }
+
+    public override Task BeforeCombatStart()
+    {
+        return SevereCold.ApplyAtCombatStart(this);
     }
 
     private static MoveState? ResolveNextMove(Creature monster, out MonsterState? loggedState)

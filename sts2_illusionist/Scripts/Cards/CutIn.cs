@@ -27,13 +27,17 @@ namespace Illusionist.Scripts.Cards;
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "CUT_IN")]
 public sealed class CutInIllusionist : IllusionistCard
 {
-    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { CardKeyword.Exhaust };
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[]
+    {
+        CardKeyword.Exhaust,
+        IllusionistKeywords.SevereCold,
+    };
 
     protected override IEnumerable<IHoverTip> AdditionalHoverTips => new IHoverTip[]
     {
         HoverTipFactory.FromPower<CutInPower>(),
         HoverTipFactory.FromPower<WeakPower>(),
-    };
+    }.Concat(SevereCold.FrozenReminderHoverTips(this));
 
     public CutInIllusionist()
         : base(1, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
@@ -102,6 +106,11 @@ public sealed class CutInIllusionist : IllusionistCard
     protected override void OnUpgrade()
     {
         RemoveKeyword(CardKeyword.Exhaust);
+    }
+
+    public override Task BeforeCombatStart()
+    {
+        return SevereCold.ApplyAtCombatStart(this);
     }
 
     private static bool TryReduceVisibleIntent(Creature target)
