@@ -12,7 +12,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 先见 (PrescienceIllusionist) — 0 cost Token, Retain, Exhaust.
+/// 先见 (PrescienceIllusionist) — 1 cost Token, Retain, Exhaust.
 /// Block value is set dynamically by 预警 (Forewarn) based on the enemy's attack intent.
 /// When Forewarn is upgraded, Prescience gains +10 extra Block.
 /// </summary>
@@ -36,7 +36,7 @@ public sealed class PrescienceIllusionist : IllusionistCard
     };
 
     public PrescienceIllusionist()
-        : base(0, CardType.Skill, CardRarity.Token, TargetType.Self)
+        : base(1, CardType.Skill, CardRarity.Token, TargetType.Self)
     {
     }
 

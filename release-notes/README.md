@@ -25,7 +25,7 @@ Repeated identical trailers are deduplicated when the draft is generated.
 From the repository root, compare the working source with the last published baseline:
 
 ```powershell
-$PreviousVersion = "0.5.3"
+$PreviousVersion = "0.5.4"
 powershell -NoProfile -ExecutionPolicy Bypass -File .\sts2_illusionist\tools\release_surface.ps1 diff `
   -BaselinePath ".\release-baselines\v$PreviousVersion.json" `
   -BaseRef "v$PreviousVersion" `
@@ -42,7 +42,7 @@ The Markdown output is a review draft. Replace raw expressions with polished pla
 After the release contents, version, and notes are final, export the new immutable baseline:
 
 ```powershell
-$NewVersion = "0.5.4"
+$NewVersion = "0.5.5"
 powershell -NoProfile -ExecutionPolicy Bypass -File .\sts2_illusionist\tools\release_surface.ps1 snapshot `
   -OutputPath ".\release-baselines\v$NewVersion.json"
 ```

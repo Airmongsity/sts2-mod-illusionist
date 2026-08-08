@@ -82,6 +82,13 @@ public static class Transmutation
             }
 
             CardModel replacement = makeReplacement(original);
+            if (replacement.Affliction != null)
+            {
+                // A forward transmute creates a new form, not an Affliction-bearing physical copy.
+                // This prevents clone-based results (千面 / 召唤 / 返场, etc.) from multiplying
+                // Frozen, Soulbound, or any other Affliction carried by their template card.
+                CardCmd.ClearAffliction(replacement);
+            }
 
             CardPileAddResult? result = await CardCmd.Transform(original, replacement);
             if (result == null || result.Value.cardAdded == null)

@@ -15,7 +15,7 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 预警 (ForewarnIllusionist) — 3 cost Skill, Uncommon (upgraded: +10 Block).
+/// 预警 (ForewarnIllusionist) — 2 cost Skill, Uncommon (upgraded: +10 Block).
 /// Target an enemy and put a 先见 (Prescience) into your hand whose [gold]Block[/gold]
 /// equals the target's current attack-intent damage. When upgraded, +10 extra Block.
 /// </summary>
@@ -29,7 +29,7 @@ public sealed class ForewarnIllusionist : IllusionistCard
     };
 
     public ForewarnIllusionist()
-        : base(3, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
+        : base(2, CardType.Skill, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
 
