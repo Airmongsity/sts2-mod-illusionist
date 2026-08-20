@@ -3,6 +3,7 @@ using Godot;
 using MegaCrit.Sts2.Core.Animation;
 using MegaCrit.Sts2.Core.Bindings.MegaSpine;
 using MegaCrit.Sts2.Core.Entities.Characters;
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using STS2RitsuLib.Interop.AutoRegistration;
 using STS2RitsuLib.Scaffolding.Characters;
@@ -91,7 +92,7 @@ public sealed class Illusionist : ModCharacterTemplate<IllusionistCardPool, Illu
     }
 
     // Mirror Necrobinder's animator (we reuse its creature visuals/spine via the placeholder).
-    public override CreatureAnimator GenerateAnimator(MegaSprite controller)
+    public override CreatureAnimator GenerateAnimator(MegaSprite controller, Creature creature)
     {
         AnimState idle = new AnimState("idle_loop", isLooping: true);
         AnimState cast = new AnimState("cast");

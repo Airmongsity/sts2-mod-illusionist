@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using Godot;
 using MegaCrit.Sts2.Core.Combat;
@@ -10,6 +11,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using STS2RitsuLib.Patching.Models;
+using Illusionist.Scripts.Characters;
 using Illusionist.Scripts.Monsters;
 
 namespace Illusionist.Scripts.Patches;
@@ -18,6 +20,9 @@ namespace Illusionist.Scripts.Patches;
 /// Give mirror clones the Illusionist's own Spine body, at reduced opacity, instead of the borrowed
 /// Necrobinder body. Same mechanism as the player's combat body (the character template's
 /// <c>TryCreateCreatureVisuals</c>) — hide the Spine, overlay a translucent sprite.
+///
+/// Only applies when the clone's owner is the Illusionist. Other characters are handled by
+/// <see cref="MirrorCloneVisualsPatch"/>, which resolves the owner's base-game or MOD visuals path.
 /// </summary>
 public sealed class IllusionistMirrorVisualPatch : IPatchMethod
 {
@@ -29,6 +34,9 @@ public sealed class IllusionistMirrorVisualPatch : IPatchMethod
 
     /// <summary>Clone opacity (0..1).</summary>
     private const float Alpha = 0.60f;
+
+    private static readonly FieldInfo CreatureField =
+        typeof(MonsterModel).GetField("_creature", BindingFlags.NonPublic | BindingFlags.Instance)!;
 
     public static string PatchId => "illusionist_mirror_visuals";
 
@@ -44,6 +52,14 @@ public sealed class IllusionistMirrorVisualPatch : IPatchMethod
     private static void Postfix(MonsterModel __instance, NCreatureVisuals __result)
     {
         if (__instance is not MirrorClone || __result == null)
+        {
+            return;
+        }
+
+        // Only apply the Illusionist visual swap when the clone's owner is the Illusionist. Other
+        // characters keep the visuals path resolved by MirrorCloneVisualsPatch.
+        Creature? creature = CreatureField.GetValue(__instance) as Creature;
+        if (creature?.PetOwner?.Character is not Characters.Illusionist)
         {
             return;
         }

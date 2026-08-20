@@ -81,6 +81,8 @@ public static class Entry
             patcher.RegisterPatch<ArchitectDialogueFallbackPatch>();
             patcher.RegisterPatch<RunWonAchievementGuardPatch>();
             patcher.RegisterPatch<CuteAncientPortraitCompatibilityPatch>();
+            patcher.RegisterPatch<MirrorPileIconPatch>();
+            patcher.RegisterPatch<MirrorCloneVisualsPatch>();
 
             // Borrowed-asset reskins that need a live scene (no asset-profile equivalent).
             patcher.RegisterPatch<IllusionistEnergyCounterPatch>();

@@ -1,7 +1,9 @@
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using STS2RitsuLib.CardPiles;
 using STS2RitsuLib.Interop.AutoRegistration;
+using Illusionist.Scripts.Powers;
 
 namespace Illusionist.Scripts;
 
@@ -25,11 +27,13 @@ public sealed class MirrorPile
 
     /// <summary>
     /// Register the Mirror pile programmatically (not via [RegisterOwnedCardPile]) so we can supply a
-    /// <see cref="ModCardPileSpec.VisibleWhen"/> predicate. The button only shows for the Illusionist -
-    /// the Mirror pile is Illusionist-only (it was showing for EVERY character because attribute-driven
-    /// registration can't pass a VisibleWhen delegate and defaults to always-visible). Call once from
-    /// Entry.Init, after assembly registration. The registered id matches <see cref="Id" /> so
-    /// <see cref="Type" /> / <see cref="Get" /> keep working.
+    /// <see cref="ModCardPileSpec.VisibleWhen"/> predicate. The button shows for the Illusionist
+    /// unconditionally (they always have access to mirror cards), and for any other character that has
+    /// acquired <see cref="MirrorImagePower"/> — making the mirror pile accessible to cross-class
+    /// acquisitions (e.g. Prism Shard). The icon is set dynamically by <see cref="MirrorPileIconPatch"/>
+    /// to show the owning character's avatar instead of Illusionist's mirror icon.
+    /// Call once from Entry.Init, after assembly registration. The registered id matches <see cref="Id" />
+    /// so <see cref="Type" /> / <see cref="Get" /> keep working.
     /// </summary>
     public static void Register()
     {
@@ -38,8 +42,15 @@ public sealed class MirrorPile
             Scope = ModCardPileScope.CombatOnly,
             Style = ModCardPileUiStyle.BottomLeft,
             Anchor = new ModCardPileAnchor(ModCardPileAnchorKind.BottomLeftPrimary),
-            IconPath = "res://illusionist/art/powers/mirrorimage.webp",
-            VisibleWhen = ctx => ctx.Player?.Character is global::Illusionist.Scripts.Characters.Illusionist,
+            IconPath = null,  // set dynamically by MirrorPileIconPatch
+            VisibleWhen = ctx =>
+            {
+                if (ctx.Player == null) return false;
+                // Always show for the Illusionist (they always have access to mirror cards).
+                if (ctx.Player.Character is global::Illusionist.Scripts.Characters.Illusionist) return true;
+                // For other characters, show only when they have acquired MirrorImagePower.
+                return ctx.Player.Creature?.GetPower<MirrorImagePower>() != null;
+            },
         });
     }
 }

@@ -48,6 +48,10 @@ ritsu_types_all.txt
 *.zip
 /release-notes/generated/
 
+# --- Base-game fact extractor (regenerable; raw decompile is never published) ---
+/.sts2-data-extractor/
+/game-data/
+
 # --- Godot / .NET build caches & outputs ---
 .godot/
 .build_output/

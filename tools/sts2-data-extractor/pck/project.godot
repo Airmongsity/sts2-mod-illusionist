@@ -1,0 +1,5 @@
+[application]
+config/name="STS2 Localization Extractor"
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
