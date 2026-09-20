@@ -14,7 +14,7 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 万花筒 (KaleidoscopeIllusionist) — 1 cost Power, Rare (upgraded: 0 cost).
-/// Every 3 cards you play, Copy 1 (create a mirror image) and deal 6 damage to ALL enemies.
+/// Every 5 cards you play, Copy 1 (create a mirror image) and deal 6 damage to ALL enemies.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "KALEIDOSCOPE")]
 public sealed class KaleidoscopeIllusionist : IllusionistCard

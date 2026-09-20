@@ -15,6 +15,9 @@
     <!-- RitsuLib NuGet package auto-deploys the RitsuLib mod here for local testing.
          Players get it via the Steam Workshop dependency instead. -->
     <RitsuLibDeployDir>$(Sts2Root)\mods\STS2-RitsuLib\</RitsuLibDeployDir>
+    <!-- Pinned RitsuLib version. build-illusionist-windows.ps1 rewrites this line when it finds a
+         newer release on nuget.org; override ad hoc with /p:RitsuLibVersion=x.y.z. -->
+    <RitsuLibVersion Condition="'$(RitsuLibVersion)' == ''">0.6.2</RitsuLibVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +35,6 @@
     </Reference>
     <!-- Base library (compile-time). Runtime copy is the STS2-RitsuLib mod itself
          (Workshop item 3747602295), declared in mod_manifest.json dependencies. -->
-    <PackageReference Include="STS2.RitsuLib" Version="0.4.48" />
+    <PackageReference Include="STS2.RitsuLib" Version="$(RitsuLibVersion)" />
   </ItemGroup>
 </Project>

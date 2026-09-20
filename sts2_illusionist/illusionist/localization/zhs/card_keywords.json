@@ -2,13 +2,13 @@
   "ILLUSIONIST_KEYWORD_COPY.title": "复制",
   "ILLUSIONIST_KEYWORD_COPY.description": "创建一个镜像。",
   "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.title": "镜像",
-  "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.description": "每回合开始时，每个镜像[gold]执行[/gold] 1。\n你消耗的牌和每回合打出的第一张牌的消耗复制品会被放入镜像。\n每当你受到未被格挡的伤害时，你的一个镜像死亡。\n你最多拥有9个镜像",
+  "ILLUSIONIST_KEYWORD_MIRROR_IMAGE.description": "每回合开始时，每个镜像[gold]执行[/gold] 1。\n你消耗的牌和每回合打出的第一张牌的消耗复制品会被放入镜像。\n每当你受到未被格挡的伤害时，你的一个镜像死亡。\n你最多拥有9个镜像。",
   "ILLUSIONIST_KEYWORD_EXECUTE.title": "执行",
-  "ILLUSIONIST_KEYWORD_EXECUTE.description": "对敌人打出这张牌并添加消耗",
+  "ILLUSIONIST_KEYWORD_EXECUTE.description": "对敌人打出这张牌并添加消耗。",
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.title": "先机",
   "ILLUSIONIST_KEYWORD_FIRST_MOVE.description": "仅当这是你本回合打出的第一张牌时，才会触发。",
   "ILLUSIONIST_KEYWORD_TRANSMUTE.title": "幻化",
   "ILLUSIONIST_KEYWORD_TRANSMUTE.description": "[gold]变化[/gold]一张牌，你的下个回合开始时，将这张牌[gold]变化[/gold]为前一次[gold]变化[/gold]前的结果。",
   "ILLUSIONIST_KEYWORD_SEVERE_COLD.title": "严寒",
-  "ILLUSIONIST_KEYWORD_SEVERE_COLD.description": "战斗开始时，冻结这张牌"
+  "ILLUSIONIST_KEYWORD_SEVERE_COLD.description": "战斗开始时，冻结这张牌。"
 }

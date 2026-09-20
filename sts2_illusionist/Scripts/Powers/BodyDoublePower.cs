@@ -21,9 +21,9 @@ namespace Illusionist.Scripts.Powers;
 [RegisterPower]
 public sealed class BodyDoublePower : IllusionistPower
 {
+    // Keep Osty's title so the card text ("gains Die for You") still names it. The description is our
+    // own: the borrowed one credits Osty, who isn't here — on this enemy it's the enemy that absorbs.
     public override LocString Title => ModelDb.Power<DieForYouPower>().Title;
-
-    public override LocString Description => ModelDb.Power<DieForYouPower>().Description;
 
     public override PowerType Type => PowerType.Buff;
 

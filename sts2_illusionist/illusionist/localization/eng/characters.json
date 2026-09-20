@@ -1,15 +1,18 @@
 {
   "ILLUSIONIST_CHARACTER_ILLUSIONIST.title": "Illusionist",
   "ILLUSIONIST_CHARACTER_ILLUSIONIST.titleObject": "Illusionist",
-  "ILLUSIONIST_CHARACTER_ILLUSIONIST.description": "A trickster of mirrors and illusions. Copy creates mirror images that store your exhausted cards and replay them at your foes; read and reflect enemy intent; and transmute your own cards on the fly.",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.description": "A lamplit illusionist who never appears alone.\nReplays her exhausted cards through [gold]Mirror Images[/gold] and rewrites enemy intent.",
   "ILLUSIONIST_CHARACTER_ILLUSIONIST.pronounSubject": "she",
   "ILLUSIONIST_CHARACTER_ILLUSIONIST.pronounObject": "her",
   "ILLUSIONIST_CHARACTER_ILLUSIONIST.pronounPossessive": "hers",
   "ILLUSIONIST_CHARACTER_ILLUSIONIST.possessiveAdjective": "her",
   "ILLUSIONIST_CHARACTER_ILLUSIONIST.cardsModifierTitle": "Illusionist",
   "ILLUSIONIST_CHARACTER_ILLUSIONIST.cardsModifierDescription": "Adds the Illusionist's cards to the pool.",
-  "ILLUSIONIST_CHARACTER_ILLUSIONIST.eventDeathPrevention": "The Illusionist slips behind a mirror and refuses to fade.",
-  "ILLUSIONIST_CHARACTER_ILLUSIONIST.goldMonologue": "Why settle for one reflection of fortune? I'll take every glittering image at once.",
-  "ILLUSIONIST_CHARACTER_ILLUSIONIST.aromaPrinciple": "Chaos is only another illusion — and illusions answer to me.",
-  "ILLUSIONIST_CHARACTER_ILLUSIONIST.unlockText": "Unlocked from the start."
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.eventDeathPrevention": "Someone has to keep it lit.",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.goldMonologue": "[sine]Maybe I can buy enough oil to keep it lit...[/sine]",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.aromaPrinciple": "[sine][color=#620462]I would rather see it coming...[/color][/sine]",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.unlockText": "Unlocked from the start.",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.bestiaryQuote": "I have not seen through this one yet.",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.banter.alive.endTurnPing": "The oil's burning...",
+  "ILLUSIONIST_CHARACTER_ILLUSIONIST.banter.dead.endTurnPing": "..."
 }

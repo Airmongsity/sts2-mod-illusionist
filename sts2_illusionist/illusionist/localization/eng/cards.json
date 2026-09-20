@@ -197,10 +197,19 @@
   "ILLUSIONIST_CARD_MISDIRECTION.title": "Misdirection",
   "ILLUSIONIST_CARD_MISDIRECTION.description": "Gain {Block:diff()} [gold]Block[/gold].\nWhenever you transform a card this turn, gain {BlockPerChange:diff()} [gold]Block[/gold].",
   "ILLUSIONIST_CARD_SLEEVE_BLADE.title": "Underhand Strike",
-  "ILLUSIONIST_CARD_SLEEVE_BLADE.description": "Deal {Damage:diff()} damage.",
+  "ILLUSIONIST_CARD_SLEEVE_BLADE.description": "Deal {Damage:diff()} damage. If the enemy has Block, deal {ExtraDamage:diff()} more.",
   "ILLUSIONIST_CARD_TRANSPOSITION.title": "Transposition",
   "ILLUSIONIST_CARD_TRANSPOSITION.description": "Exhaust a card in your draw pile, then add an Ethereal Exhaust copy of it to your hand.",
   "ILLUSIONIST_CARD_TRANSPOSITION.selectionScreenPrompt": "Choose a card to Exhaust and copy.",
   "ILLUSIONIST_CARD_UNINVITED.title": "One Step Ahead",
-  "ILLUSIONIST_CARD_UNINVITED.description": "Draw {Cards:diff()} card(s).\nWhenever an enemy gains [gold]Block[/gold], put this card into your hand."
+  "ILLUSIONIST_CARD_UNINVITED.description": "Draw {Cards:diff()} card(s).\nWhenever an enemy gains [gold]Block[/gold], put this card into your hand.",
+  "ILLUSIONIST_CARD_EMBER.title": "Ember",
+  "ILLUSIONIST_CARD_EMBER.description": "Add Scorching to a card in your hand.",
+  "ILLUSIONIST_CARD_EMBER.selectionScreenPrompt": "Choose a card to afflict with Scorching.",
+  "ILLUSIONIST_CARD_COSTUME.title": "Costume",
+  "ILLUSIONIST_CARD_COSTUME.description": "Add Disguised to a card in your hand.",
+  "ILLUSIONIST_CARD_COSTUME.selectionScreenPrompt": "Choose a card to afflict with Disguised.",
+  "ILLUSIONIST_CARD_AUDITION.title": "Audition",
+  "ILLUSIONIST_CARD_AUDITION.description": "Choose one of three random cards from other characters, then permanently transform a card in your hand into it.",
+  "ILLUSIONIST_CARD_AUDITION.selectionScreenPrompt": "Choose a card to transform."
 }

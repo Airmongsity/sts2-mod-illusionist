@@ -2,7 +2,11 @@
   "title": null,
   "description": null,
   "visibility": "public",
-  "changeNote": "v0.5.6\n\nCompatibility / 兼容性\n- Updated for Slay the Spire 2 v0.111.0 and its character animator API. / 适配 Slay the Spire 2 v0.111.0 及其角色动画器接口。\n- Characters other than the Illusionist can now see and open the Mirror pile after gaining Mirror Image; its icon matches the current character. / 非幻术师角色获得镜像后，现在可以看到并打开镜像牌堆；按钮使用当前角色头像。\n- Mirror clones now use their owner's character visuals. Base-game characters and MOD characters that provide a custom visuals path are supported; the Illusionist retains her translucent Spine appearance. / 镜像复制体现在使用其拥有者的角色外观；支持原版角色和提供自定义外观路径的 MOD 角色，幻术师继续使用自身的半透明 Spine 外观。",
-  "tags": ["Characters"],
-  "dependencies": [3747602295]
+  "changeNote": "v0.5.7\n\nBalance / 平衡性\n- Underhand Strike now deals 10 damage and 6 more if the target has Block (upgraded: 12 and 8), replacing its flat 11 / 13. / 【埋伏】改为造成 10 点伤害，若目标有格挡则额外造成 6 点（升级后为 12 与 8），取代原本固定的 11 / 13。\n\nText / 文本\n- Added the Illusionist's character voice lines, bestiary quote and combat banter. / 补齐幻术师的角色语音、图鉴引语与战斗中的对话。\n- Added Illusionist dialogue for all nine Ancients. / 为全部九位先古之民补齐幻术师的对话。\n- Rewrote the Mirror Image, Momentum, Shield Tax, Stargazing, Curtain Break, Mesmerizing Array, Fantasy Storm and Extract power descriptions, and gave Body Double its own description instead of borrowing Osty's. / 重写【镜像】【势头】【恃盾者亡】【候场】【破幕】【迷魂阵】【幻梦风暴】【抽离】的能力描述；【替身】不再沿用 Osty 的描述，改用自己的。\n- Counts now read as proper singular/plural instead of \"card(s)\" / \"time(s)\". / 数量描述改用正确的单复数，不再显示 \"card(s)\" / \"time(s)\"。\n- Unified sentence-ending punctuation across the Simplified Chinese card and power text. / 统一简体中文卡牌与能力描述的句末标点。\n\nFixes / 修复\n- Scorching now shows the card as it burns and as the fire jumps to the next card, instead of resolving invisibly inside the draw or discard pile. / 【灼热】现在会展示被烧掉的牌以及火焰跳到的下一张牌，不再在抽牌堆或弃牌堆里无声结算。",
+  "tags": [
+    "Characters"
+  ],
+  "dependencies": [
+    3747602295
+  ]
 }

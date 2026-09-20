@@ -11,11 +11,10 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 导能 (Channel) — X cost Attack, Common. Spend all your energy (X), deal X+6 damage and refund X-1
-/// energy (upgraded: deal X+9 damage and still refund X-1). The net cost is always 1 energy, and the
-/// Mirror synergy is the payoff: as your first card of the turn it's replayed by every mirror image,
-/// so each clone repeats the full X-damage hit — a few images effectively multiply it while you keep
-/// almost all your energy.
+/// 导能 (Channel) — X cost Attack, Common. Spend all your energy (X), deal X+6 damage and refund X/2
+/// energy, rounded down (upgraded: deal X+9 damage; the refund is unchanged). The Mirror synergy is
+/// the payoff: as your first card of the turn it's replayed by every mirror image, so each clone
+/// repeats the full X-damage hit — a few images effectively multiply it.
 ///
 /// <para>X-cost pattern (mirrors the base game's Dirge): <see cref="HasEnergyCostX"/> = true, base
 /// energy cost 0, and the spent energy is read at play time via

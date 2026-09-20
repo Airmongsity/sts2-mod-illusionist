@@ -4,5 +4,8 @@
   "ILLUSIONIST_AFFLICTION_FROZEN.extraCardText": "Unless played, this card cannot change.",
   "ILLUSIONIST_AFFLICTION_SCORCHING.title": "Scorching",
   "ILLUSIONIST_AFFLICTION_SCORCHING.description": "At the start of your turn, Exhaust this card and afflict a random card in the same pile with Scorching. When you play this card, remove Scorching.",
-  "ILLUSIONIST_AFFLICTION_SCORCHING.extraCardText": "At the start of your turn, Exhaust this card and afflict a random card in the same pile with Scorching. When you play this card, remove Scorching."
+  "ILLUSIONIST_AFFLICTION_SCORCHING.extraCardText": "At the start of your turn, Exhaust this card and afflict a random card in the same pile with Scorching. When you play this card, remove Scorching.",
+  "ILLUSIONIST_AFFLICTION_DISGUISED.title": "Disguised",
+  "ILLUSIONIST_AFFLICTION_DISGUISED.description": "The first time an enemy gains Block each turn, transform this card into a random card from a random other character.",
+  "ILLUSIONIST_AFFLICTION_DISGUISED.extraCardText": "The first time an enemy gains Block each turn, transform this card into a random card from a random other character."
 }

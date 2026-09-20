@@ -38,6 +38,11 @@ public sealed class Scorching : ModAfflictionTemplate
         // The affliction transfers only once. Exhaust-pile cards still receive combat hooks, so it
         // must be cleared explicitly before exhausting the source.
         CardCmd.ClearAffliction(source);
+
+        // Show the card before it burns: Scorching spreads inside whatever pile it is in, so the
+        // card is usually in the draw or discard pile, where it has no on-screen node and the move
+        // to the exhaust pile would be invisible.
+        CardCmd.Preview(source);
         await CardCmd.Exhaust(choiceContext, source);
 
         Scorching scorching = ModelDb.Affliction<Scorching>();
@@ -47,7 +52,9 @@ public sealed class Scorching : ModAfflictionTemplate
         CardModel? selected = player.RunState.Rng.CombatCardSelection.NextItem(candidates);
         if (selected != null)
         {
-            await CardCmd.Afflict<Scorching>(selected, 1);
+            // AfflictAndPreview, not Afflict: the fire jumping to a card the player cannot see is the
+            // half that most needs to be shown.
+            await CardCmd.AfflictAndPreview<Scorching>(new[] { selected }, 1);
         }
     }
 
