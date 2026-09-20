@@ -7,9 +7,10 @@ using STS2RitsuLib.Utils;
 namespace Illusionist.Scripts;
 
 /// <summary>
-/// A NON-reward pool for Illusionist cards that must never appear in card rewards: generated tokens
-/// (先见 / 暗淡油灯 / 熄灭油灯 — only ever spawned by other cards) and any card retired from the normal
-/// pool (e.g. 逆转 Reversal, kept as an Event/先古 model but unobtainable). Card rewards are pulled
+/// A NON-reward pool for the Illusionist's generated tokens (先见 / 暗淡油灯 / 熄灭油灯 — only ever
+/// spawned by other cards), which must never appear in card rewards. A card that is merely parked
+/// stays in <see cref="IllusionistCardPool"/> with CardRarity.Event instead (星火 / 戏服 / 试镜): that
+/// keeps it out of the roll while leaving it grantable by events. Card rewards are pulled
 /// exclusively from the
 /// character's assigned pool (<see cref="IllusionistCardPool"/>, i.e. <c>player.Character.CardPool</c>),
 /// so any token registered there can be rolled into a reward: the game's reward/merchant filters

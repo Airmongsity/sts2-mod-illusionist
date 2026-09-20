@@ -74,7 +74,7 @@ Treat `AGENTS.md` as the authoritative project instructions. For every release:
 
 1. Compare the working source with the last published `release-baselines/vX.Y.Z.json` by running `sts2_illusionist\tools\release_surface.ps1 selftest` and then `diff` with the matching Git tag as `-BaseRef`.
 2. Publish only the final net player-visible difference. Collapse repeated redesigns of one card into its baseline-to-release result, remove reverted changes, and manually add cross-cutting bug or compatibility fixes that the checker cannot infer.
-3. Keep the version in `sts2_illusionist\mod_manifest.json`, a newly added current-version section in `next-mirror.md`, and `illusionist-workshop\workshop.json` `changeNote` aligned. Export a new immutable release baseline after those contents are final.
+3. Keep the version in `sts2_illusionist\mod_manifest.json` and `illusionist-workshop\workshop.json` `changeNote` aligned. `next-mirror.md` is the author's design document, not a changelog — read it, never edit it. Export a new immutable release baseline after those contents are final.
 4. Run `sts2_illusionist\build-illusionist-windows.ps1` without `-SkipInstallCopy`; verify the installed DLL/PCK/manifest and the synchronized `illusionist-workshop/content/` payload.
 5. If a GitHub archive is requested, package the built DLL, PCK, and manifest beneath `illusionist/`. Packed art remains in the PCK.
 6. Explicitly stage only code, localization, configuration, documentation, and baseline files. Never commit source art or resources (`*.png`, `*.jpg`, `*.jpeg`, `*.webp`, `*.gif`, `*.svg`, `*.skel`, `*.atlas`, `*.spine`, `*.psd`, `*.import`) or `.tscn` files. Review the staged file list and diff before commit/push.
