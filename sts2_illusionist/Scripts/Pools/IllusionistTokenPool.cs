@@ -23,7 +23,7 @@ public sealed class IllusionistTokenPool : TypeListCardPoolModel
 {
     public override string Title => "illusionist";
 
-    public override string EnergyColorName => "necrobinder";
+    public override string EnergyColorName => IllusionistCardPool.EnergyColor;
 
     public override Color DeckEntryCardColor => new Color("CD4EED");
 

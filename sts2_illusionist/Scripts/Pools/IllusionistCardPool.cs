@@ -14,9 +14,11 @@ namespace Illusionist.Scripts;
 /// </summary>
 public sealed class IllusionistCardPool : TypeListCardPoolModel
 {
+    public const string EnergyColor = "illusionist";
+
     public override string Title => "illusionist";
 
-    public override string EnergyColorName => "necrobinder";
+    public override string EnergyColorName => EnergyColor;
 
     public override Color DeckEntryCardColor => new Color("CD4EED");
 

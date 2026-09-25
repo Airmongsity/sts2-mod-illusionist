@@ -9,5 +9,5 @@ namespace Illusionist.Scripts;
 /// </summary>
 public sealed class IllusionistPotionPool : TypeListPotionPoolModel
 {
-    public override string EnergyColorName => "necrobinder";
+    public override string EnergyColorName => IllusionistCardPool.EnergyColor;
 }

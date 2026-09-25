@@ -8,5 +8,5 @@ namespace Illusionist.Scripts;
 /// </summary>
 public sealed class IllusionistRelicPool : TypeListRelicPoolModel
 {
-    public override string EnergyColorName => "necrobinder";
+    public override string EnergyColorName => IllusionistCardPool.EnergyColor;
 }

@@ -2,7 +2,7 @@
   "title": null,
   "description": null,
   "visibility": "public",
-  "changeNote": "v0.5.7\n\nBalance / 平衡性\n- Underhand Strike now deals 10 damage and 6 more if the target has Block (upgraded: 12 and 8), replacing its flat 11 / 13. / 【埋伏】改为造成 10 点伤害，若目标有格挡则额外造成 6 点（升级后为 12 与 8），取代原本固定的 11 / 13。\n\nText / 文本\n- Added the Illusionist's character voice lines, bestiary quote and combat banter. / 补齐幻术师的角色语音、图鉴引语与战斗中的对话。\n- Added Illusionist dialogue for all nine Ancients. / 为全部九位先古之民补齐幻术师的对话。\n- Rewrote the Mirror Image, Momentum, Shield Tax, Stargazing, Curtain Break, Mesmerizing Array, Fantasy Storm and Extract power descriptions, and gave Body Double its own description instead of borrowing Osty's. / 重写【镜像】【势头】【恃盾者亡】【候场】【破幕】【迷魂阵】【幻梦风暴】【抽离】的能力描述；【替身】不再沿用 Osty 的描述，改用自己的。\n- Counts now read as proper singular/plural instead of \"card(s)\" / \"time(s)\". / 数量描述改用正确的单复数，不再显示 \"card(s)\" / \"time(s)\"。\n- Unified sentence-ending punctuation across the Simplified Chinese card and power text. / 统一简体中文卡牌与能力描述的句末标点。\n\nFixes / 修复\n- Scorching now shows the card as it burns and as the fire jumps to the next card, instead of resolving invisibly inside the draw or discard pile. / 【灼热】现在会展示被烧掉的牌以及火焰跳到的下一张牌，不再在抽牌堆或弃牌堆里无声结算。",
+  "changeNote": "v0.5.8\n\nFixes / 修复\n- Reversal now preserves non-attack effects attached to an enemy move while converting its attack damage into Block. / 【逆转】现在会在将敌人的攻击伤害转化为格挡时，保留该行动附带的非攻击效果。\n- Illusionist no longer replaces the Necrobinder's card energy orb with the Illusionist oil lamp. / 幻术师不再将亡灵契约师卡牌的能量球替换为幻术师的油灯。",
   "tags": [
     "Characters"
   ],

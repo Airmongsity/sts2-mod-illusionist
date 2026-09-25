@@ -22,9 +22,15 @@ namespace Illusionist.Scripts.Cards;
 /// <summary>
 /// 逆转 (Reversal) — 2 cost Uncommon Skill, Exhaust (upgraded: 1 cost).
 /// If the target intends to attack, CHANGE that attack into intending to gain Block equal to the
-/// damage it would have dealt — this turn's attack is discarded and replaced by a defend. Any
-/// non-attack intents on the same move stay in the telegraph, and the enemy's later turns are
-/// untouched (its move sequence continues normally after).
+/// damage it would have dealt. Only the damage is reversed: the attack icons come off the
+/// telegraph, but the move's non-attack intents stay there AND still happen, because the enemy's
+/// original action is what runs — with its damage silenced by <see cref="ReversedAttack"/>. The
+/// enemy's later turns are untouched (its move sequence continues normally after).
+///
+/// <para>Running the original action is the whole point of the wrapper: a monster move is a single
+/// delegate, so the Thieving Hopper's THIEVERY_MOVE steals a card and attacks in the same call.
+/// Building a replacement action that only gains Block deleted the theft — and 64 other base-game
+/// moves' non-attack halves — while the telegraph still advertised them.</para>
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "REVERSAL")]
 public sealed class ReversalIllusionist : IllusionistCard
@@ -84,11 +90,29 @@ public sealed class ReversalIllusionist : IllusionistCard
 
             MoveState blockMove = new MoveState(
                 "REVERSAL_DEFEND_ILLUSIONIST",
-                async (IReadOnlyList<Creature> _) =>
+                async (IReadOnlyList<Creature> targets) =>
                 {
                     if (block > 0)
                     {
                         await CreatureCmd.GainBlock(target, block, ValueProp.Unpowered, null);
+                    }
+
+                    // Then run the enemy's ORIGINAL action with its damage silenced. A monster move
+                    // is one delegate: the Thieving Hopper steals AND attacks in the same call, so
+                    // replacing the delegate with a block-gain silently deleted the theft while the
+                    // telegraph kept promising it. Only the damage is reversed; everything else the
+                    // move does still happens. (虚张声势 / 抢拍 already wrap moves this way.)
+                    if (!ReversedAttack.IsLive)
+                    {
+                        // Suppression isn't in the hook chain — running the move now would deal full
+                        // damage on top of the Block we just gave away. Fall back to cancelling it.
+                        Log.Error("[illusionist] Reversal: damage suppression is not live; skipping the original move.");
+                        return;
+                    }
+
+                    using (ReversedAttack.Suppress(target))
+                    {
+                        await move.PerformMove(targets);
                     }
                 },
                 intents.ToArray())
