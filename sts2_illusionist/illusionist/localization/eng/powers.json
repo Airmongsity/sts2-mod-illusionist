@@ -2,7 +2,7 @@
   "ILLUSIONIST_POWER_MIRROR_IMAGE_POWER.title": "Mirror Image",
   "ILLUSIONIST_POWER_MIRROR_IMAGE_POWER.description": "At the start of your turn, each mirror [gold]Executes[/gold] 1.\nCards you [gold]Exhaust[/gold] and [gold]Exhaust[/gold] copies of the first card you play each turn are stored in mirrors.\nA stored Attack or Skill without [gold]Exhaust[/gold] returns to its mirror and gains [gold]Exhaust[/gold].\nWhenever you take unblocked damage, one of your mirrors dies, empty ones first.",
   "ILLUSIONIST_POWER_MEMORY_POWER.title": "Memory",
-  "ILLUSIONIST_POWER_MEMORY_POWER.description": "Whenever one of your [gold]mirror images[/gold] dies, draw 2 cards and gain 1 [img]res://illusionist/art/illusionist_energy_icon_text.webp[/img].",
+  "ILLUSIONIST_POWER_MEMORY_POWER.description": "Whenever one of your [gold]mirror images[/gold] dies, draw 1 card and gain 1 [img]res://illusionist/art/illusionist_energy_icon_text.webp[/img].",
   "ILLUSIONIST_POWER_KALEIDOSCOPE_POWER.title": "Kaleidoscope",
   "ILLUSIONIST_POWER_KALEIDOSCOPE_POWER.description": "Every 5 cards you play, create a mirror image and deal 6 damage to all enemies.",
   "ILLUSIONIST_POWER_DAZZLE_POWER.title": "Dazzle",

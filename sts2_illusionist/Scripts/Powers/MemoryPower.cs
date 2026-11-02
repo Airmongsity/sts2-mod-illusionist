@@ -12,7 +12,7 @@ namespace Illusionist.Scripts.Powers;
 
 /// <summary>
 /// 记忆 (MemoryIllusionist) power. Whenever one of your mirror clones is destroyed (shattered by damage, or
-/// consumed by 引爆/汲取), draw 2 cards and gain 1 energy. Self-contained via the AfterDeath hook,
+/// consumed by 引爆/汲取), draw 1 card and gain 1 energy. Self-contained via the AfterDeath hook,
 /// which fires once per clone death.
 /// </summary>
 [RegisterPower]
@@ -32,7 +32,7 @@ public sealed class MemoryPower : IllusionistPower
 
         if (creature.Monster is MirrorClone && creature.PetOwner == player)
         {
-            await CardPileCmd.Draw(choiceContext, 2, player);
+            await CardPileCmd.Draw(choiceContext, 1, player);
             await PlayerCmd.GainEnergy(1, player);
         }
     }

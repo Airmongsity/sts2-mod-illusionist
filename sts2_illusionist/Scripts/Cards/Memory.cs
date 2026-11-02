@@ -14,7 +14,7 @@ namespace Illusionist.Scripts.Cards;
 
 /// <summary>
 /// 记忆 (MemoryIllusionist) - 1 cost Power, Uncommon (upgraded: Innate).
-/// Apply Memory: whenever a mirror image is destroyed, draw 2 cards and gain 1 energy.
+/// Apply Memory: whenever a mirror image is destroyed, draw 1 card and gain 1 energy.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "MEMORY")]
 public sealed class MemoryIllusionist : IllusionistCard
