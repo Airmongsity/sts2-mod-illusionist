@@ -83,6 +83,7 @@ public static class Entry
             patcher.RegisterPatch<CuteAncientPortraitCompatibilityPatch>();
             patcher.RegisterPatch<MirrorPileIconPatch>();
             patcher.RegisterPatch<MirrorCloneVisualsPatch>();
+            patcher.RegisterPatch<MirrorCloneHealthBarPatch>();
 
             // Borrowed-asset reskins that need a live scene (no asset-profile equivalent).
             patcher.RegisterPatch<IllusionistEnergyCounterPatch>();
