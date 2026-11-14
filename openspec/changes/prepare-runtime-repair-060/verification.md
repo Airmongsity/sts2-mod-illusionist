@@ -56,4 +56,8 @@ Ran `--illusionist-particle-probe` through the installed real game loader using 
 
 Release staging uses an explicit code/localization/configuration/docs/baseline allowlist. Art, shader-resource sources, scenes, converters, built artifacts, ZIPs, logs, and unrelated experiments are excluded. The packed shaders/art are included in the local Workshop PCK.
 
-The project workflow finalizes the code commit and matching release tag after staged-diff review. Workshop uploading is intentionally left to the author; run `sts2-mod-uploader/ModUploader.exe upload -w ../illusionist-workshop` from the uploader directory when ready. No uploader was run by this task.
+Reviewed all 61 staged names and the staged diff, verified the index matched the tested worktree, and confirmed supplied controller/probe sources matched their reviewed packages. `git diff --cached --check` passed.
+
+Release commit `84865ef02f1128e7d76dc6f10fa252b591a10f1b` and annotated `v0.6.0` were pushed successfully. The restored `v0.5.8` tag was also pushed at the existing published commit. Remote main and the peeled `v0.6.0` tag were verified against the release commit. A documentation-only follow-up records this completed verification; it does not change the tagged release payload.
+
+Workshop uploading is left to the author. From `sts2-mod-uploader/`, run `.\ModUploader.exe upload -w ..\illusionist-workshop` when ready. No uploader was run by this task.

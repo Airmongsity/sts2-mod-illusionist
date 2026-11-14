@@ -11,4 +11,4 @@
 ## 3. Validation and finalization
 
 - [x] 3.1 Complete supported DLL/PCK build/install and Workshop payload synchronization; run the native particle probe and verify preserved sources, packed shaders, and artifact hashes.
-- [ ] 3.2 Record evidence, inspect an explicit code-only staged allowlist/diff, and complete release commit/push/tag under project instructions.
+- [x] 3.2 Record evidence, inspect an explicit code-only staged allowlist/diff, and complete release commit/push/tag under project instructions.
