@@ -22,7 +22,7 @@ public sealed class MemoryPower : IllusionistPower
 
     public override PowerStackType StackType => PowerStackType.Counter;
 
-    public override async Task AfterDeath(PlayerChoiceContext choiceContext, Creature creature, bool wasRemovalPrevented, float deathAnimLength)
+    public override async Task AfterDeath(PlayerChoiceContext choiceContext, Creature creature, CardModel? source, bool wasRemovalPrevented, float deathAnimLength)
     {
         Player? player = base.Owner.Player;
         if (player == null)

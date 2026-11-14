@@ -46,7 +46,7 @@
   "ILLUSIONIST_POWER_CUT_IN_POWER.title": "抢拍",
   "ILLUSIONIST_POWER_CUT_IN_POWER.description": "其本回合攻击次数减 {Amount}。",
   "ILLUSIONIST_POWER_CURTAIN_BREAK_POWER.title": "破幕",
-  "ILLUSIONIST_POWER_CURTAIN_BREAK_POWER.description": "每当你突破敌人的[gold]格挡[/gold]时，抽 2 张牌并获得 1 点[gold]能量[/gold]。",
+  "ILLUSIONIST_POWER_CURTAIN_BREAK_POWER.description": "每回合首次突破敌人的[gold]格挡[/gold]时，抽 1 张牌并获得 1 点[gold]能量[/gold]。",
   "ILLUSIONIST_POWER_MESMERIZING_ARRAY_POWER.title": "迷魂阵",
   "ILLUSIONIST_POWER_MESMERIZING_ARRAY_POWER.description": "每回合你第一次改变敌人的意图时，[gold]复制[/gold]{Amount}并抽{Amount}张牌。",
   "ILLUSIONIST_POWER_MISDIRECTION_POWER.title": "障眼法",

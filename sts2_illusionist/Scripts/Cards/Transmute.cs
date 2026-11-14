@@ -48,7 +48,13 @@ public sealed class TransmuteIllusionist : IllusionistCard
         }
 
         // 1) Offer N random cards from the exhaust pile (seeded shuffle), and pick one.
-        owner.RunState.Rng.CombatCardSelection.Shuffle(pool);
+        // Rng.Shuffle was removed in 0.113. Preserve its Fisher-Yates order
+        // and consume the same selection RNG stream once per swap.
+        for (int i = pool.Count - 1; i > 0; i--)
+        {
+            int j = owner.RunState.Rng.CombatCardSelection.NextInt(i + 1);
+            (pool[i], pool[j]) = (pool[j], pool[i]);
+        }
         List<CardModel> choices = pool.Take(base.DynamicVars.Cards.IntValue).ToList();
 
         CardModel? chosen = (await CardSelectCmd.FromSimpleGrid(

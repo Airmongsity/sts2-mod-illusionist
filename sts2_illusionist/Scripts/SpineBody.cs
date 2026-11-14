@@ -7,12 +7,13 @@ using MegaCrit.Sts2.Core.Nodes.Combat;
 namespace Illusionist.Scripts;
 
 /// <summary>
-/// Renders the Illusionist with real Spine skeletons via the game's spine-godot runtime (the combat
-/// body, its mirror clones, and the rest-site character). The skeletons were authored in Spine 3.8 and
+/// Plays the approved articulated combat body and original rest-site character via spine-godot.
+/// The skeletons were authored in Spine 3.8 and
 /// converted to the runtime version (4.2.43) with <c>SpineSkeletonDataConverter</c>; they ship in the
-/// PCK as <c>illusionist.skel</c> (combat) / <c>illusionist_rest.skel</c> (rest), sharing one atlas +
-/// texture (<c>illusionist.atlas</c> + <c>illusionist.png</c>, the PNG packed as an imported
-/// <c>.ctex</c> — see <c>tools/build_pck.gd</c>).
+/// PCK as <c>motion5/illusionist.skel</c> (combat) / <c>illusionist_rest.skel</c> (rest).
+/// Combat FX use separate front/back layers with live target coordinates. The original combat
+/// sources remain available for rollback; rest keeps its separate portrait atlas.
+/// <c>tools/build_pck.gd</c> imports every page named by both atlases.
 ///
 /// <para>spine-godot has no C# bindings, so everything is driven by name through <see cref="ClassDB"/>
 /// reflection. Each skeleton's heavy <c>SpineSkeletonDataResource</c> is built once and cached; every
@@ -21,12 +22,12 @@ namespace Illusionist.Scripts;
 /// </summary>
 public static class SpineBody
 {
-    public const string CombatSkel = "res://illusionist/art/illusionist.skel";
+    public const string CombatSkel = "res://illusionist/art/motion5/illusionist.skel";
     public const string RestSkel = "res://illusionist/art/illusionist_rest.skel";
+    public const string CharacterVisualMeta = "illusionist_character_visual";
 
-    // Each skeleton has its own atlas: the combat body is a multi-frame flipbook packed by Spine
-    // (skeleton.atlas -> skeleton.png / skeleton2.png), the rest body is a single image.
-    private const string CombatAtlas = "res://illusionist/art/skeleton.atlas";
+    // Approved combat mesh atlas and original rest portrait atlas.
+    private const string CombatAtlas = "res://illusionist/art/motion5/skeleton.atlas";
     private const string RestAtlas = "res://illusionist/art/illusionist.atlas";
 
     private static string AtlasFor(string skelPath) => (skelPath == RestSkel) ? RestAtlas : CombatAtlas;
@@ -34,8 +35,8 @@ public static class SpineBody
     /// <summary>Animation names to prefer, in order; falls back to the skeleton's first animation.</summary>
     private static readonly string[] PreferredAnimations = { "idle_loop", "animation" };
 
-    /// <summary>Scale multiplier applied to the swapped combat body (our skeleton is smaller). Tune.</summary>
-    private const float CombatSizeMultiplier = 1.4f;
+    /// <summary>1085 source pixels become about 326 pixels; parent-level combat scaling still applies.</summary>
+    private const float CombatBodyScale = 0.30f;
 
     private static readonly Dictionary<string, GodotObject?> DataBySkel = new();
     private static readonly List<GodotObject> KeepAlive = new(); // hold atlas/file/data refs for the process
@@ -166,7 +167,11 @@ public static class SpineBody
 
             body.Call("set_skeleton_data_res", data);   // game now drives OUR skeleton
             body.Modulate = new Color(1f, 1f, 1f, alpha);
-            body.Scale = body.Scale * CombatSizeMultiplier;   // our skeleton is smaller than Necrobinder's
+            // Replace the borrowed skeleton's authored scale (Necrobinder uses 0.27).
+            // Multiplying it would shrink our body twice. Keep facing and parent-level scaling.
+            body.Scale = new Vector2(
+                body.Scale.X < 0f ? -CombatBodyScale : CombatBodyScale,
+                body.Scale.Y < 0f ? -CombatBodyScale : CombatBodyScale);
             body.SetMeta("illusionist_swapped", true);
             Log.Info($"[illusionist] Swap: scaleAfter={body.Scale}");
 
@@ -197,6 +202,7 @@ public static class SpineBody
             {
                 animState.Call("set_animation", anim, true, 0);
             }
+            IllusionistOrbitFx.Attach(body);
         }
         catch (Exception ex)
         {
@@ -266,7 +272,36 @@ public static class SpineBody
         sprite.Position = anchorLocal - contentCenterLocal + new Vector2(0f, yOffset);
     }
 
-    private static string PickAnimation(GodotObject data)
+    /// <summary>Resolve optional native animation names against the original skeleton's actual clips.</summary>
+    public static string CombatAnimation(string preferred, string fallback = "idle_loop")
+    {
+        GodotObject? data = GetData(CombatSkel);
+        return data == null ? preferred : PickAnimation(data, preferred, fallback);
+    }
+
+    /// <summary>Fake Merchant requests relaxed_loop directly, outside the combat animator.</summary>
+    public static bool TryPlayRelaxed(NCreatureVisuals visuals)
+    {
+        Node2D? body = visuals.GetNodeOrNull<Node2D>("%Visuals");
+        if (body == null || !body.HasMeta("illusionist_swapped"))
+        {
+            return false;
+        }
+        GodotObject? state = body.Call("get_animation_state").AsGodotObject();
+        if (state == null)
+        {
+            return false;
+        }
+        state.Call("set_animation", CombatAnimation("relaxed_loop"), true, 0);
+        // Fake Merchant's character container is magnified 1.75x. Match the
+        // borrowed 270-pixel character height and keep this a quiet standing pose.
+        body.Scale=new Vector2(Mathf.Sign(body.Scale.X)*.25f,Mathf.Sign(body.Scale.Y)*.25f);
+        foreach(string name in new[]{"IllusionistOrbitFx","IllusionistOrbitBack"})
+            if(body.GetNodeOrNull<Node2D>(name) is { } effect){effect.Visible=false;effect.SetProcess(false);}
+        return true;
+    }
+
+    private static string PickAnimation(GodotObject data, params string[] requested)
     {
         var names = new List<string>();
         foreach (Variant v in data.Call("get_animations").AsGodotArray())
@@ -275,6 +310,13 @@ public static class SpineBody
             if (anim != null)
             {
                 names.Add(anim.Call("get_name").AsString());
+            }
+        }
+        foreach (string pref in requested)
+        {
+            if (names.Contains(pref))
+            {
+                return pref;
             }
         }
         foreach (string pref in PreferredAnimations)

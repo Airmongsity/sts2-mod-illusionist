@@ -15,7 +15,7 @@ namespace Illusionist.Scripts;
 /// </summary>
 public static class IllusionistArt
 {
-    private const string CombatBodyPath = "res://illusionist/art/illusionist.jpg";
+    private const string CombatBodyPath = "res://illusionist/art/illusionist_body.png";
     private const string CharacterSelectBgPath = "res://illusionist/art/illusionist_background.png";
     // Avatars are resolved WITHOUT an extension: the loader tries .tga / .webp / .png in turn (the
     // first two carry an alpha channel; 24-bit PNG does not). An optional grayscale companion file
@@ -51,7 +51,7 @@ public static class IllusionistArt
             if (!_combatBodyTried)
             {
                 _combatBodyTried = true;
-                _combatBody = LoadJpg(CombatBodyPath, keyWhite: true);
+                _combatBody = LoadPng(CombatBodyPath);
             }
             return _combatBody;
         }

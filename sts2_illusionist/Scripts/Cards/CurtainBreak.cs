@@ -11,8 +11,8 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 破幕 (Curtain Break) — 2 cost Rare Power.
-/// Whenever you break an enemy's Block, draw 2 cards and gain 1 energy.
+/// 破幕 (Curtain Break) — 1 cost Rare Power. Draw 1 when played.
+/// The first time each turn you break an enemy's Block, draw 1 card and gain 1 energy.
 /// Upgraded: Innate.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "CURTAIN_BREAK")]
@@ -24,12 +24,13 @@ public sealed class CurtainBreakIllusionist : IllusionistCard
     };
 
     public CurtainBreakIllusionist()
-        : base(2, CardType.Power, CardRarity.Rare, TargetType.Self)
+        : base(1, CardType.Power, CardRarity.Rare, TargetType.Self)
     {
     }
 
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
+        await CardPileCmd.Draw(choiceContext, 1, base.Owner);
         await PowerCmd.Apply<CurtainBreakPower>(
             choiceContext,
             base.Owner.Creature,

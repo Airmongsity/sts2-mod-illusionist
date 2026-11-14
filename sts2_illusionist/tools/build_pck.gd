@@ -7,7 +7,7 @@ extends SceneTree
 const OUTPUT_DIR := "res://build"
 const OUTPUT_FILE := "res://build/illusionist.pck"
 const CONTENT_DIRS := ["res://illusionist"]
-const SKIP_EXTENSIONS := [".import", ".uid"]
+const SKIP_EXTENSIONS := [".import", ".uid", ".psd", ".spine"]
 
 # Textures that must be shipped as IMPORTED Godot resources (.ctex) rather than raw bytes, because
 # something loads them through ResourceLoader instead of FileAccess. spine-godot's atlas loader is the
@@ -30,6 +30,7 @@ const IMPORTED_TEXTURES := [
 const SPINE_ATLASES := [
 	"res://illusionist/art/skeleton.atlas",     # combat flipbook
 	"res://illusionist/art/illusionist.atlas",  # rest-site single image
+	"res://illusionist/art/motion5/skeleton.atlas", # articulated combat body
 ]
 
 # Dirs whose every texture is also imported (.ctex) so it can be loaded via ResourceLoader. Relic
@@ -43,6 +44,8 @@ const IMPORTED_DIRS := [
 	"res://illusionist/art/powers",
 	"res://illusionist/art/potions",
 	"res://illusionist/art/afflictions",
+	"res://illusionist/art/multiplayer",
+	"res://illusionist/art/motion5",
 ]
 
 func _initialize() -> void:
@@ -107,9 +110,7 @@ func _add_dir_recursive(packer: PCKPacker, dir_path: String) -> int:
 				if full.ends_with(ext):
 					skip = true
 					break
-			# Raw sources of imported textures are shipped as .ctex instead — don't pack the raw file.
-			if full in IMPORTED_TEXTURES:
-				skip = true
+			# Raw image loaders and ResourceLoader share these textures; pack both forms.
 			if not skip:
 				var add_ok := packer.add_file(full, full)
 				if add_ok != OK:

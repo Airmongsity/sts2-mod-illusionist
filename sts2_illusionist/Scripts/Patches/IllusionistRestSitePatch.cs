@@ -8,24 +8,10 @@ using STS2RitsuLib.Patching.Models;
 
 namespace Illusionist.Scripts.Patches;
 
-/// <summary>
-/// Give the Illusionist its own Spine body at the rest site (a separate skeleton from combat:
-/// <c>illusionist_rest.skel</c>). The rest character is a dedicated scene
-/// (<c>rest_site/characters/&lt;id&gt;_rest_site</c>, Necrobinder's via the placeholder profile), so
-/// unlike combat we don't have a creature-visuals hook — we postfix <see cref="NRestSiteCharacter"/>'s
-/// <c>_Ready</c>, hide the borrowed Necrobinder rest body and its pet/fire, and overlay our own
-/// <c>SpineSprite</c>.
-///
-/// <para>The borrowed scene's spine bodies are found via the private <c>GetChildSpineNodes()</c>
-/// (reflection) and hidden; the pet anchors (<c>Osty</c> / <c>OstyRightAnchor</c>) and fire
-/// (<c>%NecroFire</c> / <c>%OstyFire</c>) are hidden by name. Placement reuses
-/// <see cref="SpineBody.Place"/>; tune <see cref="TargetHeightPx"/> / <see cref="YOffset"/> in-game.</para>
-/// </summary>
+/// <summary>Replace the borrowed campsite body with a seated pose, anchored to the native seat.
+/// Native hitboxes, thought bubbles, player slots and parent mirroring remain in charge.</summary>
 public sealed class IllusionistRestSitePatch : IPatchMethod
 {
-    /// <summary>On-screen height of the rest-site body, in pixels. Tune to taste.</summary>
-    private const float TargetHeightPx = 320f;
-
     /// <summary>Vertical nudge (local px, + = down). Tune to taste.</summary>
     private const float YOffset = 0f;
 
@@ -33,7 +19,7 @@ public sealed class IllusionistRestSitePatch : IPatchMethod
 
     public static string PatchId => "illusionist_rest_site_body";
 
-    public static string Description => "Swap the borrowed rest-site body for the Illusionist rest Spine";
+    public static string Description => "Seat the Illusionist on the native campsite log";
 
     public static bool IsCritical => false;
 
@@ -56,10 +42,10 @@ public sealed class IllusionistRestSitePatch : IPatchMethod
                 return;
             }
 
-            // Build our sprite FIRST; if Spine is unavailable, leave the borrowed body untouched.
-            Log.Info("[illusionist] RestSite: CreateSprite (loads illusionist_rest.skel)...");
-            Node2D? sprite = SpineBody.CreateSprite(SpineBody.RestSkel, alpha: 1f, NodeName);
-            Log.Info($"[illusionist] RestSite: CreateSprite -> {(sprite != null ? "ok" : "null (spine unavailable/failed)")}");
+            // Load before hiding the borrowed body, so a missing asset leaves a visible fallback.
+            Log.Info("[illusionist] RestSite: Load seated campsite pose...");
+            Node2D? sprite = IllusionistRestPose.Create(Vector2.Zero,Mathf.Abs(__instance.GlobalScale.Y));
+            Log.Info($"[illusionist] RestSite: seated pose -> {(sprite != null ? "ok" : "missing resource")}");
             if (sprite == null)
             {
                 return;
@@ -67,7 +53,7 @@ public sealed class IllusionistRestSitePatch : IPatchMethod
 
             // Hide the borrowed Necrobinder rest body via the private spine-node enumerator, and the
             // pet / fire nodes by name. The character spine is our anchor for placement.
-            Node2D? anchor = null;
+            Node2D? anchor = __instance.GetNodeOrNull<Node2D>("Necro");
             var method = AccessTools.Method(typeof(NRestSiteCharacter), "GetChildSpineNodes");
             if (method?.Invoke(__instance, null) is IEnumerable spineNodes)
             {
@@ -96,14 +82,12 @@ public sealed class IllusionistRestSitePatch : IPatchMethod
             __instance.AddChild(sprite);
             Vector2 anchorLocal = (anchor != null) ? anchor.Position : Vector2.Zero;
             Log.Info("[illusionist] RestSite: Place");
-            SpineBody.Place(sprite, SpineBody.RestSkel, anchorLocal, TargetHeightPx, Mathf.Abs(__instance.GlobalScale.Y), YOffset);
-            Log.Info("[illusionist] RestSite: Play");
-            SpineBody.Play(sprite, SpineBody.RestSkel);   // start idle AFTER it's in the tree
+            sprite.Position=anchorLocal+new Vector2(0,YOffset);
             Log.Info("[illusionist] RestSite: postfix done (render loop takes over)");
         }
         catch (Exception ex)
         {
-            Log.Error($"[illusionist] RestSite: spine apply failed: {ex}");
+            Log.Error($"[illusionist] RestSite: seated pose failed: {ex}");
         }
     }
 }

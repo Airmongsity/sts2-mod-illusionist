@@ -17,7 +17,7 @@
     <RitsuLibDeployDir>$(Sts2Root)\mods\STS2-RitsuLib\</RitsuLibDeployDir>
     <!-- Pinned RitsuLib version. build-illusionist-windows.ps1 rewrites this line when it finds a
          newer release on nuget.org; override ad hoc with /p:RitsuLibVersion=x.y.z. -->
-    <RitsuLibVersion Condition="'$(RitsuLibVersion)' == ''">0.6.2</RitsuLibVersion>
+    <RitsuLibVersion Condition="'$(RitsuLibVersion)' == ''">0.6.12</RitsuLibVersion>
   </PropertyGroup>
 
   <ItemGroup>

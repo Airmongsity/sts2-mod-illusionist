@@ -15,11 +15,11 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 拆穿 (Call the Bluff) - 2 cost Attack, Uncommon (upgraded: 1 cost). Deal 13 damage; first
+/// 拆穿 (Call the Bluff) - 1 cost Attack, Uncommon. Deal 9 damage (upgraded: 13); first
 /// REMOVE all of the target's Block and add that much damage to the hit - the whole strike lands
-/// on the freshly-bared enemy, so the swing is worth 2×Block + 13 versus attacking into the shell.
+/// on the freshly-bared enemy, so the swing is worth base damage + 2×Block versus attacking into the shell.
 /// The punish half of 虚张声势 / Bluff's "fatten the turtle, then crack it" line - it scales off
-/// whatever Block the enemy holds, fed or natural. The card face shows 13 + the target's current
+/// whatever Block the enemy holds, fed or natural. The card face shows the base damage + the target's current
 /// Block (Body Slam-style <see cref="ModCardVars.ComputedDamage"/>) so the real hit is visible.
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "CALL_THE_BLUFF")]
@@ -27,16 +27,16 @@ public sealed class CallTheBluffIllusionist : IllusionistCard
 {
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        // Displayed damage = 13 + the target's current Block (live, target-aware like Body Slam).
+        // Displayed damage = printed base + the target's current Block (live, target-aware like Body Slam).
         ModCardVars.ComputedDamage(
             "Damage",
-            13m,
-            (card, target) => 13m + (target?.Block ?? 0),
+            9m,
+            CallTheBluffDamage,
             ValueProp.Move),
     };
 
     public CallTheBluffIllusionist()
-        : base(2, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
+        : base(1, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
 
@@ -47,19 +47,26 @@ public sealed class CallTheBluffIllusionist : IllusionistCard
 
         // Shatter the shell first: strip ALL Block, then land base damage + the stripped amount
         // on the bared target (nothing left to absorb the hit).
+        decimal damage = CallTheBluffDamage(this, target);
         int block = target.Block;
         if (block > 0)
         {
             await CreatureCmd.LoseBlock(choiceContext, target, block, base.Owner.Creature);
         }
 
-        await DamageCmd.Attack(13m + block).FromCard(this, cardPlay).Targeting(target)
+        await DamageCmd.Attack(damage).FromCard(this, cardPlay).Targeting(target)
             .WithHitFx("vfx/vfx_attack_blunt")
             .Execute(choiceContext);
     }
 
     protected override void OnUpgrade()
     {
-        base.EnergyCost.UpgradeBy(-1); // 2 -> 1
+        base.DynamicVars["Damage"].UpgradeValueBy(4m); // 9 -> 13
+    }
+
+    private static decimal CallTheBluffDamage(CardModel? card, Creature? target)
+    {
+        decimal baseDamage = card?.DynamicVars["Damage"].BaseValue ?? 9m;
+        return baseDamage + (target?.Block ?? 0);
     }
 }

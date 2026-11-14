@@ -16,8 +16,9 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 嬗变 (Metamorphosis) — 2 cost Attack, Uncommon (upgraded: costs 1). The 幻化 system's output port:
-/// deal 12 damage, plus 5 extra for EACH card you 变化 (transformed) this turn. "This turn's transforms"
+/// 嬗变 (Metamorphosis) — 1 cost Attack, Uncommon. The 幻化 system's output port:
+/// deal 8 damage, plus 5 extra for each card you 变化 (transformed) this turn (upgraded: 11 and 6).
+/// "This turn's transforms"
 /// counts BOTH halves of the system — the turn-start reverts of last turn's transmuted cards AND the
 /// forward transmutes you make this turn — because both run through
 /// <see cref="Illusionist.Scripts.Transmutation.NotifyTransformed"/>, which feeds
@@ -31,12 +32,12 @@ public sealed class MetamorphosisIllusionist : IllusionistCard
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        new DamageVar(12m, ValueProp.Move),
-        new DynamicVar("Bonus", 7m),
+        new DamageVar(8m, ValueProp.Move),
+        new DynamicVar("Bonus", 5m),
     };
 
     public MetamorphosisIllusionist()
-        : base(2, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
+        : base(1, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
 
@@ -55,6 +56,7 @@ public sealed class MetamorphosisIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.EnergyCost.UpgradeBy(-1); // 2 -> 1
+        base.DynamicVars.Damage.UpgradeValueBy(3m); // 8 -> 11
+        base.DynamicVars["Bonus"].UpgradeValueBy(1m); // 5 -> 6
     }
 }

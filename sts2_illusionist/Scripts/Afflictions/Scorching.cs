@@ -21,6 +21,9 @@ public sealed class Scorching : ModAfflictionTemplate
 {
     public override bool HasExtraCardText => true;
 
+    public override AfflictionAssetProfile AssetProfile =>
+        new("res://illusionist/scenes/afflictions/scorching_overlay.tscn");
+
     public override async Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
     {
         if (!HasCard || Card.Owner != player)

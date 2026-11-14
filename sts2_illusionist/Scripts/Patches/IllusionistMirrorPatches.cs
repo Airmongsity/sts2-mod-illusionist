@@ -166,11 +166,27 @@ public sealed class IllusionistMirrorRingPatch : IPatchMethod
                     parent.MoveChild(node, playerIndex);   // lift it just after the player
                 }
             }
+            SortByGroundDepth(parent);
         }
         catch (Exception ex)
         {
             Log.Error($"[illusionist] MirrorRing: layout failed: {ex}");
         }
+    }
+
+    internal static void SortByGroundDepth(Node parent)
+    {
+        // Sort whole creatures, including both local flame layers. Sorting only
+        // against the owner leaves the clones in the wrong order against each other.
+        SortByGroundDepth(parent, parent.GetChildren().OfType<NCreature>());
+    }
+
+    internal static void SortByGroundDepth(Node parent, System.Collections.Generic.IEnumerable<CanvasItem> bodies)
+    {
+        var creatures = bodies.OrderBy(n => n is Control control ? control.GlobalPosition.Y : ((Node2D)n).GlobalPosition.Y)
+            .ThenBy(n => n.GetIndex()).ToArray();
+        int[] slots = creatures.Select(n => n.GetIndex()).OrderBy(i => i).ToArray();
+        for (int i = 0; i < creatures.Length; i++) parent.MoveChild(creatures[i], slots[i]);
     }
 
     /// <summary>A stable, area-uniform random point on the annulus for this clone.</summary>

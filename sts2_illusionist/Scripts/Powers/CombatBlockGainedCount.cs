@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
@@ -10,10 +11,10 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Powers;
 
 /// <summary>
-/// 积甲 (hidden) - counts EVERY point of Block gained by ANY creature this combat (player, allies,
-/// enemies). Applied to the player at combat start (see <see cref="Illusionist.Scripts.Entry"/> -
+/// 积甲 (hidden) - counts every point of Block gained by enemies this combat, pooled across all enemies.
+/// Player and allied Block are excluded. Applied to the player at combat start (see <see cref="Illusionist.Scripts.Entry"/> -
 /// CombatStartingEvent subscriber) so it is live from turn 1. Read by 积蓄 (Accrue) to scale its
-/// damage: 13 + <see cref="Total"/>. Mirrors <see cref="CombatTransformCount"/> (hidden counter),
+/// damage. Mirrors <see cref="CombatTransformCount"/> (hidden counter),
 /// but for block-gain events - <see cref="AfterBlockGained"/> fires for all creatures, like Shield Tax.
 /// </summary>
 [RegisterPower]
@@ -27,18 +28,20 @@ public sealed class CombatBlockGainedCount : IllusionistPower
 
     private sealed class Data
     {
-        public int Total;
+        public int EnemyTotal;
     }
 
     protected override object InitInternalData() => new Data();
 
-    public int Total => GetInternalData<Data>().Total;
+    public int EnemyTotal => GetInternalData<Data>().EnemyTotal;
 
     public override Task AfterBlockGained(Creature creature, decimal amount, ValueProp props, CardModel? cardSource)
     {
-        if (amount > 0m)
+        if (amount > 0m
+            && base.Owner.CombatState != null
+            && base.Owner.CombatState.Enemies.Contains(creature))
         {
-            GetInternalData<Data>().Total += (int)amount;
+            GetInternalData<Data>().EnemyTotal += (int)amount;
         }
 
         return Task.CompletedTask;

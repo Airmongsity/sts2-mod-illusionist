@@ -8,7 +8,10 @@ using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Nodes.Rooms;
+using MegaCrit.Sts2.Core.TestSupport;
 using Illusionist.Scripts.Cards;
 using Illusionist.Scripts.Powers;
 
@@ -90,6 +93,7 @@ public static class Transmutation
                 CardCmd.ClearAffliction(replacement);
             }
 
+            bool wasInHand = original.Pile?.Type == PileType.Hand;
             CardPileAddResult? result = await CardCmd.Transform(original, replacement);
             if (result == null || result.Value.cardAdded == null)
             {
@@ -97,6 +101,11 @@ public static class Transmutation
             }
 
             CardModel added = result.Value.cardAdded;
+            RemoveStaleHandCard(original, added, wasInHand);
+            if (source is GrandMasqueradeIllusionist)
+            {
+                Log.Info($"[illusionist] GrandMasquerade: {original.Id.Entry} -> {added.Id.Entry} (destination={added.Pile?.Type.ToString() ?? "none"}).");
+            }
             revert.RegisterTransmute(original, added);
             // A stored (in-mirror) card that gets transmuted must keep its mirror pointing at the new form.
             await MirrorImagePower.OnCardTransformed(owner, original, added);
@@ -119,6 +128,35 @@ public static class Transmutation
         }
 
         return transformed;
+    }
+
+    /// <summary>
+    /// A replacement can leave the hand in its entry hooks (for example, another character's
+    /// ammunition can automatically load into a magazine). CardCmd.Transform then uses an off-hand
+    /// preview instead of swapping the original hand node, so explicitly remove that stale node.
+    /// </summary>
+    private static void RemoveStaleHandCard(CardModel original, CardModel replacement, bool wasInHand)
+    {
+        if (!wasInHand || replacement.Pile?.Type == PileType.Hand || TestMode.IsOn)
+        {
+            return;
+        }
+
+        try
+        {
+            var hand = NCombatRoom.Instance?.Ui.Hand;
+            if (hand?.GetCardHolder(original) == null)
+            {
+                return;
+            }
+
+            hand.Remove(original);
+            Log.Info($"[illusionist] Transmutation: removed stale hand display for {original.Id.Entry} after replacement moved to {replacement.Pile?.Type.ToString() ?? "none"}.");
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"[illusionist] Transmutation: stale hand display cleanup failed for {original.Id.Entry}: {ex}");
+        }
     }
 
     /// <summary>

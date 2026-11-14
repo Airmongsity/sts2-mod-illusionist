@@ -46,7 +46,7 @@
   "ILLUSIONIST_POWER_CUT_IN_POWER.title": "Cut In",
   "ILLUSIONIST_POWER_CUT_IN_POWER.description": "This creature's number of attacks is reduced by {Amount} this turn.",
   "ILLUSIONIST_POWER_CURTAIN_BREAK_POWER.title": "Curtain Break",
-  "ILLUSIONIST_POWER_CURTAIN_BREAK_POWER.description": "Whenever you break an enemy's [gold]Block[/gold], draw 2 cards and gain 1 [gold]Energy[/gold].",
+  "ILLUSIONIST_POWER_CURTAIN_BREAK_POWER.description": "The first time each turn you break an enemy's [gold]Block[/gold], draw 1 card and gain 1 [gold]Energy[/gold].",
   "ILLUSIONIST_POWER_MESMERIZING_ARRAY_POWER.title": "Mesmerizing Array",
   "ILLUSIONIST_POWER_MESMERIZING_ARRAY_POWER.description": "The first time each turn you change an enemy's intent, [gold]Copy[/gold] {Amount} and draw {Amount} {Amount:plural:card|cards}.",
   "ILLUSIONIST_POWER_MISDIRECTION_POWER.title": "Misdirection",

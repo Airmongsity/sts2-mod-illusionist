@@ -15,8 +15,8 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 清算 (Reckoning) - 2 cost Attack, Uncommon. The intent system's output port: deal 16 damage, plus 8
-/// more for each intent card you've played this combat (upgraded: 22 damage, +11 each). "Intent card" is
+/// 清算 (Reckoning) - 1 cost Exhaust Attack, Uncommon. The intent system's output port: deal 12 damage,
+/// plus 8 more for each intent card you've played this combat (upgraded: 16 damage, +10 each). "Intent card" is
 /// defined by TEXT - any card whose description mentions an enemy's 意图 (intent), see
 /// <see cref="Illusionist.Scripts.IntentCards"/> - so the whole intent system feeds it: reactive cards
 /// (反击/致盲/抗衡/预见), manipulators (逆转/虚晃/催化), 挑衅, and 破坏. The card face shows the real hit
@@ -26,16 +26,17 @@ namespace Illusionist.Scripts.Cards;
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "RECKONING")]
 public sealed class ReckoningIllusionist : IllusionistCard
 {
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { CardKeyword.Exhaust };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
         // Displayed damage = printed base + Bonus × intent cards played this combat (live, Body Slam-style).
-        ModCardVars.ComputedDamage("Damage", 16m, (card, _) => ReckoningDamage(card), ValueProp.Move),
+        ModCardVars.ComputedDamage("Damage", 12m, (card, _) => ReckoningDamage(card), ValueProp.Move),
         new DynamicVar("Bonus", 8m),
     };
 
     public ReckoningIllusionist()
-        : base(2, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
+        : base(1, CardType.Attack, CardRarity.Uncommon, TargetType.AnyEnemy)
     {
     }
 
@@ -53,8 +54,8 @@ public sealed class ReckoningIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.DynamicVars["Damage"].UpgradeValueBy(6m);   // 16 -> 22
-        base.DynamicVars["Bonus"].UpgradeValueBy(3m); // 8 -> 11
+        base.DynamicVars["Damage"].UpgradeValueBy(4m); // 12 -> 16
+        base.DynamicVars["Bonus"].UpgradeValueBy(2m); // 8 -> 10
     }
 
     /// <summary>Total damage: printed Damage base + Bonus × intent cards played this combat (base alone outside combat).</summary>
@@ -62,7 +63,7 @@ public sealed class ReckoningIllusionist : IllusionistCard
     {
         if (card == null)
         {
-            return 16m;
+            return 12m;
         }
 
         decimal damageBase = card.DynamicVars["Damage"].BaseValue;

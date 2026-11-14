@@ -36,6 +36,9 @@ public sealed class Disguised : ModAfflictionTemplate
 {
     public override bool HasExtraCardText => true;
 
+    public override AfflictionAssetProfile AssetProfile =>
+        new("res://illusionist/scenes/afflictions/disguised_overlay.tscn");
+
     /// <summary>Round this already fired in; -1 means it has not fired yet.</summary>
     private int _lastRound = -1;
 

@@ -50,7 +50,12 @@ public sealed class Illusionist : ModCharacterTemplate<IllusionistCardPool, Illu
             IconTexturePath: "res://illusionist/art/avatar-s.png",
             IconPath: "res://illusionist/art/avatar-s.png",
             CharacterSelectBgPath: "res://illusionist/scenes/char_select_bg_illusionist.tscn",
-            CharacterSelectIconPath: "res://illusionist/art/avatar-m.png"));
+            CharacterSelectIconPath: "res://illusionist/art/avatar-m.png"),
+        Multiplayer: new CharacterMultiplayerAssetSet(
+            ArmPointingTexturePath: "res://illusionist/art/multiplayer/hand_point.png",
+            ArmRockTexturePath: "res://illusionist/art/multiplayer/hand_rock.png",
+            ArmPaperTexturePath: "res://illusionist/art/multiplayer/hand_paper.png",
+            ArmScissorsTexturePath: "res://illusionist/art/multiplayer/hand_scissors.png"));
 
     public override List<string> GetArchitectAttackVfx() => new List<string>
     {
@@ -79,6 +84,7 @@ public sealed class Illusionist : ModCharacterTemplate<IllusionistCardPool, Illu
             return null;
         }
 
+        visuals.SetMeta(SpineBody.CharacterVisualMeta, true);
         if (!SpineBody.SwapOnReady(visuals, alpha: 1f))
         {
             ImageTexture? texture = IllusionistArt.CombatBody;
@@ -98,18 +104,21 @@ public sealed class Illusionist : ModCharacterTemplate<IllusionistCardPool, Illu
         AnimState cast = new AnimState("cast");
         AnimState attack = new AnimState("attack");
         AnimState hurt = new AnimState("hurt");
+        AnimState defend = new AnimState("defend");
         AnimState die = new AnimState("die");
-        AnimState castMighty = new AnimState("cast_mighty");
-        AnimState relaxed = new AnimState("relaxed_loop", isLooping: true);
+        AnimState castMighty = new AnimState(SpineBody.CombatAnimation("cast_mighty", "cast"));
+        AnimState relaxed = new AnimState(SpineBody.CombatAnimation("relaxed_loop"), isLooping: true);
         cast.NextState = idle;
         attack.NextState = idle;
         hurt.NextState = idle;
+        defend.NextState = idle;
         castMighty.NextState = idle;
         relaxed.AddBranch("Idle", idle);
         CreatureAnimator animator = new CreatureAnimator(idle, controller);
         animator.AddAnyState("Idle", idle);
         animator.AddAnyState("Dead", die);
         animator.AddAnyState("Hit", hurt);
+        animator.AddAnyState("IllusionistDefend", defend);
         animator.AddAnyState("Attack", attack);
         animator.AddAnyState("summonTrigger", cast);
         animator.AddAnyState("Cast", castMighty);

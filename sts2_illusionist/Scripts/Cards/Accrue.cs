@@ -14,25 +14,26 @@ using STS2RitsuLib.Interop.AutoRegistration;
 namespace Illusionist.Scripts.Cards;
 
 /// <summary>
-/// 积蓄 (Accrue) - 2 cost Attack, Uncommon (upgraded: 2 -> 1). Deal 11 damage, plus 1 more for every
-/// 5 points of Block ANY creature has gained this combat (tracked by the hidden
+/// 积蓄 (Accrue) - 2 cost Exhaust Attack, Uncommon. Deal 18 damage, plus 1 more for every
+/// 2 points of Block all enemies have gained this combat (tracked by the hidden
 /// <see cref="CombatBlockGainedCount"/>, applied at combat start). The 养龟 line's scaling finisher:
 /// 假想敌 (Imagined Foe) feeds every creature Block every turn, and Accrue turns that accumulated
-/// Block into a single growing hit. The card face shows 11 + (total block gained / 5) (Body Slam-style
+/// Block into a single growing hit. The card face shows 18 + (enemy Block gained / 2) (Body Slam-style
 /// <see cref="ModCardVars.ComputedDamage"/>) so the player never has to mental-math the bonus.
-/// Rate tuned down from 1:1 (too strong in playtest).
 /// </summary>
 [RegisterCard(typeof(IllusionistCardPool), StableEntryStem = "ACCRUE")]
 public sealed class AccrueIllusionist : IllusionistCard
 {
-    private const decimal BaseDamage = 11m;
+    private const decimal BaseDamage = 18m;
 
-    /// <summary>Block gained (by any creature, this combat) required for +1 damage. Tuned down from 1:1 (too strong).</summary>
-    private const int BlockPerBonus = 5;
+    /// <summary>Block gained by all enemies this combat required for +1 damage.</summary>
+    private const int BlockPerBonus = 2;
+
+    public override IEnumerable<CardKeyword> CanonicalKeywords => new[] { CardKeyword.Exhaust };
 
     protected override IEnumerable<DynamicVar> CanonicalVars => new DynamicVar[]
     {
-        // Displayed damage = BaseDamage + (cumulative block-gained total / BlockPerBonus), live (Body Slam-style).
+        // Displayed damage = BaseDamage + (cumulative enemy Block gained / BlockPerBonus), live (Body Slam-style).
         ModCardVars.ComputedDamage("Damage", BaseDamage, card => AccrueDamage(card), ValueProp.Move),
     };
 
@@ -55,13 +56,14 @@ public sealed class AccrueIllusionist : IllusionistCard
 
     protected override void OnUpgrade()
     {
-        base.EnergyCost.UpgradeBy(-1); // 2 -> 1
+        base.DynamicVars["Damage"].UpgradeValueBy(6m); // 18 -> 24
     }
 
-    /// <summary>Total damage: BaseDamage + (cumulative block gained by any creature this combat) / BlockPerBonus.</summary>
+    /// <summary>Total damage: printed base + (cumulative Block gained by all enemies this combat) / BlockPerBonus.</summary>
     private static decimal AccrueDamage(CardModel? card)
     {
-        int total = card?.Owner?.Creature?.GetPower<CombatBlockGainedCount>()?.Total ?? 0;
-        return BaseDamage + total / BlockPerBonus;
+        decimal baseDamage = card?.DynamicVars["Damage"].BaseValue ?? BaseDamage;
+        int enemyTotal = card?.Owner?.Creature?.GetPower<CombatBlockGainedCount>()?.EnemyTotal ?? 0;
+        return baseDamage + enemyTotal / BlockPerBonus;
     }
 }

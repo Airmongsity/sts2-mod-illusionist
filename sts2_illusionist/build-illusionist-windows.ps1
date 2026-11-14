@@ -300,10 +300,14 @@ if ($LASTEXITCODE -ne 0) { Write-Error "dotnet build failed ($LASTEXITCODE)."; e
 # --- Phase 1.5: convert Spine skeletons (authored in 3.8, binary, named *.json) to the game's
 #     runtime version (4.2.43). The converter detects format by extension, so binary sources are
 #     copied to a temp *.skel first. Skipped (with a note) if the converter isn't present. ---
-$Converter = Join-Path $RepoRoot "SpineSkeletonDataConverter\SpineSkeletonDataConverter.exe"
+$Converter = @(
+    (Join-Path $RepoRoot "SpineSkeletonDataConverterFixed.exe"),
+    (Join-Path $RepoRoot "SpineSkeletonDataConverter\SpineSkeletonDataConverter.exe"),
+    (Join-Path $RepoRoot "SpineSkeletonDataConverter.exe")
+) | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
 $ArtDir    = Join-Path $ProjectDir "illusionist\art"
-$SkeletonMap = @{ "skeleton.json" = "illusionist.skel"; "skeleton_rest.json" = "illusionist_rest.skel" }
-if (Test-Path $Converter) {
+$SkeletonMap = @{ "skeleton.json" = "illusionist.skel"; "skeleton_rest.json" = "illusionist_rest.skel"; "motion5/skeleton.json" = "motion5/illusionist.skel" }
+if ($Converter) {
     Write-Info "Phase 1.5: convert Spine skeletons -> 4.2.43"
     foreach ($src in $SkeletonMap.Keys) {
         $srcPath = Join-Path $ArtDir $src
@@ -355,7 +359,8 @@ if (-not $SkipInstallCopy) {
     # Also refresh the Steam Workshop upload payload so it never goes stale (the art lives in the PCK).
     # This only updates local files; uploading remains a separate, manual step.
     $WorkshopContent = Join-Path $RepoRoot "illusionist-workshop\content"
-    if (Test-Path $WorkshopContent) {
+    if (Test-Path (Split-Path $WorkshopContent -Parent)) {
+        New-Item -ItemType Directory -Force -Path $WorkshopContent | Out-Null
         Copy-Item $DllSource   -Destination $WorkshopContent -Force
         Copy-Item $PckSource   -Destination $WorkshopContent -Force
         Copy-Item $ManifestSrc -Destination $WorkshopContent -Force

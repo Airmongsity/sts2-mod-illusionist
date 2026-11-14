@@ -86,10 +86,14 @@ public static class Entry
 
             // Borrowed-asset reskins that need a live scene (no asset-profile equivalent).
             patcher.RegisterPatch<IllusionistEnergyCounterPatch>();
-            // Re-enabled with step logging (SpineBody.BuildData + this patch) to pinpoint the rest-site
-            // spine hang (07/13: hangs loading illusionist_rest.skel after a mirror-heavy combat).
             patcher.RegisterPatch<IllusionistRestSitePatch>();
             patcher.RegisterPatch<IllusionistShopPatch>();
+            patcher.RegisterPatch<IllusionistFakeMerchantPatch>();
+            patcher.RegisterPatch<IllusionistOrbitAttackPatch>();
+            patcher.RegisterPatch<IllusionistOrbitDamageScopePatch>();
+            patcher.RegisterPatch<IllusionistOrbitImpactPatch>();
+            patcher.RegisterPatch<IllusionistOrbitBlockPatch>();
+            patcher.RegisterPatch<IllusionistOrbitPowerPatch>();
 
             // Every patch above is non-critical: failures are logged per patch and skipped.
             patcher.PatchAll();
@@ -118,6 +122,10 @@ public static class Entry
         {
             Logger.Error($"[{ModId}] Lifecycle subscribe FAILED: {ex}");
         }
+
+        Motion5RuntimeProbe.TryRun();
+        ContextSceneRuntimeProbe.TryRun();
+        ParticleRuntimeProbe.TryRun();
     }
 
     private static void OnCombatStarting(CombatStartingEvent evt)
